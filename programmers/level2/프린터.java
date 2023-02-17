@@ -1,0 +1,38 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int[] priorities, int location) {
+        LinkedList<Integer> il = new LinkedList<>();
+        LinkedList<Character> cl = new LinkedList<>();
+        int answer = 0;
+
+        for(int i = 0; i < priorities.length; i++){
+            il.add(priorities[i]);
+            cl.add((char)(i+'A'));
+        }
+
+        while(true){
+            boolean hasBig = false;
+            for(int i = 1; i < il.size(); i++){
+                if(il.get(0) < il.get(i)){
+                    hasBig = true;
+                    break;
+                }
+            }
+            if(hasBig){
+                il.add(il.get(0));
+                cl.add(cl.get(0));
+                il.remove(0);
+                cl.remove(0);
+            }else{
+                if(cl.get(0) == (char)(location+'A')) return answer += 1;
+                else{
+                    answer++;
+                    il.remove(0);
+                    cl.remove(0);
+                }
+            }
+
+        }
+    }
+}
