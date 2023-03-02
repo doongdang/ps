@@ -26,13 +26,13 @@ public class Main {
 
         for (int f : find) {
             if (ll.indexOf(f) <= ll.size() - ll.indexOf(f)) {
-                while(ll.indexOf(f) != 0){
+                while (ll.indexOf(f) != 0) {
                     ll.add(ll.get(0));
                     ll.removeFirst();
                     answer++;
                 }
             } else {
-                while(ll.indexOf(f) != 0){
+                while (ll.indexOf(f) != 0) {
                     ll.add(0, ll.getLast());
                     ll.removeLast();
                     answer++;
