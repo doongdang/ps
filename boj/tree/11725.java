@@ -2,13 +2,13 @@ import java.io.*;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
-public class Main{
+public class Main {
     static LinkedList<Integer>[] list;
     static int[] p;
 
-    static void dfs(int x){
-        for(int val : list[x]){
-            if(p[x] == val){
+    static void dfs(int x) {
+        for (int val : list[x]) {
+            if (p[x] == val) {
                 continue;
             }
             p[val] = x;
@@ -17,19 +17,19 @@ public class Main{
     }
 
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int n = Integer.parseInt(br.readLine());
-        list = new LinkedList[n+1];
-        p = new int[n+1];
+        list = new LinkedList[n + 1];
+        p = new int[n + 1];
 
         for (int i = 1; i <= n; i++) {
             list[i] = new LinkedList<Integer>();
         }
 
 
-        for(int i = 0; i < n-1; i++){
+        for (int i = 0; i < n - 1; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
 
             int a = Integer.parseInt(st.nextToken());
