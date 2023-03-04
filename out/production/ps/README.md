@@ -1,5 +1,0 @@
-# ps
-
-### programmers
-
-### boj
