@@ -1,0 +1,30 @@
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		String s = sc.next();
+
+		char[] alphabets = s.toCharArray();
+		int curStart = 0;
+		int curEnd = alphabets.length-1;
+		int point = 0;
+		int ans = 0;
+		int start = 0;
+
+		while(curStart <= curEnd){
+			if(alphabets[curStart] == alphabets[curEnd]){
+				curStart++;
+				curEnd--;
+			}else{
+				curStart = start + 1;
+				start++;
+				curEnd = alphabets.length-1;
+				point = curStart;
+			}
+		}
+		ans = point + alphabets.length;
+		System.out.println(ans);
+	}
+}
