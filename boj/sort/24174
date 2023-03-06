@@ -1,0 +1,82 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.StringTokenizer;
+
+public class Main {
+
+	static int count = 0;
+	static int k;
+
+	public static void heapSort(int[] arr) throws IOException {
+		for (int i = arr.length / 2 - 1; i >= 0; i--) {
+			heapify(arr, i, arr.length);
+		}
+
+		for (int i = arr.length - 1; i > 0; i--) {
+			swap(arr, 0, i);
+			heapify(arr, 0, i);
+		}
+	}
+
+	public static void heapify(int[] arr, int parentIdx, int size) throws IOException {
+		int leftIdx = parentIdx * 2 + 1;
+		int rightIdx = parentIdx * 2 + 2;
+		int minIdx = parentIdx;
+
+		if (leftIdx < size && arr[minIdx] > arr[leftIdx]) {
+			minIdx = leftIdx;
+		}
+
+		if (rightIdx < size && arr[minIdx] > arr[rightIdx]) {
+			minIdx = rightIdx;
+		}
+
+		if (parentIdx != minIdx) {
+			swap(arr, parentIdx, minIdx);
+			heapify(arr, minIdx, size);
+		}
+	}
+
+	public static void swap(int[] arr, int x, int y) throws IOException {
+		int tmp = arr[x];
+		arr[x] = arr[y];
+		arr[y] = tmp;
+		count++;
+
+		if(count == k){
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+			for (int i : arr) {
+				bw.write(Integer.toString(i) + " ");
+			}
+			bw.close();
+			System.exit(0);
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		k = Integer.parseInt(st.nextToken());
+
+		st = new StringTokenizer(br.readLine());
+		int[] arr= new int[n];
+		int idx = 0;
+
+		while(st.hasMoreTokens()){
+			arr[idx++] = Integer.parseInt(st.nextToken());
+		}
+
+		heapSort(arr);
+
+		if(count < k){
+			System.out.println(-1);
+		}
+	}
+}
