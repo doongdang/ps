@@ -1,0 +1,59 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+import java.util.stream.Stream;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int s = Integer.parseInt(st.nextToken());
+
+		String[] ss = br.readLine().split(" ");
+		int[] arr = Stream.of(ss).mapToInt(Integer::parseInt).toArray();
+
+		int p1 = 0;
+		int p2 = 0;
+		int len = Integer.MAX_VALUE;
+		int sum = 0;
+
+		while(p2 < n){
+			if(p1 == p2){
+				sum = arr[p1];
+				if(sum < s){
+					p2++;
+					if(p2 < n){
+						sum += arr[p2];
+					}
+				}else{
+					len = 1;
+					break;
+				}
+			}else{
+				if(sum < s){
+					p2++;
+					if(p2 < n){
+						sum += arr[p2];
+					}
+				}else{
+					if(len > p2-p1+1){
+						len = p2-p1+1;
+					}
+					sum -= arr[p1];
+					p1++;
+				}
+			}
+
+		}
+
+		if(len == Integer.MAX_VALUE){
+			System.out.println(0);
+		}else{
+			System.out.println(len);
+		}
+
+	}
+}
