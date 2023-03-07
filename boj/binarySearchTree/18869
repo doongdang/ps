@@ -1,0 +1,66 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.StringTokenizer;
+
+public class Main {
+
+	public static boolean compare(int[] a, int[] b){
+		for (int i = 0; i < a.length; i++) {
+			if(a[i] != b[i]){
+				return false;
+			}
+		}
+		return true;
+	}
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		st = new StringTokenizer(br.readLine());
+
+		int m = Integer.parseInt(st.nextToken());
+		int n = Integer.parseInt(st.nextToken());
+		int answer = 0;
+
+		int[][] arr = new int[m][n];
+
+
+		for (int i = 0; i < m; i++) {
+			String[] ss = br.readLine().split(" ");
+
+			HashMap<Integer, Integer> hm = new HashMap<>();
+			int[] tmp = new int[n];
+
+			for (int j = 0; j < n; j++) {
+				arr[i][j] = Integer.parseInt(ss[j]);
+				tmp[j] = Integer.parseInt(ss[j]);
+			}
+
+			Arrays.sort(tmp);
+			int val = 0;
+			for (int j = 0; j < n; j++) {
+				if(!hm.containsKey(tmp[j])){
+					hm.put(tmp[j], val++);
+				}
+			}
+
+			for (int j = 0; j < n; j++) {
+				arr[i][j] = hm.get(arr[i][j]);
+			}
+		}
+
+		for (int i = 0; i < m-1; i++) {
+			for (int j = i+1; j < m; j++) {
+				boolean same = compare(arr[i], arr[j]);
+				if(same){
+					answer++;
+				}
+			}
+		}
+
+		System.out.println(answer);
+	}
+}
