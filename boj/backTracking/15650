@@ -1,0 +1,48 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+import java.util.stream.Stream;
+
+public class Main {
+	static int n;
+	static int m;
+	static int[] arr;
+	static boolean[] used;
+	static StringBuilder sb = new StringBuilder();
+	public static void func(int cur){
+		if(cur == m){
+			for(int val : arr){
+				sb.append(val).append(' ');
+			}
+			sb.append('\n');
+			return;
+		}
+
+		int p = (cur != 0) ? arr[cur-1]+1 : 1; //이전에 선택된 원소보다 큰 값만이 다음 값이 될 수 있다.
+
+		for(int i = p; i <= n; i++){
+			if(!used[i]){
+				arr[cur] = i;
+				used[i] = true;
+				func(cur+1);
+				used[i] = false;
+			}
+		}
+
+	}
+
+ 	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		n = Integer.parseInt(st.nextToken());
+		m = Integer.parseInt(st.nextToken());
+
+		arr = new int[m];
+		used = new boolean[n+1];
+
+		func(0);
+		System.out.println(sb);
+	}
+}
