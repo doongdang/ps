@@ -1,0 +1,54 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+import java.util.stream.Stream;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		int[] arr = Stream.of(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+
+		int p1 = 0;
+		int p2 = 0;
+		long sum = 0;
+		long answer = 0;
+
+		while(p2 < n){
+			if(p1 == p2){
+				sum = arr[p1];
+				if(sum == m){
+					answer++;
+					p1++;
+					p2++;
+				}else if(sum > m){
+					p1++;
+					p2++;
+				}else{
+					p2++;
+					if(p2 < n) sum += arr[p2];
+				}
+			}else{
+				if(sum == m){
+					answer++;
+					sum -= arr[p1];
+					p1++;
+				}else if(sum > m){
+					sum -= arr[p1];
+					p1++;
+				}else{
+					p2++;
+					if(p2 < n) sum += arr[p2];
+				}
+			}
+
+		}
+
+		System.out.println(answer);
+	}
+}
