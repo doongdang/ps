@@ -1,0 +1,54 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+//BOJ 11404번
+//해당 문제를 토대로 플로이드-워셜 알고리즘 구현
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		int n = Integer.parseInt(br.readLine());
+		int m = Integer.parseInt(br.readLine());
+		int MAX = Integer.MAX_VALUE/2; //2로 나누는 것은 플로이드 알고리즘 연산과정에서 Overflow가 나는 것을 막기 위함.
+
+		int[][] city = new int[n+1][n+1]; //최단 경로값 테이블
+
+		for(int i = 1; i <= n; i++){ //최단 경로 테이블을 INF로 초기화
+			for (int j = 1; j <= n; j++) {
+				city[i][j] = MAX;
+			}
+		}
+
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
+
+			city[a][b] = Math.min(city[a][b], c); //주어진 지정 경로 값을 할당
+		}
+
+		for (int i = 1; i <= n; i++) {
+			city[i][i] = 0; //자기 자신으로 가는 값을 0으로 바꿔줌.
+		}
+
+		for (int k = 1; k <= n; k++) { //아무 정점도 거치지 않는 경로값 city[i][j]와 k번째 정점을 거치는 경로값 city[i][k] + city[k][j를 비교하여 작은 값을 지정.
+			for (int i = 1; i <= n; i++) {
+				for (int j = 1; j <= n; j++) {
+					city[i][j] = Math.min(city[i][k] + city[k][j], city[i][j]);
+				}
+			}
+		}
+
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				if(city[i][j] == MAX) System.out.print(0);
+				else System.out.print(city[i][j]);
+				System.out.print(" ");
+			}
+			System.out.println();
+		}
+	}
+}
