@@ -1,0 +1,96 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Main {
+	static int[][] board; //지도 정보 저장
+	static boolean[][] vis; //동일 섬인지 판단할 때 방문여부 저장
+	static int[][] dist; //섬의 외곽부터 다른 섬까지의 거리 저장
+	static int[] dx = {1, 0, -1, 0};
+	static int[] dy = {0, 1, 0, -1};
+	static int N;
+
+	static void islandCheck(){ //동일 섬 판단 함수. 동일 섬이면 같은 숫자로 표기. 다른 섬이면 다른 숫자로 표기.
+		int islandNum = 0;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if(vis[i][j] || board[i][j] == 0) {
+					continue;
+				}
+				islandNum++;
+				Queue<int[]> queue = new LinkedList<>();
+				vis[i][j] = true;
+				board[i][j] = islandNum;
+				queue.offer(new int[]{i,j});
+				while(!queue.isEmpty()){
+					int[] cur = queue.poll();
+					for (int k = 0; k < 4; k++) {
+						int nx = cur[0] + dx[k];
+						int ny = cur[1] + dy[k];
+						if(nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
+						if(board[nx][ny] == 0 || vis[nx][ny]) continue;
+						board[nx][ny] = islandNum;
+						vis[nx][ny] = true;
+						queue.offer(new int[]{nx, ny});
+					}
+				}
+			}
+		}
+	}
+
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		N = Integer.parseInt(br.readLine());
+
+		board = new int[N][N];
+		vis = new boolean[N][N];
+		dist = new int[N][N];
+
+		int answer = Integer.MAX_VALUE;
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				board[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		islandCheck();
+
+		Queue<int[]> queue = new LinkedList<>(); //바다가 아닌 지역을 전부 큐에 넣는다.
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if(board[i][j] != 0){
+					dist[i][j] = 0;
+					queue.offer(new int[]{i, j});
+				}
+			}
+		}
+
+		while(!queue.isEmpty()){
+			int[] cur = queue.poll();
+			for (int k = 0; k < 4; k++) {
+				int nx = cur[0] + dx[k];
+				int ny = cur[1] + dy[k];
+				if(nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
+				if(board[nx][ny] == board[cur[0]][cur[1]]) continue; //인접한 지역이 현재 지역과 동일한 섬이면 통과
+				if(board[nx][ny] != 0){//인접한 지역이 다른 섬일 경우 현재 지역까지의 확장된 거리와 인접한 지역의 확장된 거리의 합이 답이다.
+					answer = Math.min(answer, dist[cur[0]][cur[1]]+dist[nx][ny]);
+				}else{//인접한 지역이 바다인 경우
+					board[nx][ny] = board[cur[0]][cur[1]]; //바다를 현재 섬의 외곽으로 간주
+					dist[nx][ny] = dist[cur[0]][cur[1]] + 1; //현재 바다가 원래 섬의 외곽으로부터 떨어진 거리를 측정.
+					queue.offer(new int[]{nx, ny});
+				}
+
+			}
+		}
+
+		System.out.println(answer);
+	}
+}
