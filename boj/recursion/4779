@@ -1,0 +1,36 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class Main {
+	static char[] board;
+
+	public static void recursion(int n, int st) {
+		if (n == 1) {
+			return;
+		}
+		for (int i = st + n/3; i < st + n/3*2; i++) {
+			board[i] = ' ';
+		}
+		recursion(n/3, st);
+		recursion(n/3, st + n/3*2);
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String input = "";
+		while((input = br.readLine()) != null){
+			int N = Integer.parseInt(input);
+			board = new char[(int)Math.pow(3,N)];
+
+			Arrays.fill(board, '-');
+
+			recursion((int)Math.pow(3,N), 0);
+
+			System.out.println(new String(board));
+		}
+
+	}
+}
