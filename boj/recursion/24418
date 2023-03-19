@@ -1,0 +1,66 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Main {
+	static int[][] board;
+	static int[][] dp;
+	static int countRec = 0;
+	static int countDp = 0;
+
+	public static int recPath(int n){
+		return recursion(n, n);
+	}
+
+	public static int recursion(int i, int j){
+		if(i == 0 || j == 0){
+			countRec++;
+			return 0;
+		}else{
+			return board[i][j] + Math.max(recursion(i-1, j), recursion(i, j-1));
+		}
+	}
+
+	public static int dpPath(int n){
+		for (int i = 0; i <= n; i++) {
+			dp[i][0] = 0;
+		}
+
+		for (int i = 1; i <= n; i++) {
+			dp[0][i] = 0;
+		}
+
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				countDp++;
+				dp[i][j] = board[i][j] + Math.max(dp[i-1][j], dp[i][j-1]);
+			}
+		}
+		return dp[n][n];
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		int n = Integer.parseInt(br.readLine());
+		board = new int[n+1][n+1];
+		dp = new int[n+1][n+1];
+
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < n; j++) {
+				board[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		recPath(n);
+		dpPath(n);
+
+		System.out.println(countRec + " " + countDp);
+
+	}
+}
