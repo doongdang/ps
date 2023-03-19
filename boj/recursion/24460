@@ -1,0 +1,43 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.StringTokenizer;
+
+public class Main {
+
+	static int N;
+	static int[][] board;
+
+	public static int recursion(int n, int x, int y){
+		if(n == 1){
+			 return board[x][y];
+		}
+
+		ArrayList<Integer> list = new ArrayList<>();
+		list.add(recursion(n/2, x, y));
+		list.add(recursion(n/2, x, y+n/2));
+		list.add(recursion(n/2, x+n/2, y));
+		list.add(recursion(n/2, x+n/2, y+n/2));
+		list.sort(Comparator.naturalOrder());
+		return list.get(1);
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		N = Integer.parseInt(br.readLine());
+		board = new int[N][N];
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				board[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		System.out.println(recursion(N, 0, 0));
+	}
+}
