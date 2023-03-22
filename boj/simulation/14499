@@ -1,0 +1,116 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+class Dice{
+	int top;
+	int front;
+	int back;
+	int bottom;
+	int left;
+	int right;
+
+	public Dice(int top, int front, int back, int bottom, int left, int right) {
+		this.top = top;
+		this.front = front;
+		this.back = back;
+		this.bottom = bottom;
+		this.left = left;
+		this.right = right;
+	}
+
+	public void move(int dir){
+		int tmp;
+		switch (dir){
+			case 1:
+				tmp = this.right;
+				this.right = this.top;
+				this.top = this.left;
+				this.left = this.bottom;
+				this.bottom = tmp;
+				break;
+			case 2:
+				tmp = this.left;
+				this.left = this.top;
+				this.top = this.right;
+				this.right = this.bottom;
+				this.bottom = tmp;
+				break;
+			case 3:
+				tmp = this.top;
+				this.top = this.front;
+				this.front = this.bottom;
+				this.bottom = this.back;
+				this.back = tmp;
+				break;
+			case 4:
+				tmp = this.top;
+				this.top = this.back;
+				this.back = this.bottom;
+				this.bottom = this.front;
+				this.front = tmp;
+				break;
+		}
+	}
+}
+
+public class Main {
+	static int[][] board;
+	static int[] dx = {0, 0, -1, 1};
+	static int[] dy = {1, -1, 0, 0};
+	static int N;
+	static int M;
+	static int x;
+	static int y;
+	static StringBuilder sb = new StringBuilder();
+
+	public static void moveDice(Dice dice, int prevX, int prevY, int dir){
+		int curX = prevX + dx[dir-1];
+		int curY = prevY + dy[dir-1];
+
+		if(curX < 0 || curY < 0 || curX >= N || curY >= M){
+			return;
+		}
+
+		dice.move(dir);
+
+		if(board[curX][curY] == 0){
+			board[curX][curY] = dice.bottom;
+		}else{
+			dice.bottom = board[curX][curY];
+			board[curX][curY] = 0;
+		}
+		x = curX;
+		y = curY;
+		sb.append(dice.top).append("\n");
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		x = Integer.parseInt(st.nextToken());
+		y = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+
+		board = new int[N][M];
+		Dice dice = new Dice(0,0,0,0,0,0);
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < M; j++) {
+				board[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < K; i++) {
+			moveDice(dice, x, y, Integer.parseInt(st.nextToken()));
+		}
+
+		System.out.println(sb);
+	}
+}
