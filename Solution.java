@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Practice {
+public class Solution {
 	public int solution(int delay, int capacity, int[] times) {
 
 		int answer = 0;
@@ -42,7 +42,7 @@ public class Practice {
 		return answer;
 	}
 	public static void main(String[] args) {
-		Practice p = new Practice();
+		Solution p = new Solution();
 		System.out.println(p.solution(5, 5, new int[]{3, 2, 0, 0, 2, 3, 0, 0, 2, 2, 5}));
 	}
 }
