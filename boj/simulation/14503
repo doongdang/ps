@@ -1,0 +1,77 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	static int N;
+	static int M;
+	static int[][] room;
+	static boolean[][] visited;
+	static int[] dx = {-1, 0, 1, 0};
+	static int[] dy = {0, 1, 0, -1};
+	static int answer = 0;
+
+	public static void clean(int x, int y, int dir){
+		if(room[x][y] == 0){
+			room[x][y] = 2;
+			answer++;
+		}
+
+		boolean canMove = false;
+
+		for (int i = 0; i < 4; i++) {
+			int nx = x + dx[i];
+			int ny = y + dy[i];
+			if(nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
+			if (room[nx][ny] == 0) {
+				canMove = true;
+				break;
+			}
+		}
+
+		if(canMove){
+			do {
+				dir--;
+				if(dir < 0 ) dir = 3;
+			}
+			while(room[x+dx[dir]][y+dy[dir]] != 0);
+			clean(x+dx[dir], y+dy[dir], dir);
+		}else{
+			if(room[x + dx[(dir+2)%4]][y + dy[(dir+2)%4]] == 1){
+				System.out.println(answer);
+				System.exit(0);
+			}else{
+				clean(x + dx[(dir+2)%4], y + dy[(dir+2)%4], dir);
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		room = new int[N][M];
+		visited = new boolean[N][M];
+
+		st = new StringTokenizer(br.readLine());
+
+		int startX = Integer.parseInt(st.nextToken());
+		int startY = Integer.parseInt(st.nextToken());
+		int startDir = Integer.parseInt(st.nextToken());
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < M; j++) {
+				room[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		clean(startX, startY, startDir);
+
+	}
+}
