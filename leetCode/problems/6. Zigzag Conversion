@@ -1,0 +1,23 @@
+class Solution {
+    public String convert(String s, int numRows) {
+        if(numRows == 1){
+            return s;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for(int row = 0; row < numRows; row++){
+            int jump = (numRows-1)*2;
+            for(int i = row; i < s.length(); i += jump){
+                sb.append(s.charAt(i));
+
+                if(row > 0 && row < numRows-1 && (jump-2*row + i) < s.length()){
+                    sb.append(s.charAt((jump-2*row + i)));
+                }
+            }
+
+        }
+
+        return sb.toString();
+    }
+}
