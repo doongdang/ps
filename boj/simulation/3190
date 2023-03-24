@@ -1,0 +1,105 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Queue;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+
+class Direction{
+	int time;
+	String dir;
+
+	public Direction(int time, String dir) {
+		this.time = time;
+		this.dir = dir;
+	}
+}
+
+class Pair{
+	int x;
+	int y;
+
+	public Pair(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+
+public class Main {
+	static int N;
+	static int K;
+	static int L;
+	static int[][] board;
+	static int[] dx = {-1, 0, 1, 0};
+	static int[] dy = {0, -1, 0, 1};
+
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		N = Integer.parseInt(br.readLine());
+		K = Integer.parseInt(br.readLine());
+
+		board = new int[N][N];
+		board[0][0] = 2;
+		ArrayList<Pair> snake = new ArrayList<>();
+		snake.add(new Pair(0, 0));
+
+		for (int i = 0; i < K; i++) {
+			st = new StringTokenizer(br.readLine());
+			int appleX = Integer.parseInt(st.nextToken()) - 1;
+			int appleY = Integer.parseInt(st.nextToken()) - 1;
+
+			board[appleX][appleY] = 1;
+		}
+
+		L = Integer.parseInt(br.readLine());
+		Queue<Direction> queue = new LinkedList<>();
+
+		for (int i = 0; i < L; i++) {
+			st = new StringTokenizer(br.readLine());
+			int time = Integer.parseInt(st.nextToken()) + 1;
+			String dir = st.nextToken();
+			queue.offer(new Direction(time, dir));
+		}
+
+		int headX = 0;
+		int headY = 0;
+		int curDir = 3; // 북쪽 = 0, 서쪽 = 1, 남쪽 = 2, 동쪽 = 3;
+		int curTime = 0;
+
+		while(true){
+			curTime++;
+
+			if(!queue.isEmpty() && queue.peek().time == curTime){
+				if(queue.poll().dir.equals("L")){
+					curDir = (curDir + 1) % 4;
+				}else{
+					curDir = curDir - 1 < 0 ? 3 : curDir -1;
+				}
+			}
+
+			int nx = headX + dx[curDir];
+			int ny = headY + dy[curDir];
+			if(nx < 0 || ny < 0 || nx >= N || ny >= N || board[nx][ny] == 2) break;
+
+			if(board[nx][ny] != 1){
+				Pair restore = snake.remove(0);
+				board[restore.x][restore.y] = 0;
+			}
+
+			board[nx][ny] = 2;
+			snake.add(new Pair(nx, ny));
+			headX = nx;
+			headY = ny;
+		}
+
+		System.out.println(curTime);
+
+
+
+	}
+}
