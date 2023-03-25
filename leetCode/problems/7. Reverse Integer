@@ -1,0 +1,20 @@
+class Solution {
+    public int reverse(int x) {
+        int min = Integer.MIN_VALUE;
+        int max = Integer.MAX_VALUE;
+
+        int ans = 0;
+
+        while(x != 0){
+            int mod = x % 10;
+            x /= 10;
+
+            if(ans > max/10 || (ans == max/10 && mod >= max%10)) return 0;
+            if(ans < min/10 || (ans == min/10 && mod <= min%10)) return 0;
+
+            ans = ans*10 + mod;
+        }
+
+        return ans;
+    }
+}
