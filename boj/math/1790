@@ -1,0 +1,51 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Queue;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+
+
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int N = Integer.parseInt(st.nextToken());
+		int K = Integer.parseInt(st.nextToken());
+
+		int cur = 0;
+		int tmp = 0;
+		int tmp2 = 0;
+		for (int i = 1; i <= N; i++) {
+			cur += (int)Math.log10(i) + 1;
+			if(cur == K){
+				System.out.println(i%10);
+				System.exit(0);
+			}else if(cur > K){
+				tmp = i;
+				tmp2 = i;
+				break;
+			}
+		}
+
+		if(cur < K){
+			System.out.println(-1);
+		}else{
+			while(cur > K){
+				tmp /= 10;
+				if(tmp == 0){
+					tmp2 -= 1;
+					tmp = tmp2;
+				}
+				cur--;
+			}
+
+			System.out.println(tmp%10);
+		}
+
+
+	}
+}
