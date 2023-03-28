@@ -24,8 +24,7 @@ public class Main {
 			second = cntR;
 		}
 
-
-		cntD = (N-2)%1000000007;
+		cntD = (N - 2) % 1000000007;
 
 		System.out.println(cntR + " " + cntD);
 	}
