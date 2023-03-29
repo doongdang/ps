@@ -1,0 +1,40 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		int N = Integer.parseInt(br.readLine());
+		int[] road = new int[N];
+		int[] dp = new int[N];
+
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			road[i] = Integer.parseInt(st.nextToken());
+		}
+
+		dp[N-1] = 1;
+
+		for (int i = N-2; i >= 0; i--) {
+			if(road[i] + i + 1 > N -1){
+				dp[i] = 1;
+			}else{
+				dp[i] = 1 + dp[road[i]+i+1];
+			}
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		for(int val : dp){
+			sb.append(val).append(" ");
+		}
+		System.out.println(sb);
+	}
+}
