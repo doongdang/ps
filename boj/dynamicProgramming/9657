@@ -1,0 +1,29 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		int N = Integer.parseInt(br.readLine());
+
+		boolean[] winner = new boolean[N+5];
+		winner[1] = true;
+		winner[2] = false;
+		winner[3] = true;
+		winner[4] = true;
+
+		for (int i = 5; i <= N; i++) {
+			winner[i] = (!winner[i-1] || !winner[i-3] || !winner[i-4]);
+		}
+
+		if(winner[N]){
+			System.out.println("SK");
+		}else{
+			System.out.println("CY");
+		}
+	}
+}
