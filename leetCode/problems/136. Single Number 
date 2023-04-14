@@ -2,9 +2,9 @@ class Solution {
     public int singleNumber(int[] nums) {
         int ans = 0;
 
-        //XOR 연산 활용
+        //XOR 연산 활용 => 동일한 숫자 간의 XOR 연산 결과 값은 0이다.
         //임의의 숫자 n과 0의 xor 연산의 결과는 항상 n이다.
-       
+
         for(int num : nums){
             ans = num ^ ans;
         }
