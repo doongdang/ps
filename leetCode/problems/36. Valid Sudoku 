@@ -1,0 +1,44 @@
+import java.util.HashSet;
+
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        for(int i = 0; i < 9; i++){
+            HashSet<Character> set1 = new HashSet<>();
+            HashSet<Character> set2 = new HashSet<>();
+            //행, 열 검사
+            for(int j = 0; j < 9; j++){
+                if(board[i][j] != '.'){
+                    if(set1.contains(board[i][j])){
+                        return false;
+                    }
+                    set1.add(board[i][j]);
+                }
+
+                if(board[j][i] != '.'){
+                    if(set2.contains(board[j][i])){
+                        return false;
+                    }
+                    set2.add(board[j][i]);
+                }
+
+            }
+
+
+            //분할 검사
+            HashSet<Character> set = new HashSet<>();
+            for(int j = i/3*3; j <= i/3*3 + 2; j++){
+                for(int k = (i*3)%9; k <= (i*3)%9 + 2; k++){
+                    if(board[j][k] != '.'){
+                        if(set.contains(board[j][k])){
+                            return false;
+                        }
+                        set.add(board[j][k]);
+                    }
+                }
+            }
+
+        }
+
+        return true;
+    }
+}
