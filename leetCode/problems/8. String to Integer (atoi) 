@@ -1,0 +1,52 @@
+class Solution {
+    public int myAtoi(String s) {
+        boolean isPlus = true;
+        boolean haveNumber = false;
+        StringBuilder sb = new StringBuilder();
+        int ans = 0;
+
+        for(int i = 0; i < s.length(); i++){
+            if(s.charAt(i) >= '0' && s.charAt(i) <= '9'){
+                sb.append(s.charAt(i));
+                haveNumber = true;
+            }else{
+                if(haveNumber){
+                    break;
+                }
+
+                if(s.charAt(i) == '-'){
+                    isPlus = false;
+                    haveNumber = true;
+                }else if(s.charAt(i) == '+'){
+                    isPlus = true;
+                    haveNumber = true;
+                }else{
+                    if(s.charAt(i) != ' '){
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        if(isPlus){
+            for(int i = 0; i < sb.length(); i++){
+                if(ans > Integer.MAX_VALUE / 10 || (ans == Integer.MAX_VALUE / 10 && sb.charAt(i)-'0' > Integer.MAX_VALUE % 10)){
+                    return Integer.MAX_VALUE;
+                }
+                ans *= 10;
+                ans += sb.charAt(i)-'0';
+            }
+        }else{
+            for(int i = 0; i < sb.length(); i++){
+                if(ans < Integer.MIN_VALUE / 10 || (ans == Integer.MIN_VALUE / 10 && sb.charAt(i)-'0' > -(Integer.MIN_VALUE % 10) )){
+                    return Integer.MIN_VALUE;
+                }
+                ans *= 10;
+                ans -= sb.charAt(i)-'0';
+            }
+        }
+
+        return ans;
+    }
+}
