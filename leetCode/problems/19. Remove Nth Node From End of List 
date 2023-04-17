@@ -1,0 +1,32 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+
+        //더미노드를 끼우는 이유 => 길이가 1인 경우에도 대비하기 위함?
+        ListNode dummy = new ListNode(0, head);
+        ListNode st = dummy;
+        ListNode en = dummy;
+
+        for(int i = 0; i <= n; i++){ //en을 n+1번째 노드까지 이동.
+            en = en.next;
+        }
+
+        while(en != null){ // en -> 끝까지 이동, st => 끝-n-1번째 노드까지 이동.
+            st = st.next;
+            en = en.next;
+        }
+
+        st.next = st.next.next; //st.next는 끝-n 번째 노드이므로 삭제대상. 따라서 그 다음 노드를 연결해준다.
+
+        return dummy.next;
+    }
+}
