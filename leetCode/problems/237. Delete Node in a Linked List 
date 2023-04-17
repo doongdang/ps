@@ -1,0 +1,17 @@
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public void deleteNode(ListNode node) {
+
+        //삭제 노드의 값을 다음 노드의 값으로 덮어쓰고, 삭제 노드의 다다음 노드를 삭제 노드의 다음 노드로 연결한다.
+        //결과적으로 삭제 노드의 값이 다음 노드의 값으로 바뀌고, 다음 노드를 삭제하는 효과.
+        node.val = node.next.val;
+        node.next = node.next.next;
+    }
+}
