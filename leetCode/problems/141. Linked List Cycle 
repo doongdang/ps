@@ -1,0 +1,30 @@
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+    public boolean hasCycle(ListNode head) {
+
+        //플로이드의 토끼-거북이 알고리즘 -> 사이클 탐색 알고리즘
+        ListNode hare = head;
+        ListNode tor = head;
+
+        while(tor != null && tor.next != null && hare != null){
+            tor = tor.next.next;
+            hare = hare.next;
+
+            if(tor == hare){
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
