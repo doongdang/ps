@@ -1,31 +1,26 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
-public class Main {
-	static int N;
-	static long cntR = 0;
-	static long cntD = 0;
+class Pair{
+	int value;
+	int idx;
 
+	public Pair(int value, int idx) {
+		this.value = value;
+		this.idx = idx;
+	}
+}
+
+public class Main {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		HashMap<Integer ,Integer> hm = new HashMap<>();
 
-		N = Integer.parseInt(br.readLine());
-
-		long first = 1;
-		long second = 1;
-
-		for (int i = 3; i <= N; i++) {
-			cntR = first + second;
-			cntR %= 1000000007;
-			first = second;
-			second = cntR;
-		}
-
-		cntD = (N - 2) % 1000000007;
-
-		System.out.println(cntR + " " + cntD);
+		System.out.println(Math.pow(10, Math.log10(0)));
+		System.out.println(-1);
 	}
 }
