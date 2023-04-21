@@ -1,0 +1,17 @@
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int st = 0;
+        int ans = nums[0];
+        int tmp = 0;
+
+        for(int num : nums){
+            if(tmp < 0){
+                tmp = 0;
+            }
+            tmp += num;
+            ans = Math.max(tmp, ans);
+        }
+
+        return ans;
+    }
+}
