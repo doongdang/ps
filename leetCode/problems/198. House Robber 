@@ -26,7 +26,7 @@ class Solution {
 /**
 *class Solution {
 *   public int rob(int[] nums) {
-*        int fst = 0; 
+*        int fst = 0;
 *        int snd = 0;
 *
 *        for(int num : nums){
