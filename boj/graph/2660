@@ -1,0 +1,84 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+class Pair{
+	int node;
+	int dist;
+
+	public Pair(int node, int dist){
+		this.node = node;
+		this.dist = dist;
+	}
+}
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		int n = Integer.parseInt(br.readLine());
+
+		LinkedList<Integer>[] list = new LinkedList[n+1];
+
+		for (int i = 1; i <= n; i++) {
+			list[i] = new LinkedList<>();
+		}
+
+		while(true){
+			st = new StringTokenizer(br.readLine());
+
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+
+			if(a == -1 && b == -1){
+				break;
+			}
+
+			list[a].add(b);
+			list[b].add(a);
+		}
+
+		Queue<Pair> queue = new LinkedList<>();
+		boolean[] vis = new boolean[n+1];
+		int[] scores = new int[n+1];
+		int minScore = Integer.MAX_VALUE;
+
+		for (int i = 1; i <= n; i++) {
+			Arrays.fill(vis, false);
+			int score = 0;
+			queue.offer(new Pair(i, 0));
+			vis[i] = true;
+
+			while(!queue.isEmpty()){
+				Pair cur = queue.poll();;
+
+				for(int nxt : list[cur.node]){
+					if(!vis[nxt]){
+						vis[nxt] = true;
+						queue.offer(new Pair(nxt, cur.dist+1));
+					}
+				}
+				score = cur.dist;
+			}
+			minScore = Math.min(score, minScore);
+			scores[i] = score;
+		}
+
+		StringBuilder sb = new StringBuilder();
+		int nums = 0;
+		for (int i = 1; i <= n; i++) {
+			if(scores[i] == minScore){
+				nums++;
+				sb.append(i).append(" ");
+			}
+		}
+
+		System.out.println(minScore + " " + nums);
+		System.out.println(sb);
+	}
+}
