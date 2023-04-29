@@ -1,0 +1,80 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Main {
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		st = new StringTokenizer(br.readLine());
+
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+
+		boolean[] knowTruth = new boolean[N+1];
+
+		st = new StringTokenizer(br.readLine());
+		int cnt = Integer.parseInt(st.nextToken());
+
+		while(st.hasMoreTokens()){
+			knowTruth[Integer.parseInt(st.nextToken())] = true;
+		}
+
+		LinkedList<Integer>[] personToParty = new LinkedList[N+1];
+		LinkedList<Integer>[] partyToPerson = new LinkedList[M];
+
+		for (int i = 1; i <= N; i++){
+			personToParty[i] = new LinkedList<>();
+		}
+
+		for (int i = 0; i < M; i++) {
+			partyToPerson[i] = new LinkedList<>();
+			st = new StringTokenizer(br.readLine());
+			int num = Integer.parseInt(st.nextToken());
+			while(st.hasMoreTokens()){
+				int person = Integer.parseInt(st.nextToken());
+				partyToPerson[i].add(person);
+				personToParty[person].add(i);
+			}
+		}
+
+		boolean[] visitedParty = new boolean[M];
+		Queue<Integer> queue = new LinkedList<>();
+		int cntOfTruthParty = 0;
+
+		for(int i = 1; i <= N; i++){
+			if(knowTruth[i]){
+				for(int party: personToParty[i]){
+					if(!visitedParty[party]){
+						queue.offer(party);
+						cntOfTruthParty++;
+						visitedParty[party] = true;
+					}
+				}
+			}
+		}
+
+		while(!queue.isEmpty()){
+			int curParty = queue.poll();
+			for(int person : partyToPerson[curParty]){
+				if(!knowTruth[person]){
+					knowTruth[person] = true;
+					for(int party : personToParty[person]){
+						if(!visitedParty[party]){
+							queue.offer(party);
+							cntOfTruthParty++;
+							visitedParty[party] = true;
+						}
+					}
+				}
+			}
+		}
+
+		System.out.println(M-cntOfTruthParty);
+	}
+}
