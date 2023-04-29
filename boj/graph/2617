@@ -1,0 +1,76 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Main {
+	static boolean[] vis;
+	static LinkedList<Integer>[] big;
+	static LinkedList<Integer>[] small;
+
+	static int N;
+	static int M;
+
+	public static boolean bfs(LinkedList<Integer>[] list, int start){
+		Arrays.fill(vis, false);
+
+		Queue<Integer> queue = new LinkedList<>();
+		queue.offer(start);
+		int cnt = 0;
+
+		while (!queue.isEmpty()){
+			int cur =  queue.poll();
+
+			for(int nxt : list[cur]){
+				if(!vis[nxt]){
+					vis[nxt] = true;
+					queue.offer(nxt);
+					cnt++;
+				}
+			}
+		}
+
+		return cnt > (N-1)/2;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		vis = new boolean[N+1];
+		big = new LinkedList[N+1];
+		small = new LinkedList[N+1];
+
+		for (int i = 1; i <= N; i++) {
+			big[i] = new LinkedList<>();
+			small[i] = new LinkedList<>();
+		}
+
+
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+			int b = Integer.parseInt(st.nextToken());
+			int s = Integer.parseInt(st.nextToken());
+
+			big[s].add(b);
+			small[b].add(s);
+		}
+		int ans = 0;
+
+		for (int i = 1; i <= N; i++) {
+			if(bfs(big, i) || bfs(small, i)){
+				ans++;
+			}
+		}
+
+		System.out.println(ans);
+	}
+}
