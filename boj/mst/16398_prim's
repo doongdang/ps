@@ -1,0 +1,62 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
+
+class Pair{
+	int dist;
+	int dest;
+
+	public Pair(int dist, int dest){
+		this.dist = dist;
+		this.dest = dest;
+	}
+}
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		int N = Integer.parseInt(br.readLine());
+
+		int[][] empire = new int[N][N];
+		boolean[] isEmpire = new boolean[N];
+		int cnt = 0;
+		long ans = 0;
+		PriorityQueue<Pair> pq = new PriorityQueue<>((p1, p2) -> p1.dist - p2.dist);
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			for (int j = 0; j < N; j++) {
+				empire[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		isEmpire[0] = true;
+
+		for (int i = 1; i < N; i++) {
+			pq.add(new Pair(empire[0][i], i));
+		}
+
+		while(cnt < N-1){
+			Pair cur = pq.poll();
+
+			if(isEmpire[cur.dest]) continue;
+
+			isEmpire[cur.dest] = true;
+			ans += cur.dist;
+			cnt++;
+
+			for (int i = 0; i < N; i++) {
+				if(!isEmpire[i]){
+					pq.add(new Pair(empire[cur.dest][i], i));
+				}
+			}
+		}
+
+		System.out.println(ans);
+	}
+}
