@@ -1,0 +1,114 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
+
+class Pair{
+	int dest;
+	int val;
+
+	public Pair(int dest, int val){
+		this.dest = dest;
+		this.val = val;
+	}
+}
+
+
+public class Main {
+	static int N;
+	static int M;
+	static LinkedList<Pair>[] adj;
+	static boolean[] vis;
+
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		adj = new LinkedList[N+1];
+		vis = new boolean[N+1];
+
+		for (int i = 0; i <= N; i++) {
+			adj[i] = new LinkedList<>();
+		}
+
+		for (int i = 0; i <= M; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
+
+			adj[a].add(new Pair(b, c));
+			adj[b].add(new Pair(a, c));
+		}
+
+		int cnt = 0;
+		int minUphill = 0;
+		int maxUphill = 0;
+		PriorityQueue<Pair> pqMin = new PriorityQueue<>((p1, p2) -> p2.val - p1.val);
+		PriorityQueue<Pair> pqMax = new PriorityQueue<>((p1, p2) -> p1.val - p2.val);
+
+		for (Pair nxt :adj[0]) {
+			pqMin.offer(nxt);
+			pqMax.offer(nxt);
+		}
+		vis[0] = true;
+
+		while(cnt < N){
+			Pair cur = pqMin.poll();
+
+			if(vis[cur.dest]){
+				continue;
+			}
+
+			cnt++;
+			if(cur.val == 0){
+				minUphill += 1;
+			}
+			vis[cur.dest] = true;
+
+			for(Pair nxt : adj[cur.dest]){
+				if(!vis[nxt.dest]){
+					pqMin.offer(nxt);
+				}
+			}
+		}
+
+		cnt = 0;
+		Arrays.fill(vis, false);
+		vis[0] = true;
+
+		while(cnt < N){
+			Pair cur = pqMax.poll();
+
+			if(vis[cur.dest]){
+				continue;
+			}
+
+			cnt++;
+			if(cur.val == 0){
+				maxUphill += 1;
+			}
+			vis[cur.dest] = true;
+
+			for(Pair nxt : adj[cur.dest]){
+				if(!vis[nxt.dest]){
+					pqMax.offer(nxt);
+				}
+			}
+		}
+
+		System.out.println(maxUphill*maxUphill - minUphill*minUphill);
+
+	}
+
+}
