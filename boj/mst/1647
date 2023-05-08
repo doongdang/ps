@@ -1,0 +1,83 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
+
+class Pair{
+	int dest;
+	int val;
+
+	public Pair(int dest, int val){
+		this.dest = dest;
+		this.val = val;
+	}
+}
+
+
+public class Main {
+	static int N;
+	static int M;
+	static LinkedList<Pair>[] adj;
+	static boolean[] vis;
+
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		adj = new LinkedList[N+1];
+		vis = new boolean[N+1];
+
+		for (int i = 1; i <= N; i++) {
+			adj[i] = new LinkedList<>();
+		}
+
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
+
+			adj[a].add(new Pair(b, c));
+			adj[b].add(new Pair(a, c));
+		}
+
+		int cnt = 0;
+		int maxVal = 0;
+		int sum = 0;
+		PriorityQueue<Pair> pq = new PriorityQueue<>((p1, p2) -> p1.val - p2.val);
+
+		pq.addAll(adj[1]);
+		vis[1] = true;
+
+		while(cnt < N-1){
+			Pair cur = pq.poll();
+			if(vis[cur.dest]){
+				continue;
+			}
+
+			cnt++;
+			vis[cur.dest] = true;
+			sum += cur.val;
+			maxVal = Math.max(maxVal, cur.val);
+
+			for(Pair nxt : adj[cur.dest]){
+				if(!vis[nxt.dest]){
+					pq.add(nxt);
+				}
+			}
+		}
+
+		System.out.println(sum-maxVal);
+
+	}
+
+}
