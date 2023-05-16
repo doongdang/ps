@@ -1,0 +1,67 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		st = new StringTokenizer(br.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		int[][] map = new int[n+1][n+1];
+		final int INF = Integer.MAX_VALUE/2;
+
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				if(i == j) map[i][j] = 0;
+				else map[i][j] = INF;
+			}
+		}
+
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			int u = Integer.parseInt(st.nextToken());
+			int v = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+
+
+
+			//일방 통행인 경우 정 동선에 비용 0을, 반대 동선에 비용 1을 부여, 양방 통행인 경우 양 동선에 모두 비용을 0으로 부여.
+			map[u][v] = 0;
+			if(b == 0){
+				map[v][u] = 1;
+			}else{
+				map[v][u] = 0;
+			}
+		}
+
+		for (int k = 1; k <= n; k++) {
+			for (int i = 1; i <= n; i++) {
+				for (int j = 1; j <= n; j++) {
+					map[i][j] = Math.min(map[i][j], map[i][k] + map[k][j]);
+				}
+			}
+		}
+
+		int k = Integer.parseInt(br.readLine());
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < k; i++) {
+			st = new StringTokenizer(br.readLine());
+			int start = Integer.parseInt(st.nextToken());
+			int end = Integer.parseInt(st.nextToken());
+
+			sb.append(map[start][end]);
+			sb.append("\n");
+		}
+
+		System.out.println(sb);
+	}
+
+}
