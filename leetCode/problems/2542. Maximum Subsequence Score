@@ -1,0 +1,56 @@
+import java.util.Arrays;
+import java.util.PriorityQueue;
+
+class Pair{
+    int val;
+    int idx;
+
+    public Pair(int val, int idx){
+        this.val = val;
+        this.idx = idx;
+    }
+}
+
+class Solution {
+    public long maxScore(int[] nums1, int[] nums2, int k) {
+        int n = nums1.length;
+
+        Pair[] p2 = new Pair[n];
+
+        for(int i = 0; i < n; i++){
+            p2[i] = new Pair(nums2[i], i);
+        }
+
+        Arrays.sort(p2, (t1, t2) -> t1.val - t2.val);
+
+        long ans = 0;
+        long minVal = Integer.MAX_VALUE;
+        long sum = 0;
+
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        for(int i = n-1; i > n-k; i--){
+            pq.offer(nums1[p2[i].idx]);
+            sum += nums1[p2[i].idx];
+        }
+
+        for(int i = n-k; i >= 0; i--){
+            int cur = nums1[p2[i].idx];
+            long tmp = cur + sum;
+
+            if(!pq.isEmpty() && pq.peek() < cur){
+                sum -= pq.poll();
+                sum += cur;
+                pq.offer(cur);
+            }
+
+            tmp *= p2[i].val;
+
+            ans = Math.max(tmp, ans);
+        }
+
+        System.out.println(n);
+
+        return ans;
+    }
+}
