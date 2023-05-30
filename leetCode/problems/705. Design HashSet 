@@ -1,0 +1,64 @@
+class Node{
+    int key;
+    Node nxt;
+
+    public Node(int key){
+        this.key = key;
+    }
+}
+
+class MyHashSet {
+    Node[] set;
+
+    public MyHashSet() {
+        this.set = new Node[10001];
+
+        for(int i = 0; i <= 10000; i++){
+            set[i] = new Node(0);
+        }
+    }
+
+    public void add(int key) {
+        Node cur =  this.set[key%set.length];
+
+        while(cur.nxt != null){
+            if(cur.nxt.key == key){
+                return;
+            }
+            cur = cur.nxt;
+        }
+        cur.nxt = new Node(key);
+    }
+
+    public void remove(int key) {
+        Node cur =  this.set[key%set.length];
+
+        while(cur.nxt != null){
+            if(cur.nxt.key == key){
+                cur.nxt = cur.nxt.nxt;
+                return;
+            }
+            cur = cur.nxt;
+        }
+    }
+
+    public boolean contains(int key) {
+        Node cur =  this.set[key%set.length];
+
+        while(cur.nxt != null){
+            if(cur.nxt.key == key){
+                return true;
+            }
+            cur = cur.nxt;
+        }
+        return false;
+    }
+}
+
+/**
+ * Your MyHashSet object will be instantiated and called as such:
+ * MyHashSet obj = new MyHashSet();
+ * obj.add(key);
+ * obj.remove(key);
+ * boolean param_3 = obj.contains(key);
+ */
