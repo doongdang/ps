@@ -1,0 +1,57 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static char[] board;
+	
+	public static boolean canCoverA(int st) {
+		for(int i = st; i < st+4; i++) {
+			if(i >= board.length) return false;
+			if(board[i] != 'X') return false;
+		}
+		return true;
+	}
+
+	public static boolean canCoverB(int st) {
+		for(int i = st; i < st+2; i++) {
+			if(board[i] != 'X') return false;
+		}
+		return true;
+	}
+	
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+		
+		String s = br.readLine();
+		
+		board = s.toCharArray();
+		
+		for(int i = 0; i <= board.length-2; i++) {
+			if(canCoverA(i)) {
+				for(int j = i; j < i+4; j++) {
+					board[j] = 'A';
+				}
+				i += 3;
+				continue;
+			}
+			
+			if(canCoverB(i)) {
+				for(int j = i; j < i+2; j++) {
+					board[j] = 'B';
+				}
+				i += 1;
+				continue;
+			}
+		}
+		
+		String ans = new String(board);
+		if(ans.contains("X")) {
+			ans = "-1";
+		}
+		
+		System.out.println(ans);
+	}
+}
