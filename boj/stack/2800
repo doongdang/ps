@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.*;
 
+//열린 괄호, 닫힌 괄호 index 저장
 class Pair {
 	int start;
 	int end;
@@ -12,10 +13,10 @@ class Pair {
 }
 
 public class Main {
-	static String formula;
-	static PriorityQueue<String> pq;
-	static ArrayList<Pair> list;
-	static boolean[] vis;
+	static String formula; //입력받은 수식
+	static PriorityQueue<String> pq; //문자열 정렬용 우선순위 큐
+	static ArrayList<Pair> list; //괄호 쌍 저장용 배열
+	static boolean[] vis; //조합 방문여부 체크
 
 	public static void dfs(int idx) {
 		if (idx == list.size()) {
