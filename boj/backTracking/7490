@@ -1,0 +1,82 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static String[] vis;
+	static int N;
+	static StringBuilder sb;
+	static PriorityQueue<String> pq;
+
+	public static void dfs(int st) {
+		if (st == N - 1) {
+			sb = new StringBuilder();
+
+			String prevC = "+";
+			Queue<String> queue = new LinkedList<>();
+
+			for (int i = 0; i < vis.length; i++) {
+				queue.add(String.valueOf(i + 1));
+				queue.add(vis[i]);
+				sb.append(i + 1);
+				sb.append(vis[i]);
+			}
+			sb.append(N);
+			queue.add(String.valueOf(N));
+			int result = 0;
+			while (!queue.isEmpty()) {
+				int p = 0;
+				while (!queue.isEmpty() && queue.peek() != "+" && queue.peek() != "-") {
+					if (queue.peek() != " ") {
+						p += Integer.parseInt(queue.poll());
+					} else {
+						p *= 10;
+						queue.poll();
+						p += Integer.parseInt(queue.poll());
+					}
+				}
+
+				if (prevC == "+") {
+					result += p;
+				} else {
+					result -= p;
+				}
+				if (!queue.isEmpty())
+					prevC = queue.poll();
+			}
+
+			if (result == 0) {
+				pq.offer(sb.toString());
+			}
+
+			return;
+		}
+
+		vis[st] = "+";
+		dfs(st + 1);
+		vis[st] = "-";
+		dfs(st + 1);
+		vis[st] = " ";
+		dfs(st + 1);
+
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		pq = new PriorityQueue<>((p1, p2) -> p1.compareTo(p2));
+		int t = Integer.parseInt(br.readLine());
+
+		while (t-- > 0) {
+			N = Integer.parseInt(br.readLine());
+			vis = new String[N - 1];
+
+			dfs(0);
+
+			while (!pq.isEmpty()) {
+				System.out.println(pq.poll());
+			}
+			System.out.println();
+		}
+
+	}
+}
