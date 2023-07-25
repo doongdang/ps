@@ -1,0 +1,90 @@
+import java.io.*;
+import java.util.*;
+
+class Pair {
+	int start;
+	int end;
+
+	public Pair(int start, int end) {
+		this.start = start;
+		this.end = end;
+	}
+}
+
+public class Main {
+	static String formula;
+	static PriorityQueue<String> pq;
+	static ArrayList<Pair> list;
+	static boolean[] vis;
+
+	public static void dfs(int idx) {
+		if (idx == list.size()) {
+			HashSet<Integer> skipIdx = new HashSet<>();
+			StringBuilder sb = new StringBuilder();
+
+			for (int i = 0; i < list.size(); i++) {
+				if (vis[i]) {
+					skipIdx.add(list.get(i).start);
+					skipIdx.add(list.get(i).end);
+				}
+			}
+
+			if (skipIdx.size() == 0) {
+				return;
+			}
+
+			for (int i = 0; i < formula.length(); i++) {
+				if (!skipIdx.contains(i)) {
+					sb.append(formula.charAt(i));
+				}
+			}
+
+			pq.offer(sb.toString());
+			return;
+		}
+
+		vis[idx] = true;
+		dfs(idx + 1);
+		vis[idx] = false;
+		dfs(idx + 1);
+
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+		Stack<Pair> stack = new Stack<>();
+		pq = new PriorityQueue<>((p1, p2) -> p1.compareTo(p2));
+		list = new ArrayList<>();
+
+		formula = br.readLine();
+
+		for (int i = 0; i < formula.length(); i++) {
+			if (formula.charAt(i) == '(') {
+				stack.add(new Pair(i, 0));
+			}
+
+			if (formula.charAt(i) == ')') {
+				Pair pair = stack.pop();
+				pair.end = i;
+				list.add(pair);
+			}
+		}
+
+		vis = new boolean[list.size()];
+
+		dfs(0);
+
+		String prev = "";
+		
+		while (!pq.isEmpty()) {
+			String cur = pq.poll();
+			if(prev.equals(cur)) continue;
+			sb.append(cur).append("\n");
+			prev = cur;
+		}
+
+		System.out.println(sb);
+	}
+}
