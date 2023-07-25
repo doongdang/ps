@@ -1,0 +1,30 @@
+class Solution {
+    public boolean find(int n, long idx, long start){
+        if(n == 0) return true;
+        long div = (long)Math.pow(5, n-1);
+        
+        if(idx < start + div){
+            return find(n-1, idx, start);
+        }else if(idx < start + 2*div){
+            return find(n-1, idx, start+div);
+        }else if(idx < start + 3*div){
+            return false;
+        }else if(idx < start + 4*div){
+            return find(n-1, idx, start + 3*div);
+        }else{
+            return find(n-1, idx, start + 4*div);
+        }
+    }
+    
+    public int solution(int n, long l, long r) {
+        int answer = 0;
+
+        for(long i = l; i <= r; i++){
+            if(find(n, i, 1)){
+                answer += 1;
+            }
+        }
+        
+        return answer;
+    }
+}
