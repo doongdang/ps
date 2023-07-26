@@ -1,0 +1,53 @@
+import java.io.*;
+import java.util.*;
+
+class Pair{
+	int idx;
+	int loc;
+	
+	public Pair(int idx, int loc) {
+		this.idx = idx;
+		this.loc = loc;
+	}
+}
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+		
+		int N = Integer.parseInt(br.readLine());
+		
+		PriorityQueue<Pair> pq = new PriorityQueue<>((p1, p2) -> p1.loc - p2.loc);
+		
+		for(int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			
+			int x = Integer.parseInt(st.nextToken());
+			int r = Integer.parseInt(st.nextToken());
+			
+			pq.offer(new Pair(i, x-r));
+			pq.offer(new Pair(i, x+r));
+		}
+		
+		Stack<Pair> stack = new Stack<>();
+		stack.add(pq.poll());
+		while(!pq.isEmpty()) {
+			if(stack.isEmpty()) {
+				stack.add(pq.poll());
+			}else if(pq.peek().idx == stack.peek().idx) {
+				stack.pop();
+				pq.poll();
+			}else if(pq.peek().loc == stack.peek().loc) {
+				System.out.println("NO");
+				System.exit(0);
+			}else {
+				stack.add(pq.poll());
+			}
+		}
+		
+		if(!stack.isEmpty()) System.out.println("NO");
+		else System.out.println("YES");
+	}
+}
