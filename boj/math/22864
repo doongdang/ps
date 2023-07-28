@@ -1,0 +1,31 @@
+import java.io.*;
+import java.util.*;
+
+public class Main{
+	public static void main(String[] args) throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st;
+
+		st = new StringTokenizer(br.readLine());
+
+		int A = Integer.parseInt(st.nextToken());
+		int B = Integer.parseInt(st.nextToken());
+		int C = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+
+		int piro = 0;
+		int done = 0;
+
+		for(int time = 0; time < 24; time++){
+			if(piro + A > M){
+				piro = Math.max(piro - C, 0);
+			}else{
+				done += B;
+				piro += A;
+			}
+		}
+
+		System.out.println(done);
+	}
+}
