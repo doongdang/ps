@@ -1,0 +1,104 @@
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	static int[][] board;
+
+	public static boolean search(int x, int y, int type) {
+		int cnt = 0;
+		for (int i = x; i < 19; i++) {
+			if (board[i][y] == type)
+				cnt += 1;
+			else
+				break;
+		}
+
+		if(cnt == 5)
+			if(x == 0) return true;
+			else if(x > 0 && board[x-1][y] != type) return true;
+
+		cnt = 0;
+		for (int i = y; i < 19; i++) {
+			if (board[x][i] == type)
+				cnt += 1;
+			else
+				break;
+		}
+
+		if (cnt == 5)
+			if(y == 0) return true;
+			else if(y > 0 && board[x][y-1] != type)return true;
+
+		cnt = 0;
+		int i = x;
+		int j = y;
+		while(i >= 0 && j < 19) {
+			if (board[i][j] == type)
+				cnt += 1;
+			else
+				break;
+			i--;
+			j++;
+		}
+		
+		if (cnt == 5)
+			if(x == 18 || y == 0) return true;
+			else if (x < 18 && y > 0 && board[x+1][y-1] != type)return true;
+
+		cnt = 0;
+		i = x;
+		j = y;
+		
+		while(i < 19 && j < 19) {
+			if (board[i][j] == type)
+				cnt += 1;
+			else
+				break;
+			i++;
+			j++;
+		}
+		
+		if (cnt == 5)
+			if(x == 0 || y == 0) return true;
+			else if (x > 0 && y > 0 && board[x-1][y-1] != type) return true;;
+
+		return false;
+	}
+
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		board = new int[19][19];
+		int winColor = 0;
+		int winX = 0;
+		int winY = 0;
+
+		for (int i = 0; i < 19; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < 19; j++) {
+				board[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+		
+		loop:
+		for(int i = 0; i < 19; i++) {
+			for(int j = 0; j < 19; j++) {
+				if(board[i][j] != 0) {
+					if(search(i, j, board[i][j])) {
+						winColor = board[i][j];
+						winX = i+1;
+						winY = j+1;
+						break loop;
+					}
+				}
+			}
+		}
+		System.out.println(winColor);
+		if(winColor != 0) {
+			System.out.println(winX + " " + winY);
+		}
+	}
+}
