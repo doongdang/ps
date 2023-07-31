@@ -1,0 +1,62 @@
+package com.ssafy;
+
+import java.io.*;
+import java.util.*;
+
+public class Main{
+	static int[][] board;
+	static int blue;
+	static int white;
+	public static void split(int stX, int stY, int size) {
+		boolean same = true;
+		int std = board[stX][stY];	
+		boolean isBlue = std == 1 ? true : false;
+	
+		loop:
+		for(int i = stX; i < stX + size; i++) {
+			for(int j = stY; j < stY + size; j++) {
+				if(board[i][j] != std) {
+					same = false;
+					break loop;
+				}
+			}
+		}
+		
+		
+		if(same) {
+			if(isBlue) blue += 1;
+			else white += 1;
+			return;
+		}else {
+			split(stX, stY, size/2);
+			split(stX, stY+size/2, size/2);
+			split(stX+size/2, stY, size/2);
+			split(stX + size/2, stY + size/2, size/2);
+		}
+	}
+	
+	
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+        
+        int N = Integer.parseInt(br.readLine());
+        
+        board = new int[N][N];
+        white = 0;
+        blue = 0;
+        for(int i = 0; i < N; i++) {
+        	st = new StringTokenizer(br.readLine());
+        	
+        	for(int j = 0; j < N; j++) {
+        		board[i][j] = Integer.parseInt(st.nextToken());
+        	}
+        }
+        
+        split(0, 0, N);
+        
+        System.out.println(white);
+        System.out.println(blue);
+    }
+
+}
