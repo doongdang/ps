@@ -1,0 +1,58 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+
+		int swt = Integer.parseInt(br.readLine());
+		int[] swts = new int[swt+1];
+		
+		st = new StringTokenizer(br.readLine());
+		
+		for(int i = 1; i <= swt; i++) {
+			swts[i] = Integer.parseInt(st.nextToken());
+		}
+		
+		int numOfStd = Integer.parseInt(br.readLine());
+		
+		for(int i = 0; i < numOfStd; i++) {
+			st = new StringTokenizer(br.readLine());
+			int gender = Integer.parseInt(st.nextToken());
+			int stdSwt = Integer.parseInt(st.nextToken());
+			
+			if(gender == 1) {
+				for(int idx = stdSwt; idx <= swt; idx += stdSwt) {
+					swts[idx] = swts[idx] == 1 ? 0 : 1;
+				}
+			}else {
+				int diff = 0;
+				loop: 
+				while(true) {
+					if(stdSwt - diff < 1 || stdSwt + diff > swt) break;
+					for(int k = 1; k <= diff; k++) {
+						if(swts[stdSwt-k] != swts[stdSwt+k]) {
+							break loop;
+						}
+					}
+					diff++;
+				}
+				diff -= 1;
+				for(int idx = stdSwt-diff; idx <= stdSwt+diff; idx++) {
+					swts[idx] = swts[idx] == 1 ? 0 : 1;
+				}
+			}
+		}
+		
+		for(int idx = 1; idx <= swt; idx++) {
+			sb.append(swts[idx]).append(" ");
+			if(idx % 20 == 0) {
+				sb.append("\n");
+			}
+		}
+		System.out.println(sb);
+	}
+}
