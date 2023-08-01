@@ -1,0 +1,57 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb;
+		
+		int T = Integer.parseInt(br.readLine());
+		
+		while(T-- > 0) {
+			int M = Integer.parseInt(br.readLine());
+			int idx = 1;
+			int median = 0;
+			int cnt = M/2+1;
+			int medianCnt = 0;
+			sb = new StringBuilder();
+			sb.append(cnt).append("\n");
+			ArrayList<Integer> list = new ArrayList<>();
+			for(int i = M; i > 0; i -= 10) {
+				st = new StringTokenizer(br.readLine());
+				
+				while(st.hasMoreTokens()) {
+					int cur = Integer.parseInt(st.nextToken());
+					if(list.size() == 0) {
+						list.add(cur);
+						medianCnt++;
+						median = cur;
+						sb.append(median).append(" ");
+					}else {
+						int insertIdx = Collections.binarySearch(list, cur);
+						if(insertIdx < 0) {
+							insertIdx *= -1;
+							insertIdx -= 1;
+						}
+						list.add(insertIdx, cur);
+						if(idx % 2 == 1) {
+							medianCnt++;
+							if(medianCnt > 10) {
+								sb.append("\n");
+								medianCnt -= 10;
+							}
+							median = list.get(list.size()/2);
+							sb.append(median).append(" ");
+						}
+						
+					}
+					idx+=1;
+				}
+			}
+			System.out.println(sb);
+		}
+		
+	}
+
+}
