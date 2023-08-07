@@ -1,0 +1,50 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    
+    public static void main(String[] args) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      StringBuilder sb = new StringBuilder();
+
+      int N = Integer.parseInt(br.readLine());
+
+      double avg = 0;
+      int median = 0;
+      int mode = 0;
+      int range = 0;
+      int[] arr = new int[N];
+      HashMap<Integer, Integer> hm = new HashMap<>();
+      PriorityQueue<Map.Entry<Integer, Integer>> pq = new PriorityQueue<>((e1, e2) -> e1.getValue() != e2.getValue() ? e2.getValue() - e1.getValue() : e1.getKey() - e2.getKey());
+
+      for(int i = 0; i < N; i++){
+        arr[i] = Integer.parseInt(br.readLine());
+        avg += arr[i];
+        hm.put(arr[i], hm.getOrDefault(arr[i], 0)+1);
+      }
+
+      avg /= N;
+
+      Arrays.sort(arr);
+
+      median = arr[N/2];
+
+      range = arr[N-1] - arr[0];
+
+      for(Map.Entry<Integer, Integer> e : hm.entrySet()){
+        pq.offer(e);
+      }
+     
+      mode = pq.peek().getKey();
+      int tmp = pq.peek().getValue();
+      pq.poll();
+      if(!pq.isEmpty() && tmp == pq.peek().getValue()){
+        mode = pq.poll().getKey();
+      }
+
+      sb.append(Math.round(avg)).append("\n").append(median).append("\n").append(mode).append("\n").append(range);
+
+      System.out.println(sb);
+      
+    }
+}
