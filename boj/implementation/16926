@@ -1,0 +1,76 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static int N;
+	static int M;
+	static int R;
+	static int[][] arr;
+	
+	public static void rotate(int cSize, int rSize, int stX, int stY) {
+		int tmp = arr[stX][stY];
+		
+		for(int i = stY+1; i < stY+rSize; i++) {
+			arr[stX][i-1] = arr[stX][i];
+		}
+		
+		for(int i = stX+1; i < stX+cSize; i++) {
+			arr[i-1][stY+rSize-1] = arr[i][stY+rSize-1];
+		}
+		
+		for(int i = stY+rSize-2; i >= stY; i--) {
+			arr[stX+cSize-1][i+1] = arr[stX+cSize-1][i];
+		}
+		
+		for(int i = stX+cSize-2; i >= stX+1; i--) {
+			arr[i+1][stY] = arr[i][stY];
+		}
+		
+		arr[stX+1][stY] = tmp;
+	}
+	
+	public static void recursion(int cSize, int rSize, int stX, int stY) {
+		if(cSize <= 0 || rSize <= 0) {
+			return;
+		}
+		
+		for(int i = 0; i < R%((cSize+rSize-2)*2); i++) {
+			rotate(cSize, rSize, stX, stY);
+		}
+		
+		recursion(cSize-2, rSize-2, stX+1, stY+1);
+	}
+	
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+		
+		st = new StringTokenizer(br.readLine());
+		
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		R = Integer.parseInt(st.nextToken());
+		
+		arr = new int[N][M];
+		
+		for(int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for(int j = 0; j < M; j++) {
+				arr[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+		
+		recursion(N, M, 0, 0);
+		
+		for(int[] r : arr) {
+			for(int l : r) {
+				sb.append(l).append(" ");
+			}
+			sb.append("\n");
+		}
+		System.out.println(sb);
+		
+	}
+}
