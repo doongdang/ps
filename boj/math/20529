@@ -1,0 +1,50 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static String[] mbtis;
+	static int[] choice = new int[3];
+	static int ans;
+	public static void dfs(int depth, int cnt) {
+		if(cnt == 3) {
+			int tmp = 0;
+			for(int idx = 0; idx < 4; idx++) {
+				if(mbtis[choice[0]].charAt(idx) != mbtis[choice[1]].charAt(idx)) tmp++;
+				if(mbtis[choice[0]].charAt(idx) != mbtis[choice[2]].charAt(idx)) tmp++;
+				if(mbtis[choice[1]].charAt(idx) != mbtis[choice[2]].charAt(idx)) tmp++;
+			}
+			ans = Math.min(ans, tmp);
+			return;
+		}
+		
+		for(int i = depth; i < mbtis.length; i++) {
+			choice[cnt] = i;
+			dfs(i+1, cnt+1);
+		}
+	}
+	
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+
+		int T = Integer.parseInt(br.readLine());
+		
+		while(T-- > 0) {
+			int N = Integer.parseInt(br.readLine());
+			String s = br.readLine();
+			ans = Integer.MAX_VALUE;
+			if(N >= 33) {
+				sb.append(0);
+			}else {
+				mbtis = s.split(" ");
+				dfs(0, 0);
+				sb.append(ans);
+			}
+			sb.append("\n");
+		}
+		
+		System.out.println(sb);
+	}
+}
