@@ -1,0 +1,78 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+
+		String s = br.readLine();
+		int N = Integer.parseInt(s);
+		int M = Integer.parseInt(br.readLine());
+		int ans = Integer.MAX_VALUE;
+		boolean[] canUse = new boolean[12];
+	
+		Arrays.fill(canUse, true);
+		
+		if(M > 0) {
+			st = new StringTokenizer(br.readLine());
+			
+			for(int i = 0; i < M; i++) {
+				String curBtn = st.nextToken();
+				if(Character.isDigit(curBtn.charAt(0))) {
+					canUse[Integer.parseInt(curBtn)] = false;
+				}else {
+					if(curBtn.equals("+")) canUse[10] = false;
+					else canUse[11] = false;
+				}
+			}
+		}
+		
+		if(N == 100) {
+			System.out.println(0);
+			System.exit(0);
+		}
+		
+		if(N > 100) ans = Math.min(ans, N-100);
+		if(N < 100) ans = Math.min(ans, 100-N);
+		
+		int diff = 0;
+		
+		while(diff <= N) {
+			int prevChannel = N-diff;
+			String prevString = String.valueOf(prevChannel);
+			boolean canMakePrev = true;
+			
+			for(int i = 0; i < prevString.length(); i++) {
+				if(!canUse[prevString.charAt(i)-'0']) {
+					canMakePrev = false;
+					break;
+				}
+			}
+			
+			if(canMakePrev && prevChannel != 0) ans = Math.min(ans, (int )Math.log10(prevChannel) +1 + N - prevChannel);
+			else if(canMakePrev && prevChannel == 0) ans = Math.min(ans, 1 + N-prevChannel);
+		
+			diff += 1;
+		}
+		diff = 1;
+		
+		while(diff <= 500000) {
+			int nextChannel = N+diff;
+			String nextString = String.valueOf(nextChannel);
+			boolean canMakeNext = true;
+			
+			for(int i = 0; i < nextString.length(); i++) {
+				if(!canUse[nextString.charAt(i)-'0']) {
+					canMakeNext = false;
+					break;
+				}
+			}
+			if(canMakeNext) ans = Math.min(ans, (int )Math.log10(nextChannel) +1 + nextChannel - N);
+			diff += 1;
+		}
+		
+		System.out.println(ans);
+	}
+}
