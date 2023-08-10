@@ -1,0 +1,133 @@
+import java.io.*;
+import java.util.*;
+
+class Register{
+	int val;
+	String orders;
+	public Register(int val, String orders) {
+		this.val = val;
+		this.orders = orders;
+	}
+}
+
+public class Main {
+	static boolean[] vis;
+	static Queue<Register> queue;
+	public static void D(Register prev) {
+		int val = prev.val * 2;
+		if(val > 9999) val %= 10000;
+
+		if(!vis[val]) {
+			vis[val] = true;
+			queue.offer(new Register(val, prev.orders + "D"));
+		}
+	}
+
+	public static void S(Register prev) {
+		int val = prev.val - 1;
+		if(val == -1) val = 9999;
+
+		if(!vis[val]) {
+			vis[val] = true;
+			queue.offer(new Register(val, prev.orders + "S"));
+		}
+	}
+
+	public static void L(Register prev) {
+		int val = 0;
+		char[] arr = new char[4];
+		String s = String.valueOf(prev.val);
+		int idx1 = 3;
+		int idx2 = s.length()-1;
+
+		while(idx2 >= 0) {
+			arr[idx1--] = s.charAt(idx2--);
+		}
+
+		for(int i = idx1; i >= 0; i--) {
+			arr[i] = '0';
+		}
+
+		char tmp = arr[0];
+
+		for(int i = 1; i < 4; i++) {
+			arr[i-1] = arr[i];
+		}
+		arr[3] = tmp;
+		val = Integer.parseInt(new String(arr));
+		if(!vis[val]) {
+			vis[val] = true;
+			queue.offer(new Register(val, prev.orders + "L"));
+		}
+
+	}
+
+	public static void R(Register prev) {
+		int val = 0;
+		char[] arr = new char[4];
+		String s = String.valueOf(prev.val);
+		int idx1 = 3;
+		int idx2 = s.length()-1;
+
+		while(idx2 >= 0) {
+			arr[idx1--] = s.charAt(idx2--);
+		}
+
+		for(int i = idx1; i >= 0; i--) {
+			arr[i] = '0';
+		}
+
+		char tmp = arr[3];
+
+		for(int i = 3; i >= 1; i--) {
+			arr[i] = arr[i-1];
+		}
+		arr[0] = tmp;
+
+		val = Integer.parseInt(new String(arr));
+		if(!vis[val]) {
+			vis[val] = true;
+			queue.offer(new Register(val, prev.orders + "R"));
+		}
+
+	}
+
+
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+
+		int T = Integer.parseInt(br.readLine());
+
+		while(T-- > 0) {
+			st = new StringTokenizer(br.readLine());
+			int A = Integer.parseInt(st.nextToken());
+			int B = Integer.parseInt(st.nextToken());
+
+			vis = new boolean[10000];
+			queue = new LinkedList<>();
+
+			vis[A] = true;
+			queue.offer(new Register(A, ""));
+
+			while(true) {
+				Register cur = queue.poll();
+				if(cur.val == B) {
+					sb.append(cur.orders);
+					break;
+				}
+
+				D(cur);
+				S(cur);
+				L(cur);
+				R(cur);
+
+			}
+			sb.append("\n");
+		}
+
+		System.out.println(sb);
+	}
+}
