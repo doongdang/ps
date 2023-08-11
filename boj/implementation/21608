@@ -1,0 +1,99 @@
+import java.io.*;
+import java.util.*;
+
+class SeatInfo{
+	int likeCnt;
+	int emptyCnt;
+	int x;
+	int y;
+	
+	public SeatInfo(int likeCnt, int emptyCnt, int x, int y) {
+		this.likeCnt = likeCnt;
+		this.emptyCnt = emptyCnt;
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main {
+	static int N;
+	static HashSet<Integer>[] students;
+	static int[][] classRoom;
+	static int[] dx = {-1, 0, 1, 0};
+	static int[] dy = {0, -1, 0, 1};
+	
+	public static SeatInfo search(int x, int y, int num) {
+		int likeCnt = 0;
+		int emptyCnt = 0;
+		
+		for(int dir = 0; dir < 4; dir++) {
+			int nx = dx[dir] + x;
+			int ny = dy[dir] + y;
+			if(nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
+			if(classRoom[nx][ny] == 0) emptyCnt++;
+			if(students[num].contains(classRoom[nx][ny])) likeCnt++;
+		}
+		
+		return new SeatInfo(likeCnt, emptyCnt, x, y);
+	}
+	
+	public static int likeSearch(int x, int y, int num) {
+		int likeCnt = 0;
+		for(int dir = 0; dir < 4; dir++) {
+			int nx = dx[dir] + x;
+			int ny = dy[dir] + y;
+			if(nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
+			if(students[num].contains(classRoom[nx][ny])) likeCnt++;
+		}
+		return likeCnt;
+	}
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+		
+		N = Integer.parseInt(br.readLine());
+		students = new HashSet[N*N+1];
+		classRoom = new int[N][N];
+		
+		for(int std = 0; std < N*N; std++) {
+			st = new StringTokenizer(br.readLine());
+			
+			int num = Integer.parseInt(st.nextToken());
+			students[num] = new HashSet<>();
+			
+			for(int like = 0; like < 4; like++) {
+				students[num].add(Integer.parseInt(st.nextToken()));
+			}
+			
+			PriorityQueue<SeatInfo> pq = new PriorityQueue<>(new Comparator<SeatInfo>() {
+				@Override
+				public int compare(SeatInfo o1, SeatInfo o2) {
+					if(o1.likeCnt != o2.likeCnt) return o2.likeCnt - o1.likeCnt;
+					else if(o1.emptyCnt != o2.emptyCnt) return o2.emptyCnt - o1.emptyCnt;
+					else if(o1.x != o2.x) return o1.x - o2.x;
+					else return o1.y - o2.y;
+				}
+			});
+			
+			for(int i = 0; i < N; i++) {
+				for(int j = 0; j < N; j++) {
+					if(classRoom[i][j] != 0) continue;
+					pq.offer(search(i, j, num));
+				}
+			}
+			
+			SeatInfo select = pq.poll();
+			classRoom[select.x][select.y] = num;
+		}
+		int ans = 0;
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < N; j++) {
+				int cnt = likeSearch(i, j, classRoom[i][j]);
+				if(cnt != 0) ans += Math.pow(10, cnt-1);
+			}
+		}
+		System.out.println(ans);
+	}
+}
