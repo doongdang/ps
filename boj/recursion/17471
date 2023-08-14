@@ -1,0 +1,108 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static int N;
+	static int[] people;
+	static LinkedList<Integer>[] adj;
+	static boolean[] region;
+	static int[] regionNum;
+	static int ans = Integer.MAX_VALUE;
+	
+	public static void dfs(int depth, int cnt, int range) {
+		if(cnt > range) {
+			int st1 = 0;
+			int st2 = 0;
+			regionNum = new int[N+1];
+			
+			for(int i = 1; i <= N; i++) {
+				if(region[i]) st1 = i;
+				else st2 = i;
+			}
+			
+			Queue<Integer> queue = new LinkedList<>();
+			queue.offer(st1);
+			regionNum[st1] = 1;
+			while(!queue.isEmpty()) {
+				int cur = queue.poll();
+				
+				for(int nxt : adj[cur]) {
+					if(!region[nxt] || regionNum[nxt] != 0) continue;
+					regionNum[nxt] = 1;
+					queue.offer(nxt);
+				}
+			}
+			
+			queue.offer(st2);
+			regionNum[st2] = 2;
+			while(!queue.isEmpty()) {
+				int cur = queue.poll();
+				
+				for(int nxt : adj[cur]) {
+					if(region[nxt] || regionNum[nxt] != 0) continue;
+					regionNum[nxt] = 2;
+					queue.offer(nxt);
+				}
+			}
+			
+			for(int i = 1; i <= N; i++) {
+				if(regionNum[i] == 0) return;
+			}
+			
+			int sum1 = 0;
+			int sum2 = 0;
+			
+			for(int i = 1; i <= N; i++) {
+				if(region[i]) sum1 += people[i];
+				else sum2 += people[i];
+			}
+			
+			ans = Math.min(ans, Math.abs(sum1-sum2));
+			return;
+		}
+		
+		for(int i = depth; i <= N; i++) {
+			if(!region[i]) {
+				region[i] = true;
+				dfs(i+1, cnt+1, range);
+				region[i] = false;
+			}
+		}
+	}
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+
+		N = Integer.parseInt(br.readLine());
+		
+		adj = new LinkedList[N+1];
+		people = new int[N+1];
+		
+		st = new StringTokenizer(br.readLine());
+	
+		for(int i = 1; i <= N; i++) {
+			adj[i] = new LinkedList<>();
+			people[i] = Integer.parseInt(st.nextToken());
+		}
+		
+		for(int i = 1; i <= N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int cnt = Integer.parseInt(st.nextToken());
+			
+			for(int j = 0; j < cnt; j++) {
+				adj[i].add(Integer.parseInt(st.nextToken()));
+			}
+		}
+		
+		for(int i = 1; i <= N/2; i++) {
+			region = new boolean[N+1];
+			dfs(1, 1, i);
+		}
+		
+		if(ans == Integer.MAX_VALUE) ans = -1;
+		
+		System.out.println(ans);
+	}
+}
