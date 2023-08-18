@@ -1,0 +1,92 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {	
+	static int N;
+	static LinkedList<Character> operands;
+	static LinkedList<Integer> nums;
+	static int ans = Integer.MIN_VALUE;
+	static int[] choice;
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();	
+		
+		N = Integer.parseInt(br.readLine());
+		operands = new LinkedList<>();
+		nums = new LinkedList<>();
+		
+		String string = br.readLine();
+		
+		if(N == 1) ans = Integer.parseInt(string);
+		else {
+			for(int idx = 0; idx < string.length(); idx++) {
+				char cur = string.charAt(idx);
+				if(Character.isDigit(cur)) nums.add(cur-'0');
+				else operands.add(cur);
+			}
+			
+			for(int i = 0; i < 1<<N/2; i++) {
+				choice = new int[N/2];
+				LinkedList<Integer> finalNum = new LinkedList<>();
+				LinkedList<Character> finalOper = new LinkedList<>();
+				String binary = Integer.toBinaryString(i);
+				
+				boolean isValidSubset = true;
+				int prev = 0;
+				for(int idx = N/2-binary.length(); idx < N/2; idx++) {
+					choice[idx] = binary.charAt(idx-(N/2-binary.length()))-'0';
+					if(prev == 1 && choice[idx] == 1) {
+						isValidSubset = false;
+						break;
+					}
+					prev = choice[idx];
+				}
+				
+				if(!isValidSubset) continue;
+				
+				boolean isSelected = false;
+				
+				for(int idx = 0; idx < N/2; idx++) {
+					if(choice[idx] == 0) {
+						if(!isSelected) finalNum.add(nums.get(idx));
+						finalOper.add(operands.get(idx));
+						isSelected = false;
+					}
+					if(choice[idx] == 1) {
+						char operand = operands.get(idx);
+						if(operand == '+') {
+							finalNum.add(nums.get(idx) + nums.get(idx+1));
+						}else if(operand == '-') {
+							finalNum.add(nums.get(idx) - nums.get(idx+1));
+						}
+						else if(operand == '*') {
+							finalNum.add(nums.get(idx) * nums.get(idx+1));
+						}
+						isSelected = true;
+					}
+				}
+				finalNum.add(nums.get(nums.size()-1));
+				
+				int sum = finalNum.get(0);
+				
+				for(int idx = 0; idx < finalOper.size(); idx++) {
+					if(finalOper.get(idx) == '+') {
+						sum += finalNum.get(idx+1);
+					}else if(finalOper.get(idx) == '-') {
+						sum -= finalNum.get(idx+1);
+					}
+					else if(finalOper.get(idx) == '*') {
+						sum *= finalNum.get(idx+1);
+					}
+				}
+				ans = Math.max(ans, sum);
+			}
+		}
+		
+		
+		
+		System.out.println(ans);
+	}
+}
