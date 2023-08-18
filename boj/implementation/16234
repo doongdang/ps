@@ -1,0 +1,127 @@
+import java.io.*;
+import java.util.*;
+
+class Pair{
+	int x;
+	int y;
+	public Pair(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main {	
+	static int N;
+	static int L;
+	static int R;
+	static int ans;
+	static int[][] countryPopulation;
+	static int[][] prevPopulation;
+	static int[][] curUnionMap;
+	static boolean[][] vis;
+	static int[] unionPopulation;
+	static int[] unionCnt;
+	static int[] dx = {-1, 0, 1, 0};
+	static int[] dy = {0, -1, 0, 1};
+	static Queue<Pair> queue;
+	
+	public static boolean isChangePopulation() {
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < N; j++) {
+				if(prevPopulation[i][j] != countryPopulation[i][j]) return true;
+			}
+		}
+		return false;
+	}
+	
+	public static void bfs(int x, int y) {
+		queue = new LinkedList<>();
+		queue.offer(new Pair(x, y));
+		vis[x][y] = true;
+		while(!queue.isEmpty()) {
+			Pair cur = queue.poll();
+			for(int dir = 0; dir < 4; dir++) {
+				int nx = cur.x + dx[dir];
+				int ny = cur.y + dy[dir];
+				if(nx < 0 || ny < 0 || nx >= N || ny >= N) continue;
+				if(curUnionMap[nx][ny] == curUnionMap[cur.x][cur.y]) continue;
+				if(Math.abs(countryPopulation[nx][ny] - countryPopulation[cur.x][cur.y]) < L || Math.abs(countryPopulation[nx][ny] - countryPopulation[cur.x][cur.y]) > R) continue;
+				curUnionMap[nx][ny] = curUnionMap[cur.x][cur.y];
+				vis[nx][ny] = true;
+				queue.offer(new Pair(nx, ny));
+			}
+		}
+	}
+	
+	public static void divideAvgPopulation() {
+		unionCnt = new int[N*N];
+		unionPopulation = new int[N*N];
+		
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < N; j++) {
+				unionPopulation[curUnionMap[i][j]] += countryPopulation[i][j];
+				unionCnt[curUnionMap[i][j]] += 1;
+			}
+		}
+		
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < N; j++) {
+				countryPopulation[i][j] = unionPopulation[curUnionMap[i][j]] / unionCnt[curUnionMap[i][j]];
+			}
+		}
+	}
+	
+	public static void initUnion() {
+		for(int i = 0; i < N; i++) {
+			for(int j = 0; j < N; j++) {
+				curUnionMap[i][j] = i*N+j;
+			}
+		}
+	}
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();	
+		
+		st = new StringTokenizer(br.readLine());
+		
+		N = Integer.parseInt(st.nextToken());
+		L = Integer.parseInt(st.nextToken());
+		R = Integer.parseInt(st.nextToken());
+		
+		countryPopulation = new int[N][N];
+		prevPopulation = new int[N][N];
+		curUnionMap = new int[N][N];
+
+		for(int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for(int j = 0; j < N; j++) {
+				countryPopulation[i][j] = Integer.parseInt(st.nextToken());
+				curUnionMap[i][j] = i*N+j;
+			}
+		}
+		
+		while(true) {
+			vis = new boolean[N][N];
+			for(int i = 0; i < N; i++) {
+				for(int j = 0; j < N; j++) {
+					prevPopulation[i][j] = countryPopulation[i][j];
+				}
+			}
+			for(int i = 0; i < N; i++) {
+				for(int j = 0; j < N; j++) {
+					if(!vis[i][j]) {
+						bfs(i, j);
+					}
+				}
+			}
+			divideAvgPopulation();
+			if(!isChangePopulation()) break;
+			initUnion();
+			ans += 1;
+		}
+		
+		System.out.println(ans);
+	}
+}
