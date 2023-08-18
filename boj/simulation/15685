@@ -1,0 +1,74 @@
+import java.io.*;
+import java.util.*;
+
+class Pair {
+	int x;
+	int y;
+	public Pair(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main {
+	static boolean[][] board = new boolean[101][101];
+	static Pair[] operands;
+	static LinkedList<Integer> opList;
+	static int G;
+	public static void recursion(int x, int y, int curG) {
+		if (curG  == G + 1) return;
+
+		int nxtX = x;
+		int nxtY = y;
+		int len = opList.size()-1;
+
+		for(int i = len; i >= 0; i--){
+			nxtX += operands[(opList.get(i)+1)%4].x;
+			nxtY += operands[(opList.get(i)+1)%4].y;
+			board[nxtX][nxtY] = true;
+			opList.add((opList.get(i)+1)%4);
+		}
+
+		recursion(nxtX, nxtY, curG + 1);
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+
+		int N = Integer.parseInt(br.readLine());
+		int ans = 0;
+
+		operands = new Pair[4];
+		operands[0] = new Pair(0, 1);
+		operands[1] = new Pair(-1, 0);
+		operands[2] = new Pair(0, -1);
+		operands[3] = new Pair(1, 0);
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int y = Integer.parseInt(st.nextToken());
+			int x = Integer.parseInt(st.nextToken());
+			int d = Integer.parseInt(st.nextToken());
+			G = Integer.parseInt(st.nextToken());
+
+			opList = new LinkedList<>();
+			opList.add(d);
+			board[x][y] = true;
+			board[x + operands[d].x][y + operands[d].y] = true;
+
+			recursion(x + operands[d].x, y + operands[d].y, 1);
+
+		}
+
+		for (int i = 0; i < 100; i++) {
+			for (int j = 0; j < 100; j++) {
+				if (board[i][j] && board[i][j + 1] && board[i + 1][j] && board[i + 1][j + 1])
+					ans += 1;
+			}
+		}
+
+		System.out.print(ans);
+	}
+}
