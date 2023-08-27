@@ -1,0 +1,125 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+class Pair{
+	int x;
+	int y;
+	public Pair(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main {
+	static int N;
+	static int M;
+	static int H;
+	static int[][] board;
+	static int curX;
+	static int curY;
+	static ArrayList<Pair> ladderList;
+	static int listSize;
+	static int ans;
+	public static void move(){
+		curX += 1;
+
+		while(board[curX][curY-1] != 2 && board[curX][curY+1] != 2 && curX < 2*H){
+			curX += 1;
+		}
+
+		if(board[curX][curY-1] == 2){
+			curY -= 2;
+		}else if(board[curX][curY+1] == 2){
+			curY += 2;
+		}
+	}
+
+	public static void dfs(int depth, int cnt, int choice){
+		if(ans != -1) return;
+		if(choice == cnt){
+			for(int i = 1; i < 2*N; i += 2){
+				curX = 0;
+				curY = i;
+				while(curX < 2*H){
+					move();
+				}
+				if(curY != i){
+					return;
+				}
+			}
+			ans = cnt;
+		}
+
+		for(int i = depth; i < listSize; i++){
+			Pair curChoice = ladderList.get(i);
+			if(board[curChoice.x][curChoice.y-2] == 0 && board[curChoice.x][curChoice.y+2] == 0){
+				board[curChoice.x][curChoice.y] = 2;
+				dfs(i+1, cnt, choice+1);
+				board[curChoice.x][curChoice.y] = 0;
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		H = Integer.parseInt(st.nextToken());
+
+		//홀수 index는 세로 사다리, 짝수 index는 가로 사다리
+		board = new int[2*H+1][2*N+1];
+
+		//세로 사다리 1로 설정
+		for(int i = 0; i <= H; i++){
+			for(int j = 1; j < 2*N; j += 2){
+				board[i][j] = 1;
+			}
+		}
+
+
+		//가로 사다리 입력 및 가로 사다리 2로 설정
+		for(int i = 0; i < M; i++){
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+
+			board[a*2-1][b*2] = 2;
+		}
+
+		ladderList = new ArrayList<>();
+
+		for (int i = 1; i < 2*H; i += 2) {
+			for(int j = 2; j <= 2*N-2; j += 2){
+				if(board[i][j] == 0 && board[i][j-2] == 0 && board[i][j+2] == 0){
+					ladderList.add(new Pair(i, j));
+				}
+			}
+		}
+
+
+		listSize = ladderList.size();
+		ans = -1;
+
+		//현재 가로 사다리 수가 짝수면
+		if(M % 2 == 0){
+			dfs(0, 0, 0);
+			if(ans == -1 && listSize >= 2){
+				dfs(0, 2, 0);
+			}
+		}
+		else{
+			dfs(0, 1, 0);
+			if(ans == -1 && listSize >= 3){
+				dfs(0, 3, 0);
+			}
+		}
+
+		System.out.println(ans);
+	}
+}
