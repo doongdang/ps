@@ -1,0 +1,47 @@
+import java.io.*;
+import java.util.*;
+
+public class Main  {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		StringBuilder sb = new StringBuilder();
+		
+		int T = Integer.parseInt(br.readLine());
+		
+		for(int test = 0; test < T; test++) {
+			st = new StringTokenizer(br.readLine());
+			
+			int x1 = Integer.parseInt(st.nextToken());
+			int y1 = Integer.parseInt(st.nextToken());
+			int r1 = Integer.parseInt(st.nextToken());
+			int x2 = Integer.parseInt(st.nextToken());
+			int y2 = Integer.parseInt(st.nextToken());
+			int r2 = Integer.parseInt(st.nextToken());
+
+			double maxR = Math.max(r1, r2);
+			double minR = Math.min(r1, r2);
+			double dist = Math.sqrt(Math.pow((x1-x2), 2) + Math.pow((y1-y2), 2));
+			
+			//두 원의 접점이 무한대인 경우(동심원에 반지름까지 같은 경우)
+			if(x1 == x2 && y1 == y2 && minR == maxR) {
+				sb.append(-1);
+			}
+			//두 원의 접점이 1개인 경우(맞닿는 경우)
+			else if(maxR + minR == dist || maxR == minR + dist) {
+				sb.append(1);
+			}
+			//두 원의 접점이 2개인 경우(교차하는 경우)
+			else if(maxR + minR > dist && maxR < minR + dist) {
+				sb.append(2);
+			}
+			//두 원의 접점이 없는 경우(닿을 수 없는 경우)
+			else if(maxR + minR < dist || maxR > minR+dist) {
+				sb.append(0);
+			}
+			sb.append("\n");
+			
+		}
+		System.out.println(sb);
+	}
+}
