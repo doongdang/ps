@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    public int minDeletions(String s) {        
+        HashMap<Character, Integer> alphabetCnt = new HashMap<>();
+        HashMap<Integer, Integer> cntExist = new HashMap<>();
+
+        int ans = 0;
+
+        for(int i = 0; i < s.length(); i++){
+            alphabetCnt.put(s.charAt(i), alphabetCnt.getOrDefault(s.charAt(i), 0) + 1);
+        }
+
+        for(Map.Entry<Character, Integer> entry : alphabetCnt.entrySet()){
+            cntExist.put(entry.getValue(), cntExist.getOrDefault(entry.getValue(), 0) + 1);
+        }
+
+        for(Map.Entry<Character, Integer> entry : alphabetCnt.entrySet()){
+            if(cntExist.get(entry.getValue()) <= 1) continue;
+
+            boolean flag = false;
+
+            for(int i = entry.getValue()-1; i >= 1; i--){
+                if(!cntExist.containsKey(i) || cntExist.get(i) == 0){
+                    ans += entry.getValue() - i;
+
+                    cntExist.put(i, 1);
+                    flag = true;
+                    break;
+                }
+            }
+
+            if(!flag){
+                ans += entry.getValue();
+            }
+            
+            cntExist.put(entry.getValue(), cntExist.get(entry.getValue())-1);
+        }
+
+        return ans;
+    }
+}
