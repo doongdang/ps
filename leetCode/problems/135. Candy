@@ -1,0 +1,49 @@
+import java.util.*;
+
+class Solution {
+    public int candy(int[] ratings) {
+        int len = ratings.length;
+        int[] fromLeftCnts = new int[len];
+        int[] fromRightCnts = new int[len];
+        int[] cnts = new int[len];
+
+        int prev = ratings[0];
+        int idx = 1;
+
+        fromLeftCnts[0] = 1;
+
+        while(idx < len){
+            if(prev < ratings[idx]){
+                fromLeftCnts[idx] = fromLeftCnts[idx-1] + 1; 
+            }else{
+                fromLeftCnts[idx] = 1;
+            }
+
+            prev = ratings[idx];
+            idx++;
+        }
+
+        idx = len-2;
+        prev = ratings[len-1];
+        fromRightCnts[len-1] = 1;
+
+        while(idx >= 0){
+            if(prev < ratings[idx]){
+                fromRightCnts[idx] = fromRightCnts[idx+1] + 1; 
+            }else{
+                fromRightCnts[idx] = 1;
+            }
+
+            prev = ratings[idx];
+            idx--;
+        }
+
+        int ans = 0;
+
+        for(int i = 0; i < len; i++){
+            ans += Math.max(fromLeftCnts[i], fromRightCnts[i]);
+        }
+
+        return ans;
+    }
+}
