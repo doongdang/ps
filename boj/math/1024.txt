@@ -1,0 +1,49 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.StringTokenizer;
+
+public class Main{
+
+    //std(수열의 시작점이 되는 수)부터 length(정답인 수열의 길이)만큼 정답 리스트에 숫자 추가
+	public static void addNumber(int length, int std, LinkedList<Integer> ans){
+		for (int i = 0; i < length; i++) {
+			ans.add(std+i);
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int N = Integer.parseInt(st.nextToken());
+		int L = Integer.parseInt(st.nextToken());
+
+		LinkedList<Integer> ans = new LinkedList<>();
+
+		loop:
+		for (int i = L; i <= 100; i++) { //정답이 될 수 있는 수열의 길이는 L이상 100이하 이다.
+			int x = N/i; //수열의 시작 수가 될 수 있는 최대 크기는 N을 현재 수열의 길이 i로 나눈 곳까지.
+			int start = Math.max(0, x-i); //수열의 시작 수가 될 수 있는 최소 크기는 x-i가 음수면 0, 아니면 x-i이다.
+			for (int j = start; j <= x; j++) { //수열의 시작 수 범위(start ~ x)를 순회하며 합 공식인 2j+i-1/2 * i가 N이면 정답.
+				if((2*j+i-1)*i/2 == N){
+					addNumber(i, j, ans);
+					break loop;
+				}
+			}
+		}
+
+		if(ans.isEmpty()) {
+			System.out.println(-1);
+			return;
+		}
+
+		for (Integer num : ans) {
+			sb.append(num).append(" ");
+		}
+		System.out.println(sb);
+	}
+}
+
