@@ -1,3 +1,4 @@
+//Solution  1. (숫자 등장 횟수 counting + DP)
 import java.util.*;
 
 class Solution {
@@ -26,6 +27,36 @@ class Solution {
             }
 
             ans += dp[cnt];
+        }
+
+        return ans;
+    }
+}
+
+
+//Solution 2. (숫자 등장 횟수 세기 + 수리적 발상)
+//결국 1을 제외한 모든 숫자는 2와 3의 구성으로 만들 수 있다.
+//4(2+2)에서 1을 증가한 5를 만들기 위해서는 (2+2)의 2 중 하나를 골라 3으로 만들어주면 된다.
+class Solution {
+    public int minOperations(int[] nums) {
+        int[] cnts = new int[1000001];
+
+        for(int num : nums) {
+            cnts[num]++;
+        }
+
+        int ans = 0;
+
+        for(int cnt : cnts){
+            if(cnt == 1) {
+                return -1;
+            }
+
+            if(cnt % 3 == 0){
+                ans += cnt/3;
+            }else{
+                ans += cnt/3 + 1;
+            }
         }
 
         return ans;
