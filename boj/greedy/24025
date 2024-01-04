@@ -1,0 +1,42 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st;
+
+		int N = Integer.parseInt(br.readLine());
+		st = new StringTokenizer(br.readLine());
+
+		int[] A = new int[N];
+
+		for (int i = 0; i < N; i++) {
+			A[i] = Integer.parseInt(st.nextToken());
+		}
+
+		//만약 A[N-1]이 음수이면, A[N-1]의 시야는 무조건 10^9이기 때문에 성립할 수 없다.
+		if(A[N-1] < 0) {
+			System.out.println(-1);
+			return;
+		}
+
+		int bottom = 1;
+		int top = N;
+
+		for (int i = 0; i < N-1; i++) {
+			if(A[i] < 0){
+				sb.append(bottom++).append(" ");
+			}else{
+				sb.append(top--).append(" ");
+			}
+		}
+
+		sb.append(top);
+
+		System.out.println(sb);
+	}
+}
