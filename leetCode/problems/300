@@ -1,0 +1,31 @@
+import java.util.*;
+
+//이분탐색을 이용한 O(NlogN)의 LIS
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        int[] arr = new int[nums.length];
+        int ans = 0;
+
+        Arrays.fill(arr, Integer.MAX_VALUE);
+        arr[0] = nums[0];
+
+        for(int i = 1; i < nums.length; i++){
+            int idx = Arrays.binarySearch(arr, nums[i]);
+
+            if(idx < 0){
+                idx = (idx + 1) * -1;
+            }
+
+            arr[idx] = nums[i];
+        }
+
+        for(int i = 0; i < nums.length; i++){
+            if(arr[i] == Integer.MAX_VALUE){
+                break;
+            }
+            ans++;
+        }
+
+        return ans;
+    }
+}
