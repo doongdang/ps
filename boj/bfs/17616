@@ -1,0 +1,77 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st;
+
+		st = new StringTokenizer(br.readLine());
+
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+		int X = Integer.parseInt(st.nextToken());
+
+		LinkedList<Integer>[] frontAdj = new LinkedList[N+1];
+		LinkedList<Integer>[] backAdj = new LinkedList[N+1];
+
+		for (int i = 1; i <= N; i++) {
+			frontAdj[i] = new LinkedList<>();
+			backAdj[i] = new LinkedList<>();
+		}
+
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			int A = Integer.parseInt(st.nextToken());
+			int B = Integer.parseInt(st.nextToken());
+
+			backAdj[A].add(B);
+			frontAdj[B].add(A);
+		}
+
+		boolean[] vis = new boolean[N+1];
+		Queue<Integer> queue = new LinkedList<>();
+
+		int front = 0;
+		int back = 0;
+
+		//X의 앞에 있는 학생 수
+		queue.offer(X);
+
+		while(!queue.isEmpty()){
+			int cur = queue.poll();
+
+			for (int nxt : frontAdj[cur]){
+				if(vis[nxt]) continue;
+				queue.offer(nxt);
+				vis[nxt] = true;
+				front++;
+			}
+		}
+
+		vis = new boolean[N+1];
+		queue.offer(X);
+
+		//X의 뒤에 있는 학생 수
+
+		while(!queue.isEmpty()){
+			int cur = queue.poll();
+
+			for (int nxt : backAdj[cur]){
+				if(vis[nxt]) continue;
+				queue.offer(nxt);
+				vis[nxt] = true;
+				back++;
+			}
+		}
+
+		int U = front + 1;
+		int V = N - back;
+
+		System.out.println(U + " " + V);
+	}
+}
