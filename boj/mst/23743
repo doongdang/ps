@@ -1,0 +1,81 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+class Pair {
+	int dest;
+	int cost;
+
+	public Pair(int dest, int cost) {
+		this.dest = dest;
+		this.cost = cost;
+	}
+}
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st;
+
+		st = new StringTokenizer(br.readLine());
+
+		int N = Integer.parseInt(st.nextToken());
+		int M = Integer.parseInt(st.nextToken());
+
+		List<Pair>[] adj = new LinkedList[N+1];
+
+		for (int i = 0; i <= N; i++) {
+			adj[i] = new LinkedList<>();
+		}
+
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
+
+			adj[a].add(new Pair(b, c));
+			adj[b].add(new Pair(a, c));
+		}
+
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 1; i <= N; i++) {
+			int c = Integer.parseInt(st.nextToken());
+
+			adj[0].add(new Pair(i, c));
+			adj[i].add(new Pair(0, c));
+		}
+
+		boolean[] vis = new boolean[N+1];
+		PriorityQueue<Pair> pq = new PriorityQueue<>((p1, p2) -> p1.cost - p2.cost);
+
+		vis[0] = true;
+		for (Pair nxt : adj[0]) {
+			pq.offer(nxt);
+		}
+
+		int cnt = 0;
+		int ans = 0;
+
+		while(!pq.isEmpty() && cnt != N){
+			Pair cur = pq.poll();
+
+			if(vis[cur.dest]) continue;
+
+			vis[cur.dest] = true;
+			ans += cur.cost;
+			cnt += 1;
+
+			for (Pair nxt : adj[cur.dest]) {
+				if(vis[nxt.dest]) continue;
+				pq.offer(nxt);
+			}
+		}
+
+		System.out.println(ans);
+	}
+}
