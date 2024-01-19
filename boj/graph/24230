@@ -1,0 +1,82 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+class Pair{
+	int parent;
+	int cur;
+
+	public Pair(int parent, int cur) {
+		this.parent = parent;
+		this.cur = cur;
+	}
+}
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		StringTokenizer st;
+
+		int N = Integer.parseInt(br.readLine());
+
+		st = new StringTokenizer(br.readLine());
+
+		int[] C = new int[N+1];
+		LinkedList<Integer>[] adj = new LinkedList[N+1];
+
+		for (int i = 1; i <= N; i++) {
+			adj[i] = new LinkedList<>();
+			C[i] = Integer.parseInt(st.nextToken());
+		}
+
+		for (int i = 0; i < N-1; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+
+			adj[a].add(b);
+			adj[b].add(a);
+		}
+
+		int[] currentColor = new int[N+1];
+		boolean[] vis = new boolean[N+1];
+		Queue<Pair> queue = new LinkedList<>();
+		int ans = 0;
+
+		vis[1] = true;
+		queue.offer(new Pair(0, 1));
+		C[0] = C[1];
+		currentColor[0] = C[1];
+
+		if(currentColor[1] != C[1]){
+			currentColor[1] = C[1];
+			ans += 1;
+		}
+
+
+		while(!queue.isEmpty()){
+			Pair curNode = queue.poll();
+
+			if(currentColor[curNode.parent] != currentColor[curNode.cur]){
+				currentColor[curNode.cur] = currentColor[curNode.parent];
+			}
+
+			if(currentColor[curNode.cur] != C[curNode.cur]){
+				currentColor[curNode.cur] = C[curNode.cur];
+				ans += 1;
+			}
+
+			for (int nxt : adj[curNode.cur]) {
+				if(vis[nxt]) continue;
+
+				vis[nxt] = true;
+				queue.offer(new Pair(curNode.cur, nxt));
+			}
+		}
+
+		System.out.println(ans);
+	}
+}
