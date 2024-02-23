@@ -1,0 +1,23 @@
+class Solution {
+
+    public int[] solution(String s) {
+        int[] answer = new int[2];
+        StringBuilder sb = new StringBuilder(s);
+
+        while(!sb.toString().equals("1")){
+            StringBuilder convert = new StringBuilder();
+            for(int i = 0; i < sb.length(); i++){
+                if(sb.charAt(i) == '0'){
+                    answer[1]++;
+                }else{
+                    convert.append(sb.charAt(i));
+                }
+            }
+
+            sb = new StringBuilder(Integer.toBinaryString(convert.length()));
+            answer[0]++;
+        }
+
+        return answer;
+    }
+}
