@@ -1,0 +1,24 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int k, int[] tangerine) {
+        int answer = 0;
+        int sum = 0;
+        int[] cnts = new int[10000001];
+
+        for(int t : tangerine) {
+            cnts[t]++;
+        }
+
+        Arrays.sort(cnts);
+
+
+        for(int i = 10000000; i >= 0; i--) {
+            if(sum >= k) break;
+            sum += cnts[i];
+            answer += 1;
+        }
+
+        return answer;
+    }
+}
