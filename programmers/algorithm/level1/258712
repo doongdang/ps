@@ -1,0 +1,79 @@
+import java.util.*;
+
+class Solution {
+    HashMap<String, Integer> nameToIdx;
+    int[][] presentTrade;
+    int[] presentIndex;
+    int[] nextMonthPresent;
+
+    public void generateMappingTable(String[] friends){
+        for(int i = 0; i < friends.length; i++){
+            nameToIdx.put(friends[i], i);
+        }
+    }
+
+    public void fillPresentTrade(String[] gifts){
+        //presentTrade[i][j] => i가 j에게 선물을 준 경우
+        for(String gift : gifts){
+            String[] people = gift.split(" ");
+            presentTrade[nameToIdx.get(people[0])][nameToIdx.get(people[1])]++;
+        }
+    }
+
+    public void fillPresentIndex(){
+        for(int i = 0; i < presentIndex.length; i++){
+            int give = 0;
+            int receive = 0;
+
+            for(int j = 0; j < presentIndex.length; j++){
+                give += presentTrade[i][j];
+            }
+
+            for(int j = 0; j < presentIndex.length; j++){
+                receive += presentTrade[j][i];
+            }
+
+            presentIndex[i] = give - receive;
+        }
+    }
+
+    public int calculateNextMonthPresent(){
+        int maxPresent = 0;
+
+        for(int i = 0; i < presentIndex.length; i++){
+            for(int j = i+1; j < presentIndex.length; j++){
+                if(presentTrade[i][j] > presentTrade[j][i]){
+                    nextMonthPresent[i]++;
+                }else if(presentTrade[i][j] < presentTrade[j][i]){
+                    nextMonthPresent[j]++;
+                }else{
+                    if(presentIndex[i] > presentIndex[j]){
+                        nextMonthPresent[i]++;
+                    }else if(presentIndex[i] < presentIndex[j]){
+                        nextMonthPresent[j]++;
+                    }
+                }
+
+                maxPresent = Integer.max(Integer.max(nextMonthPresent[i], nextMonthPresent[j]), maxPresent);
+            }
+        }
+
+        return maxPresent;
+    }
+
+    public int solution(String[] friends, String[] gifts) {
+        int answer = 0;
+
+        nameToIdx = new HashMap<>();
+        presentTrade = new int[friends.length][friends.length];
+        presentIndex = new int[friends.length];
+        nextMonthPresent = new int[friends.length];
+
+        generateMappingTable(friends);
+        fillPresentTrade(gifts);
+        fillPresentIndex();
+        answer = calculateNextMonthPresent();
+
+        return answer;
+    }
+}
