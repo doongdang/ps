@@ -1,0 +1,28 @@
+import java.util.*;
+
+class Solution {
+    Set<Integer> sumSet;
+
+    public void addSum (int[] elements, int len, int size) {
+        for(int i = 0; i < size; i++) {
+            int sum = 0;
+            for(int j = i; j < i+len; j++) {
+                sum += elements[j%size];
+            }
+            sumSet.add(sum);
+        }
+    }
+
+    public int solution(int[] elements) {
+        int answer = 0;
+        sumSet = new HashSet<>();
+
+        for(int i = 1; i <= elements.length; i++) {
+            addSum(elements, i, elements.length);
+        }
+
+        answer = sumSet.size();
+
+        return answer;
+    }
+}
