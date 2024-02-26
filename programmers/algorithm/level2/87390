@@ -1,0 +1,15 @@
+class Solution {
+    public int[] solution(int n, long left, long right) {
+        int size = (int)(right - left + 1);
+        int[] answer = new int[size];
+
+        for(int i = 0; i < size; i++) {
+            int row = (int)((left + i) / n);
+            int col = (int)((left + i) % n);
+
+            answer[i] = col < row + 1 ? row + 1 : col + 1;
+        }
+
+        return answer;
+    }
+}
