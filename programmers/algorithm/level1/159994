@@ -1,0 +1,35 @@
+class Solution {
+    public String solution(String[] cards1, String[] cards2, String[] goal) {
+        int cards1Idx = 0;
+        int cards2Idx = 0;
+        int goalIdx = 0;
+
+        while(goalIdx < goal.length) {
+            if(cards1Idx == cards1.length) {
+                if(cards2[cards2Idx].equals(goal[goalIdx])){
+                    cards2Idx++;
+                }else{
+                    return "No";
+                }
+            }else if(cards2Idx == cards2.length) {
+                if(cards1[cards1Idx].equals(goal[goalIdx])){
+                    cards1Idx++;
+                }else{
+                    return "No";
+                }
+            }else{
+                if(cards1[cards1Idx].equals(goal[goalIdx])){
+                    cards1Idx++;
+                }else if(cards2[cards2Idx].equals(goal[goalIdx])){
+                    cards2Idx++;
+                }else{
+                    return "No";
+                }
+            }
+
+            goalIdx++;
+        }
+
+        return "Yes";
+    }
+}
