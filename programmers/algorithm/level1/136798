@@ -1,0 +1,32 @@
+class Solution {
+    public int getCnt(int num) {
+        int cnt = 0;
+
+        if(Math.sqrt(num) % 1 == 0) {
+            cnt++;
+        }
+
+        int std = (int)Math.sqrt(num);
+
+        for(int i = 1; i <= std; i++) {
+            if(num % i == 0) {
+                if(num / i == std) continue;
+                cnt += 2;
+            }
+        }
+
+        return cnt;
+    }
+
+    public int solution(int number, int limit, int power) {
+        int answer = 0;
+
+        for(int i = 1; i <= number; i++) {
+            int cnt = getCnt(i);
+            int iron = cnt > limit ? power : cnt;
+            answer += iron;
+        }
+
+        return answer;
+    }
+}
