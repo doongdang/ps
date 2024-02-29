@@ -1,0 +1,86 @@
+import java.util.*;
+
+class Solution {
+    char[] friends = {'A', 'C', 'F', 'J', 'M', 'N', 'R', 'T'};
+    Map<Character, Integer> idxMap;
+    int answer;
+    public void dfs(int cur, String[] data) {
+        if(!isPossibleOrder(data)) {
+            return;
+        }
+
+        if(cur == 8) {
+            answer++;
+            return;
+        }
+
+        for(int i = 0; i < 8; i++) {
+            if(idxMap.get(friends[i]) != -1) {
+                continue;
+            }
+
+            idxMap.put(friends[i], cur);
+            dfs(cur+1, data);
+            idxMap.put(friends[i], -1);
+        }
+
+    }
+
+    public boolean isPossibleOrder(String[] data) {
+
+        for(String d : data) {
+            char request = d.charAt(0);
+            char target = d.charAt(2);
+            char condition = d.charAt(3);
+            int diff = d.charAt(4) - '0';
+            int requestIdx = idxMap.get(request);
+            int targetIdx = idxMap.get(target);
+
+            if(requestIdx == -1 || targetIdx == -1) {
+                continue;
+            }
+
+            switch(condition) {
+                case '<' :
+                    if(!(Math.abs(requestIdx-targetIdx) < diff+1)) {
+                        return false;
+                    }
+                    break;
+
+                case '=' :
+                    if(!(Math.abs(requestIdx-targetIdx) == diff+1)) {
+                        return false;
+                    }
+                    break;
+                case '>' :
+                    if(!(Math.abs(requestIdx-targetIdx) > diff+1)) {
+                        return false;
+                    }
+                    break;
+            }
+
+        }
+
+        return true;
+    }
+
+    public void init() {
+        idxMap = new HashMap<>();
+        idxMap.put('A', -1);
+        idxMap.put('C', -1);
+        idxMap.put('F', -1);
+        idxMap.put('J', -1);
+        idxMap.put('M', -1);
+        idxMap.put('N', -1);
+        idxMap.put('R', -1);
+        idxMap.put('T', -1);
+    }
+
+    public int solution(int n, String[] data) {
+        answer = 0;
+        init();
+        dfs(0, data);
+
+        return answer;
+    }
+}
