@@ -1,0 +1,72 @@
+import java.util.*;
+
+class Solution {
+
+    public List<String> getSubset(String str) {
+        List<String> subSet = new ArrayList<>();
+
+        for(int i = 0; i < str.length()-1; i++) {
+            String subStr = str.substring(i, i+2);
+
+            if(
+                !Character.isAlphabetic(subStr.charAt(0)) ||
+                !Character.isAlphabetic(subStr.charAt(1))
+              ) {
+                continue;
+            }
+
+            subSet.add(subStr.toLowerCase());
+        }
+
+        return subSet;
+    }
+
+    public int solution(String str1, String str2) {
+        int answer = 0;
+
+        List<String> subStr1 = getSubset(str1);
+        List<String> subStr2 = getSubset(str2);
+        List<String> inter = new LinkedList<>();
+        List<String> outer = new LinkedList<>();
+
+        boolean[] isVis1 = new boolean[subStr1.size()];
+        boolean[] isVis2 = new boolean[subStr2.size()];
+
+        for(int i = 0; i < subStr1.size(); i++) {
+            if(isVis1[i]) continue;
+
+            for(int j = 0; j < subStr2.size(); j++) {
+                if(isVis2[j]) continue;
+
+                if(subStr1.get(i).equals(subStr2.get(j))) {
+                    inter.add(subStr1.get(i));
+                    outer.add(subStr1.get(i));
+                    isVis1[i] = true;
+                    isVis2[j] = true;
+                    break;
+                }
+            }
+        }
+
+        for(int i = 0; i < subStr1.size(); i++) {
+            if(!isVis1[i]) {
+                outer.add(subStr1.get(i));
+            }
+        }
+
+        for(int i = 0; i < subStr2.size(); i++) {
+            if(!isVis2[i]) {
+                outer.add(subStr2.get(i));
+            }
+        }
+
+        if(outer.size() == 0) {
+            return 65536;
+        }
+
+        double zakard = (double) inter.size() / outer.size();
+        answer = (int)((zakard * 65536) / 1);
+
+        return answer;
+    }
+}
