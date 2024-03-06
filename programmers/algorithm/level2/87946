@@ -1,0 +1,29 @@
+class Solution {
+    int answer;
+    boolean[] vis;
+
+    public void dfs(int curLoc, int curStat, int cnt, int[][] dungeons) {
+        if(curLoc == dungeons.length) {
+            answer = Math.max(answer, cnt);
+            return;
+        }
+
+        for(int i = 0; i < dungeons.length; i++) {
+            if(vis[i]) continue;
+            if(curStat < dungeons[i][0]) continue;
+            vis[i] = true;
+            dfs(curLoc+1, curStat - dungeons[i][1], cnt+1, dungeons);
+            vis[i] = false;
+        }
+
+        answer = Math.max(answer, cnt);
+    }
+
+    public int solution(int k, int[][] dungeons) {
+        vis = new boolean[dungeons.length];
+
+        dfs(0, k, 0, dungeons);
+
+        return answer;
+    }
+}
