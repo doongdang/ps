@@ -1,0 +1,55 @@
+import java.util.*;
+
+class Solution {
+    public boolean isPrime(Long num){
+        for(int i = 2; i <= (int)Math.sqrt(num); i++){
+            if(num % i == 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    public int solution(int n, int k) {
+        int answer = 0;
+        String kStr = Integer.toString(n, k);
+        List<Long> numList = new ArrayList<>();
+
+        char st = kStr.charAt(0);
+        int stIdx = 0;
+
+        for(int i = 1; i < kStr.length(); i++){
+            char cur = kStr.charAt(i);
+
+            if(st != '0' && cur != '0'){
+                continue;
+            }else if(st != '0' && cur == '0'){
+                numList.add(Long.parseLong(kStr.substring(stIdx, i)));
+                st = cur;
+                stIdx = i;
+            }else if(st == '0' && cur != '0'){
+                st = cur;
+                stIdx = i;
+            }else{
+                continue;
+            }
+        }
+
+        if(st != '0'){
+            numList.add(Long.parseLong(kStr.substring(stIdx, kStr.length())));
+        }
+
+        for(Long num : numList){
+            if(num == 1) continue;
+            if(isPrime(num)){
+                answer++;
+            }
+        }
+
+
+
+        return answer;
+    }
+}
