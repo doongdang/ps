@@ -1,0 +1,20 @@
+class Solution {
+    public String solution(int n, int t, int m, int p) {
+        int minStrLen = t*m;
+        StringBuilder numStr = new StringBuilder();
+        int num = 0;
+
+        while(numStr.length() < minStrLen){
+            numStr.append(Integer.toString(num, n));
+            num++;
+        }
+
+        StringBuilder answer = new StringBuilder();
+
+        for(int i = 0; i < t; i++){
+            answer.append(numStr.charAt((p-1) + m*i));
+        }
+
+        return answer.toString().toUpperCase();
+    }
+}
