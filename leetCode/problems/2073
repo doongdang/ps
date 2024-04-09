@@ -1,0 +1,38 @@
+import java.util.*;
+
+class Pair{
+    int idx;
+    int rest;
+
+    public Pair(int idx, int rest){
+        this.idx = idx;
+        this.rest = rest;
+    }
+}
+
+class Solution {
+    public int timeRequiredToBuy(int[] tickets, int k) {
+        int answer = 0;
+        Queue<Pair> queue = new ArrayDeque<>();
+        for(int i = 0; i < tickets.length; i++) {
+            queue.offer(new Pair(i, tickets[i]));
+        }
+
+        while(!queue.isEmpty()){
+            Pair first = queue.poll();
+
+
+            if(first.rest > 0){
+                first.rest--;
+                answer++;
+
+                if(first.idx == k && first.rest == 0){
+                    return answer;
+                }
+                queue.offer(first);
+            }
+        }
+
+        return 0;
+    }
+}
