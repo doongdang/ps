@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    public List<Integer> solution(String msg) {
+        List<Integer> answer = new LinkedList<>();
+
+        Map<String, Integer> index = new HashMap<>();
+        for(int i = 0; i < 26; i++){
+            index.put(String.valueOf((char)(65+i)), i+1);
+        }
+
+        int idx = 0;
+        int lastIndex = 27;
+        StringBuilder sb;
+
+        for(int i = 0; i < msg.length(); i++){
+            for(int j = i+1; j <= msg.length(); j++){
+                String sub = msg.substring(i, j);
+                if(index.containsKey(sub)){
+                    continue;
+                }
+                answer.add(index.get(msg.substring(i, j-1)));
+                index.put(sub, lastIndex++);
+                i = j-1;
+                idx = i;
+            }
+        }
+
+        answer.add(index.get(msg.substring(idx, msg.length())));
+
+        return answer;
+    }
+}
