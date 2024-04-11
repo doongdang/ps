@@ -1,0 +1,30 @@
+import java.util.*;
+
+class Solution {
+    public int[] deckRevealedIncreasing(int[] deck) {
+        int size = deck.length;
+        int[] answer = new int[size];
+        int idx = 0;
+        Queue<Integer> queue = new ArrayDeque<>();
+
+        Arrays.sort(deck);
+
+        for(int i = 0; i < size; i++){
+            queue.offer(i);
+        }
+
+        while(!queue.isEmpty()){
+            int targetIdx = queue.poll();
+            answer[targetIdx] = deck[idx];
+
+            if(!queue.isEmpty()){
+                int passIdx = queue.poll();
+                queue.offer(passIdx);
+            }
+
+            idx++;
+        }
+
+        return answer;
+    }
+}
