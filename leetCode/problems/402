@@ -1,0 +1,39 @@
+import java.util.*;
+
+class Solution {
+    public String removeKdigits(String num, int k) {
+        Deque<Character> monotone = new ArrayDeque<>();
+
+        for (int i = 0; i < num.length(); i++) {
+            char cur = num.charAt(i);
+
+            while(!monotone.isEmpty() && k > 0 && monotone.peekLast() > cur){
+                monotone.pollLast();
+                k--;
+            }
+
+            monotone.offerLast(cur);
+        }
+
+        while(k > 0){
+            monotone.pollLast();
+            k--;
+        }
+
+        while(!monotone.isEmpty() && monotone.peekFirst() == '0'){
+            monotone.pollFirst();
+        }
+
+        if(monotone.size() == 0){
+            return "0";
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        while(!monotone.isEmpty()){
+            sb.append(monotone.pollFirst());
+        }
+
+        return sb.toString();
+    }
+}
