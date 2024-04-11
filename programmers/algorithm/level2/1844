@@ -1,0 +1,51 @@
+import java.util.*;
+
+class Solution {
+    int[][] dist;
+    int[] dx = {-1, 0, 1, 0};
+    int[] dy = {0, -1, 0, 1};
+    int rows;
+    int cols;
+
+    public int bfs(int[][] maps){
+        Queue<int[]> queue = new LinkedList<>();
+        dist[0][0] = 1;
+        queue.offer(new int[]{0, 0});
+
+        while(!queue.isEmpty()){
+            int[] cur = queue.poll();
+
+            for(int dir = 0; dir < 4; dir++){
+                int nx = cur[0] + dx[dir];
+                int ny = cur[1] + dy[dir];
+
+                if(nx < 0 || ny < 0 || nx >= rows || ny >= cols) continue;
+                if(dist[nx][ny] != -1 || maps[nx][ny] == 0) continue;
+
+                dist[nx][ny] = dist[cur[0]][cur[1]] + 1;
+
+                if(nx == rows-1 && ny == cols-1){
+                    return dist[nx][ny];
+                }
+
+                queue.offer(new int[]{nx, ny});
+            }
+        }
+        return -1;
+    }
+
+    public int solution(int[][] maps) {
+
+        rows = maps.length;
+        cols = maps[0].length;
+        dist = new int[rows][cols];
+
+        for(int row = 0; row < rows; row++){
+            Arrays.fill(dist[row], -1);
+        }
+
+        int answer = bfs(maps);
+
+        return answer;
+    }
+}
