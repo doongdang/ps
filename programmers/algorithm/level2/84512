@@ -1,0 +1,61 @@
+import java.util.*;
+
+class Solution {
+    public int solution(String word) {
+        int answer = 0;
+        char[] alphabets = {'A', 'E', 'I', 'O', 'U'};
+        List<String> list = new ArrayList<>();
+
+        for(int a = 0; a < 5; a++){
+            StringBuilder sb = new StringBuilder();
+            sb.append(alphabets[a]);
+            list.add(sb.toString());
+
+            for(int b = 0; b < 5; b++){
+                if(b != 0){
+                    sb.deleteCharAt(sb.length()-1);
+                }
+                sb.append(alphabets[b]);
+                list.add(sb.toString());
+
+                for(int c = 0; c < 5; c++){
+                    if(c != 0){
+                        sb.deleteCharAt(sb.length()-1);
+                    }
+                    sb.append(alphabets[c]);
+                    list.add(sb.toString());
+
+                    for(int d = 0; d < 5; d++){
+                        if(d != 0){
+                            sb.deleteCharAt(sb.length()-1);
+                        }
+                        sb.append(alphabets[d]);
+                        list.add(sb.toString());
+
+                        for(int e = 0; e < 5; e++){
+                            if(e != 0){
+                                sb.deleteCharAt(sb.length()-1);
+                            }
+                            sb.append(alphabets[e]);
+                            list.add(sb.toString());
+                        }
+                        sb.deleteCharAt(sb.length()-1);
+                    }
+                    sb.deleteCharAt(sb.length()-1);
+                }
+                sb.deleteCharAt(sb.length()-1);
+            }
+            sb.deleteCharAt(sb.length()-1);
+        }
+
+        for(String str : list){
+            answer++;
+
+            if(word.equals(str)){
+                break;
+            }
+        }
+
+        return answer;
+    }
+}
