@@ -1,0 +1,48 @@
+import java.util.*;
+
+class Solution {
+    public int trap(int[] height) {
+        int answer = 0;
+        List<int[]> removeIdx = new ArrayList<>();
+
+        //왼쪽 -> 오른쪽 탐색
+        int start = height[0];
+        int startIdx = 0;
+
+        for(int i = 1; i < height.length; i++){
+            if(start <= height[i]){
+                if(i - startIdx > 1){
+                    removeIdx.add(new int[]{startIdx+1, i-1});
+                }
+
+                answer += start*(i-1-startIdx);
+                start = height[i];
+                startIdx = i;
+            }
+        }
+
+        //왼쪽 <- 오른쪽 탐색
+        start = height[height.length-1];
+        startIdx = height.length-1;
+
+        for(int i = height.length-2; i >= 0; i--){
+            if(start < height[i]){
+                if(startIdx - i > 1){
+                    removeIdx.add(new int[]{i+1, startIdx-1});
+                }
+
+                answer += start*(startIdx-1-i);
+                start = height[i];
+                startIdx = i;
+            }
+        }
+
+        for(int[] range : removeIdx){
+            for(int idx = range[0]; idx <= range[1]; idx++){
+                answer -= height[idx];
+            }
+        }
+
+        return answer;
+    }
+}
