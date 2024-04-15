@@ -1,0 +1,73 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+public class Main {
+	int n;
+	List<int[]>[] adj;
+	int[] dist;
+	int[] diameterPoint;
+	int answer;
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		n = Integer.parseInt(br.readLine());
+		adj = new List[n+1];
+		diameterPoint = new int[]{1, 0};
+		dist = new int[n+1];
+
+		for (int i = 1; i <= n; i++) {
+			adj[i] = new ArrayList<>();
+		}
+
+		for (int i = 0; i < n-1; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
+
+			adj[a].add(new int[]{b, c});
+			adj[b].add(new int[]{a, c});
+		}
+	}
+
+	public void bfs(int start){
+		Arrays.fill(dist, -1);
+		Queue<Integer> queue = new ArrayDeque<>();
+		queue.offer(start);
+		dist[start] = 0;
+
+		while(!queue.isEmpty()){
+			Integer cur = queue.poll();
+
+			for (int[] nxt : adj[cur]) {
+				if(dist[nxt[0]] != -1) continue;
+
+				dist[nxt[0]] = dist[cur] + nxt[1];
+				queue.offer(nxt[0]);
+
+				if(diameterPoint[1] < dist[nxt[0]]){
+					diameterPoint[0] = nxt[0];
+					diameterPoint[1] = dist[nxt[0]];
+				}
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.bfs(1);
+		m.bfs(m.diameterPoint[0]);
+		m.answer = m.diameterPoint[1];
+
+		System.out.println(m.answer);
+	}
+}
