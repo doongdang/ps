@@ -1,0 +1,70 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringTokenizer;
+
+public class Main {
+    int N, M;
+    int[] trains;
+    Set<Integer> set;
+
+    public void init() throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+
+        trains = new int[N + 1];
+
+        for (int cnt = 0; cnt < M; cnt++) {
+            st = new StringTokenizer(br.readLine());
+
+            int cmd = Integer.parseInt(st.nextToken());
+            int i = Integer.parseInt(st.nextToken());
+            int x = 0;
+
+            if (cmd <= 2) {
+                x = Integer.parseInt(st.nextToken())-1;
+            }
+
+            execute(cmd, i, x);
+        }
+    }
+
+    public void execute(int cmd, int i, int x) {
+        switch (cmd) {
+            case 1:
+                trains[i] |= (1 << x);
+                break;
+            case 2:
+                trains[i] &= ~(1 << x);
+                break;
+            case 3:
+                trains[i] = (trains[i] & ~(1 << 19)) << 1;
+                break;
+            case 4:
+                trains[i] = (trains[i] & ~1) >> 1;
+                break;
+        }
+    }
+
+    public int getAnswer(){
+        set = new HashSet<>();
+
+        for (int i = 1; i <= N; i++) {
+            set.add(trains[i]);
+        }
+
+        return set.size();
+    }
+
+    public static void main(String[] args) throws IOException {
+        Main main = new Main();
+        main.init();
+        System.out.println(main.getAnswer());
+
+    }
+}
