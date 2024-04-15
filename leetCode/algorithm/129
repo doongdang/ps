@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Solution {
+
+    public int sumNumbers(TreeNode root) {
+        Set<TreeNode> vis = new HashSet<>();
+        Stack<TreeNode> stack = new Stack<>();
+        int answer = 0;
+        vis.add(root);
+        stack.add(root);
+        
+        while(!stack.isEmpty()){
+            TreeNode cur = stack.pop();
+
+            if(cur.left == null && cur.right == null){
+                answer += cur.val;
+            }
+            
+            if(cur.left != null && !vis.contains(cur.left)){
+                cur.left.val = cur.val * 10 + cur.left.val;
+                stack.add(cur.left);
+                vis.add(cur.left);
+            }
+
+            if(cur.right != null && !vis.contains(cur.right)){
+                cur.right.val = cur.val * 10 + cur.right.val;
+                vis.add(cur.right);
+                stack.add(cur.right);
+            }
+        }
+
+        return answer;
+    }
+}
