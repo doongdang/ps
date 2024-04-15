@@ -1,0 +1,44 @@
+import java.util.*;
+
+class Solution {    
+    public int solution(String[] babbling) {
+        int answer = 0;
+        
+        Set<String> fix = new HashSet<>();
+        fix.add("aya");
+        fix.add("ye");
+        fix.add("woo");
+        fix.add("ma");
+        
+        for(String b : babbling){
+            int st = 0;
+            int en = 1;
+            boolean flag = true;
+            String before = "";
+            
+            while(st < b.length() &&  en <= b.length()){
+                if(en <= b.length() && !fix.contains(b.substring(st, en))){
+                    en++;
+                }else if(en <= b.length() && fix.contains(b.substring(st, en))){
+                    if(before.equals(b.substring(st, en))){
+                        flag = false;
+                        break;
+                    }
+                    before = b.substring(st, en);
+                    st = en;
+                    en = st+1;
+                }
+            }
+            
+            if(st < b.length()){
+                flag = false;
+            }
+            
+            if(flag){
+                answer++;
+            }
+        }
+        
+        return answer;
+    }
+}
