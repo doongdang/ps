@@ -1,0 +1,30 @@
+import java.util.*;
+
+class Solution {
+    // 편차를 줄이기 위해 잔업량이 가장 많이 남은 일부터 최대한 균등하게 낮춰가는 것이 관건.
+    // 이를 위해 우선 순위큐를 사용하여 현재 가장 많이 남은 일부터 1씩 줄여나간다.
+    public long solution(int n, int[] works) {
+        long answer = 0;
+        PriorityQueue<Integer> pq = new PriorityQueue<>((i1, i2) -> i2 - i1);
+
+        for(int work : works){
+            pq.offer(work);
+        }
+
+        for(int i = 0; i < n; i++){
+            if(!pq.isEmpty()){
+                int job = pq.poll() - 1;
+                if(job > 0){
+                    pq.offer(job);
+                }
+            }
+        }
+
+        while(!pq.isEmpty()){
+            int rest = pq.poll();
+            answer += (rest*rest);
+        }
+
+        return answer;
+    }
+}
