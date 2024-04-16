@@ -1,0 +1,74 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+import java.util.*;
+
+class NodeDepth{
+    TreeNode node;
+    int depth;
+
+    public NodeDepth(TreeNode node, int depth){
+        this.node = node;
+        this.depth = depth;
+    }
+}
+
+class Solution {
+    public TreeNode addOneRow(TreeNode root, int val, int depth) {
+        if(depth == 1){
+            TreeNode newRoot = new TreeNode(val, root, null);
+
+            return newRoot;
+        }
+
+
+        Queue<NodeDepth> queue = new ArrayDeque<>();
+        queue.offer(new NodeDepth(root, 1));
+        TreeNode newNodeLeft;
+        TreeNode newNodeRight;
+
+        while(!queue.isEmpty()){
+            NodeDepth cur = queue.poll();
+
+            if(cur.depth == depth -1){
+                newNodeLeft = new TreeNode(val);
+                newNodeRight = new TreeNode(val);
+
+                if(cur.node.left != null){
+                    newNodeLeft.left = cur.node.left;
+                }
+
+                if(cur.node.right != null){
+                    newNodeRight.right = cur.node.right;
+                }
+
+                cur.node.left = newNodeLeft;
+                cur.node.right = newNodeRight;
+
+                continue;
+            }
+
+            if(cur.node.left != null){
+                queue.offer(new NodeDepth(cur.node.left, cur.depth+1));
+            }
+
+            if(cur.node.right != null){
+                queue.offer(new NodeDepth(cur.node.right, cur.depth+1));
+            }
+        }
+
+        return root;
+    }
+}
