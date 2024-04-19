@@ -1,0 +1,53 @@
+import java.util.*;
+
+class Pair{
+    String str;
+    int cnt;
+
+    public Pair(String str, int cnt){
+        this.str = str;
+        this.cnt = cnt;
+    }
+}
+
+class Solution {
+
+    public int solution(String begin, String target, String[] words) {
+        int answer = 0;
+
+        boolean[] isUsed = new boolean[words.length];
+        Queue<Pair> queue = new ArrayDeque<>();
+        queue.offer(new Pair(begin, 0));
+
+        while(!queue.isEmpty()){
+            Pair cur = queue.poll();
+
+            if(cur.str.equals(target)){
+                answer = cur.cnt;
+                break;
+            }
+
+            for(int i = 0; i < words.length; i++){
+                if(isUsed[i]) continue;
+
+                int diff = 0;
+
+                for(int j = 0; j < cur.str.length(); j++){
+                    if(words[i].charAt(j) != cur.str.charAt(j)){
+                        diff++;
+                    }
+                }
+
+                if(diff > 1){
+                    continue;
+                }
+
+                isUsed[i] = true;
+                queue.offer(new Pair(words[i], cur.cnt+1));
+            }
+        }
+
+
+        return answer;
+    }
+}
