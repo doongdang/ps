@@ -1,0 +1,73 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+class Stat{
+	int str;
+	int dex;
+	int intel;
+
+	public Stat(int str, int dex, int intel) {
+		this.str = str;
+		this.dex = dex;
+		this.intel = intel;
+	}
+}
+
+public class Main {
+	int N, K;
+	int[] strs;
+	int[] dexs;
+	int[] intels;
+	Stat[] stats;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		strs = new int[N];
+		dexs = new int[N];
+		intels = new int[N];
+		stats = new Stat[N];
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			strs[i] = Integer.parseInt(st.nextToken());
+			dexs[i] = Integer.parseInt(st.nextToken());
+			intels[i] = Integer.parseInt(st.nextToken());
+
+			stats[i] = new Stat(strs[i], dexs[i], intels[i]);
+		}
+	}
+
+	public void solve() {
+		int answer = Integer.MAX_VALUE;
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				for (int k = 0; k < N; k++) {
+					int cnt = 0;
+					for (int l = 0; l < N; l++) {
+						if(strs[i] >= stats[l].str && dexs[j] >= stats[l].dex && intels[k] >= stats[l].intel) {
+							cnt++;
+						}
+					}
+
+					if(cnt >= K){
+						answer = Math.min(answer, strs[i] + dexs[j] + intels[k]);
+					}
+				}
+			}
+		}
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
