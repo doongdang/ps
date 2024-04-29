@@ -1,0 +1,74 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+class Range {
+	int L;
+	int H;
+
+	public Range(int l, int h) {
+		L = l;
+		H = h;
+	}
+
+	@Override
+	public String toString() {
+		return "Range{" +
+			"L=" + L +
+			", H=" + H +
+			'}';
+	}
+}
+
+public class Main {
+	int N;
+	Range[] ranges;
+	int maxH;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		ranges = new Range[N];
+
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int L = Integer.parseInt(st.nextToken());
+			int H = Integer.parseInt(st.nextToken());
+			ranges[i] = new Range(L, H);
+			maxH = Math.max(maxH, H);
+		}
+	}
+
+	public void solve() {
+		int answer = 0;
+		Arrays.sort(ranges, (r1, r2) -> r1.L - r2.L);
+
+		for (int i = 1; i <= maxH; i++) {
+			int minL = -1;
+			int maxL = -1;
+
+			for (int j = 0; j < N; j++) {
+				if(minL == -1 && ranges[j].H >= i) {
+					minL = ranges[j].L;
+				}
+
+				if(ranges[j].H >= i) {
+					maxL = ranges[j].L;
+				}
+			}
+
+			answer += (maxL-minL+1);
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
