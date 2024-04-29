@@ -1,0 +1,60 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Stack;
+
+public class Main {
+	int N;
+	int[] size;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		size = new int[N];
+
+		for (int i = 0; i < N; i++) {
+			size[i] = Integer.parseInt(br.readLine());
+		}
+	}
+
+	public void solve() {
+		int answer = 0;
+
+		for (int i = 0; i < N; i++) {
+			Stack<Integer> stack = new Stack<>();
+			for (int j = 0; j < N; j++) {
+				if (size[i] == size[j]) continue;
+				int cnt = 0;
+				if(stack.isEmpty() || stack.peek() == size[j]) stack.push(size[j]);
+				else{
+					while(!stack.isEmpty() && stack.peek() != size[j]) {
+						stack.pop();
+						cnt++;
+					}
+					stack.push(size[j]);
+				}
+				answer = Math.max(answer, cnt);
+			}
+
+			if(!stack.isEmpty()){
+				int std = stack.pop();
+				int cnt = 1;
+				while(!stack.isEmpty() && stack.peek() == std ) {
+					stack.pop();
+					cnt++;
+				}
+				answer = Math.max(answer, cnt);
+			}
+		}
+
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
