@@ -1,0 +1,59 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+class Pair{
+	int startX;
+	int startY;
+	int endX;
+	int endY;
+
+	Pair(int x, int y){
+		this.startX = x+1;
+		this.startY = y+1;
+		this.endX = x+10;
+		this.endY = y+10;
+	}
+}
+
+public class Main {
+	int N;
+	Pair[] range;
+	boolean[][] isFilled;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		range = new Pair[N];
+		isFilled = new boolean[101][101];
+
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			range[i] = new Pair(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+		}
+	}
+
+	public void solve() {
+		int answer = 0;
+
+		for (int i = 0; i < N; i++) {
+			for (int j = range[i].startX; j <= range[i].endX; j++) {
+				for (int k = range[i].startY; k <= range[i].endY; k++) {
+					if(isFilled[j][k]) continue;
+					isFilled[j][k] = true;
+					answer++;
+				}
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
