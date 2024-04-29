@@ -1,0 +1,85 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+class Question{
+	String num;
+	int strike;
+	int ball;
+
+	public Question(String num, int strike, int ball) {
+		this.num = num;
+		this.strike = strike;
+		this.ball = ball;
+	}
+}
+
+public class Main {
+	int N;
+	Question[] questions;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		questions = new Question[N];
+
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			questions[i] = new Question(st.nextToken(), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+		}
+	}
+
+	public void solve() {
+		int answer = 0;
+
+		for (int i = 1; i <= 9; i++) {
+			for (int j = 1; j <= 9; j++) {
+				for (int k = 1; k <= 9; k++) {
+					if(i == j || j == k || i == k) continue;
+
+					String curNum = Integer.toString(i * 100 + j * 10 + k);
+					boolean flag = true;
+					for (int l = 0; l < N; l++) {
+						if(!canBeCandidate(curNum, questions[l])){
+							flag = false;
+							break;
+						}
+					}
+
+					if(flag){
+						answer++;
+					}
+				}
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public boolean canBeCandidate(String curNum, Question question){
+		int strike = 0;
+		int ball = 0;
+
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				if(curNum.charAt(i) == question.num.charAt(j)){
+					if(i == j){
+						strike++;
+					}else{
+						ball++;
+					}
+				}
+			}
+		}
+
+		return strike == question.strike && ball == question.ball;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
