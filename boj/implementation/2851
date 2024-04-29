@@ -1,0 +1,31 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		int answer = 0;
+		int sum = 0;
+
+		for (int i = 0; i < 10; i++) {
+			int score = Integer.parseInt(br.readLine());
+			sum += score;
+
+			if(100 - answer >= Math.abs(100 - sum)){
+				answer = sum;
+			}else{
+				break;
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+	}
+}
