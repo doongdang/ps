@@ -1,0 +1,71 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+class Pair{
+	int start;
+	int end;
+
+	Pair(int start, int end){
+		this.start = start;
+		this.end = end;
+	}
+}
+
+public class Main {
+	int N;
+	int[] time;
+	Pair[] range;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+
+		time = new int[1000];
+		range = new Pair[N];
+
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int start = Integer.parseInt(st.nextToken());
+			int end = Integer.parseInt(st.nextToken());
+
+			range[i] = new Pair(start, end);
+
+			for (int j = start; j < end; j++) {
+				time[j]++;
+			}
+		}
+	}
+
+	public void solve() {
+		int answer = 0;
+
+		for (int i = 0; i < N; i++) {
+			int cnt = 0;
+			for (int j = range[i].start; j < range[i].end; j++) {
+				time[j]--;
+			}
+
+			for (int j = 0; j < 1000; j++) {
+				if(time[j] > 0) {
+					cnt++;
+				}
+			}
+
+			for (int j = range[i].start; j < range[i].end; j++) {
+				time[j]++;
+			}
+
+			answer = Math.max(answer, cnt);
+		}
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
