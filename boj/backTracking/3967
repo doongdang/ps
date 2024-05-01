@@ -1,0 +1,114 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+class Coordinate{
+	int x;
+	int y;
+
+	public Coordinate(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main {
+	char[][] magicStar;
+	char[] selected;
+	boolean[] visited;
+	List<Character> unused;
+	List<Character> used;
+	List<Coordinate> coordinates;
+	StringBuilder answer;
+	StringBuilder star;
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		magicStar = new char[5][9];
+		coordinates = new ArrayList<>();
+		answer = new StringBuilder("A");
+		unused = new ArrayList<>();
+		used = new ArrayList<>();
+		unused.add('A');
+		unused.add('B');
+		unused.add('C');
+		unused.add('D');
+		unused.add('E');
+		unused.add('F');
+		unused.add('G');
+		unused.add('H');
+		unused.add('I');
+		unused.add('J');
+		unused.add('K');
+		unused.add('L');
+
+		for (int i = 0; i < 5; i++) {
+			String line = br.readLine();
+			for (int j = 0; j < 9; j++) {
+				magicStar[i][j] = line.charAt(j);
+				if(magicStar[i][j] >= 'A' && magicStar[i][j] <= 'L') {
+					used.add(magicStar[i][j]);
+				}
+
+				if(magicStar[i][j] == 'x') {
+					coordinates.add(new Coordinate(i, j));
+				}
+			}
+		}
+
+		selected = new char[coordinates.size()];
+		visited = new boolean[coordinates.size()];
+		unused.removeAll(used);
+	}
+
+	public void recursion(int cur){
+		if(!answer.toString().equals("A")) return;
+		if(cur == coordinates.size()){
+			for (int i = 0; i < coordinates.size(); i++) {
+				magicStar[coordinates.get(i).x][coordinates.get(i).y] = selected[i];
+			}
+
+			if(isValidStar()){
+				star = new StringBuilder();
+				for (int i = 0; i < 5; i++) {
+					for (int j = 0; j < 9; j++) {
+						star.append(magicStar[i][j]);
+					}
+					star.append("\n");
+				}
+				answer = star;
+			}
+			return;
+		}
+
+		for (int i = 0; i < coordinates.size(); i++) {
+			if(visited[i]) continue;
+			visited[i] = true;
+			selected[cur] = unused.get(i);
+			recursion(cur+1);
+			visited[i] = false;
+		}
+	}
+
+
+	public boolean isValidStar(){
+		int val1 = magicStar[0][4] + magicStar[1][3] + magicStar[2][2] + magicStar[3][1];
+		int val2 = magicStar[0][4] + magicStar[1][5] + magicStar[2][6] + magicStar[3][7];
+		int val3 = magicStar[3][1] + magicStar[3][3] + magicStar[3][5] + magicStar[3][7];
+		int val4 = magicStar[1][1] + magicStar[1][3] + magicStar[1][5] + magicStar[1][7];
+		int val5 = magicStar[1][1] + magicStar[2][2] + magicStar[3][3] + magicStar[4][4];
+		int val6 = magicStar[1][7] + magicStar[2][6] + magicStar[3][5] + magicStar[4][4];
+
+		return val1 == val2 && val2 == val3 && val3 == val4 && val4 == val5 && val5 == val6;
+	}
+
+
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.recursion(0);
+		System.out.println(m.answer);
+	}
+}
