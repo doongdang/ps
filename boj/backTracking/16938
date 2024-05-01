@@ -1,0 +1,61 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N, L, R, X;
+	int[] A;
+	int difficulty, answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		L = Integer.parseInt(st.nextToken());
+		R = Integer.parseInt(st.nextToken());
+		X = Integer.parseInt(st.nextToken());
+		A = new int[N];
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			A[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		for (int i = 2; i <= N; i++) {
+			difficulty = 0;
+			recursion(0, 0, Integer.MAX_VALUE, Integer.MIN_VALUE, i);
+		}
+		System.out.println(answer);
+	}
+
+	public void recursion(int cur, int start, int min, int max, int size) {
+		if(difficulty > R) {
+			return;
+		}
+
+		if(cur == size){
+			if(L <= difficulty && difficulty <= R && max - min >= X){
+				answer++;
+			}
+
+			return;
+		}
+
+		for (int i = start; i < N; i++) {
+			difficulty += A[i];
+			recursion(cur+1, i + 1, Math.min(min, A[i]), Math.max(max, A[i]), size);
+			difficulty -= A[i];
+		}
+
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
