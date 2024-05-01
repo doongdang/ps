@@ -1,0 +1,155 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+import java.util.StringTokenizer;
+
+class CCTV{
+	int x;
+	int y;
+	int type;
+
+	public CCTV(int x, int y, int type) {
+		this.x = x;
+		this.y = y;
+		this.type = type;
+	}
+}
+
+class Coordinate{
+	int x;
+	int y;
+
+	public Coordinate(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main {
+	int N, M;
+	char[][] office;
+	int answer;
+	List<CCTV> cctvs;
+	int[] directionOfCCTV;
+	//CCTV 종류, 회전, 방향
+	int[][][] rotationOfCCTV;
+	Stack<Coordinate> stack;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		answer = Integer.MAX_VALUE;
+		office = new char[N][M];
+		cctvs = new ArrayList<>();
+		stack = new Stack<>();
+		rotationOfCCTV = new int[][][] {
+			{  //상, 하, 좌, 우
+				{0, 0, 0, 1},
+				{-1, 0, 0, 0},
+				{0, 0, -1, 0},
+				{0, 1, 0, 0},
+			},
+			{
+				{0, 0, -1, 1},
+				{-1, 1, 0, 0},
+				{0, 0, -1, 1},
+				{-1, 1, 0, 0}
+			},
+			{
+				{-1, 0, 0, 1},
+				{-1, 0, -1, 0},
+				{0, 1, -1, 0},
+				{0, 1, 0, 1},
+			},
+			{
+				{-1, 0, -1, 1},
+				{-1, 1, -1, 0},
+				{0, 1, -1, 1},
+				{-1, 1, 0, 1},
+			},
+			{
+				{-1, 1, -1, 1},
+				{-1, 1, -1, 1},
+				{-1, 1, -1, 1},
+				{-1, 1, -1, 1},
+			}
+		};
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < M; j++) {
+				office[i][j] = st.nextToken().charAt(0);
+
+				if (office[i][j] - '0' >= 1 && office[i][j] - '0' <= 5) {
+					cctvs.add(new CCTV(i, j, office[i][j]-'0'-1));
+				}
+			}
+		}
+		directionOfCCTV = new int[cctvs.size()];
+	}
+
+	public void recursion(int cur){
+		if(cur == cctvs.size()){
+			fillOffice();
+			calculateMinBlindSpotCnt();
+			recoverOffice();
+			return;
+		}
+
+		for (int i = 0; i < 4; i++) {
+			directionOfCCTV[cur] = i;
+			recursion(cur + 1);
+		}
+	}
+
+	public void fillOffice(){
+		for (int i = 0; i < cctvs.size(); i++) {
+			for (int dir = 0; dir < 4; dir++) {
+				if (rotationOfCCTV[cctvs.get(i).type][directionOfCCTV[i]][dir] == 0) continue;
+				int nxtX = cctvs.get(i).x;
+				int nxtY = cctvs.get(i).y;
+
+				while(nxtX >= 0 && nxtX < N && nxtY >= 0 && nxtY < M){
+					if(dir <= 1) nxtX += rotationOfCCTV[cctvs.get(i).type][directionOfCCTV[i]][dir];
+					else nxtY += rotationOfCCTV[cctvs.get(i).type][directionOfCCTV[i]][dir];
+					if(nxtX < 0 || nxtX >= N || nxtY < 0 || nxtY >= M) break;
+					if(office[nxtX][nxtY] == '6') break;
+					if (office[nxtX][nxtY] - '0' >= 1 && office[nxtX][nxtY] - '0' <= 5) continue;
+					office[nxtX][nxtY] = '-';
+					stack.push(new Coordinate(nxtX, nxtY));
+				}
+			}
+		}
+	}
+
+	public void recoverOffice(){
+		while(!stack.isEmpty()){
+			Coordinate cur = stack.pop();
+			office[cur.x][cur.y] = '0';
+		}
+	}
+
+	public void calculateMinBlindSpotCnt(){
+		int cnt = 0;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				if(office[i][j] == '0') cnt++;
+			}
+		}
+		answer = Math.min(cnt, answer);
+	}
+
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.recursion(0);
+		System.out.println(m.answer);
+	}
+}
