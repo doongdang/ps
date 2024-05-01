@@ -1,0 +1,62 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+	int k;
+	int[] selected;
+	String min = "9999999999";
+	String max = "0000000000";
+	boolean[] visited;
+	String[] inequality;
+	StringBuilder answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		k = Integer.parseInt(br.readLine());
+
+		visited = new boolean[10];
+		selected = new int[k+1];
+		inequality = br.readLine().split(" ");
+	}
+
+	public void solve(int cur) {
+		if(cur == k+1) {
+			String val = "";
+			for (int i = 0; i < k+1; i++) {
+				val += selected[i];
+			}
+
+			min = min.compareTo(val) < 0 ? min : val;
+			max = max.compareTo(val) > 0 ? max : val;
+			return;
+		}
+
+		for (int i = 0; i < 10; i++) {
+			if(!isValid(cur, i)) continue;
+			if(visited[i]) continue;
+			visited[i] = true;
+			selected[cur] = i;
+			solve(cur+1);
+			visited[i] = false;
+		}
+
+	}
+
+	public boolean isValid(int idx, int nxt){
+		if(idx == 0) return true;
+		if(inequality[idx-1].equals("<")){
+			return selected[idx-1] < nxt;
+		}else{
+			return selected[idx-1] > nxt;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve(0);
+		System.out.println(m.max);
+		System.out.println(m.min);
+	}
+}
