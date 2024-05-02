@@ -1,0 +1,87 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+class Coordinate{
+    int x;
+    int y;
+
+    public Coordinate(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+public class Main {
+    int N, M;
+    int[][] city;
+    List<Coordinate> chickens;
+    List<Coordinate> houses;
+    Coordinate[] selected;
+    int answer;
+
+    public void init() throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+
+        city = new int[N][N];
+        chickens = new ArrayList<>();
+        houses = new ArrayList<>();
+        answer = Integer.MAX_VALUE;
+
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < N; j++) {
+                city[i][j] = Integer.parseInt(st.nextToken());
+                if(city[i][j] == 2) chickens.add(new Coordinate(i, j));
+                if(city[i][j] == 1) houses.add(new Coordinate(i, j));
+            }
+        }
+    }
+
+    public void solve() {
+        for (int i = 1; i <= M; i++) {
+            selected = new Coordinate[i];
+            recursion(0, 0, i);
+        }
+        System.out.println(answer);
+    }
+
+    public void recursion(int cur, int start, int size){
+        if(cur == size){
+            calculateChickenDistance();
+            return;
+        }
+
+        for (int i = start; i < chickens.size(); i++) {
+            selected[cur] = chickens.get(i);
+            recursion(cur+1, i + 1, size);
+        }
+    }
+
+    public void calculateChickenDistance(){
+        int totalDistance = 0;
+
+        for (Coordinate house : houses) {
+            int distance = Integer.MAX_VALUE;
+            for (Coordinate chicken : selected) {
+                distance = Math.min(Math.abs(chicken.x - house.x) + Math.abs(chicken.y - house.y), distance);
+            }
+            totalDistance += distance;
+        }
+
+        answer = Math.min(totalDistance, answer);
+    }
+
+    public static void main(String[] args) throws IOException {
+        Main m = new Main();
+        m.init();
+        m.solve();
+    }
+}
