@@ -1,0 +1,54 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	char[] A;
+	char[] B;
+	char[] C;
+	boolean[] vis;
+	int answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		A = st.nextToken().toCharArray();
+		B = st.nextToken().toCharArray();
+		C = new char[A.length];
+		vis = new boolean[A.length];
+		answer = -1;
+	}
+
+	public void solve(int cur) {
+		if(B.length < A.length) return;
+
+		if(cur == A.length) {
+			int c = Integer.parseInt(String.valueOf(C));
+			int b = Integer.parseInt(String.valueOf(B));
+
+			if(b >= c){
+				answer = Math.max(answer, c);
+			}
+
+			return;
+		}
+
+		for (int i = 0; i < A.length; i++) {
+			if(cur == 0 && A[i] == '0') continue;
+			if(vis[i]) continue;
+			vis[i] = true;
+			C[cur] = A[i];
+			solve(cur + 1);
+			vis[i] = false;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve(0);
+		System.out.println(m.answer);
+	}
+}
