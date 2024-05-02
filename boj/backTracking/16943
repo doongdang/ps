@@ -24,16 +24,22 @@ public class Main {
 	public void solve(int cur) {
 		if(B.length < A.length) return;
 
+		int b = 0;
+		int c = 0;
+		for (int i = 0; i < cur; i++) {
+			b = b*10 + (B[i]-'0');
+			c = c*10 + (C[i]-'0');
+		}
+
+		if(b < c && B.length == A.length) return;
+
 		if(cur == A.length) {
-			int c = Integer.parseInt(String.valueOf(C));
-			int b = Integer.parseInt(String.valueOf(B));
+			if(b <= c && B.length == A.length) return;
 
-			if(b >= c){
-				answer = Math.max(answer, c);
-			}
-
+			answer = Math.max(answer, c);
 			return;
 		}
+
 
 		for (int i = 0; i < A.length; i++) {
 			if(cur == 0 && A[i] == '0') continue;
