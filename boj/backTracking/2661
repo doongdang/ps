@@ -1,0 +1,72 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+	int N;
+	int[] selected;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		selected = new int[N];
+	}
+
+	public void solve(int cur) {
+		if(!isGood(cur)){
+			return;
+		}
+
+		if(cur == N){
+			StringBuilder answer = new StringBuilder();
+
+			for (int i = 0; i < N; i++) {
+				answer.append(selected[i]);
+			}
+
+			System.out.println(answer);
+			System.exit(0);
+		}
+
+		for (int i = 1; i <= 3; i++) {
+			selected[cur] = i;
+			solve(cur+1);
+		}
+	}
+
+	public boolean isGood(int size){
+		int subSize = size / 2;
+
+		for (int i = 1; i <= subSize; i++) {
+			for (int j = 0; j <= size-i; j++) {
+				int before = 0;
+
+				for (int k = j; k <= size-i; k += i) {
+					int after = 0;
+
+						for (int l = k; l < k+i; l++) {
+							after = after*10 + selected[l];
+						}
+
+						if(after == before){
+							return false;
+						}
+
+						before = after;
+
+				}
+			}
+		}
+
+		return true;
+	}
+
+
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve(0);
+	}
+}
