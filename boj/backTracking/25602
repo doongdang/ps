@@ -1,0 +1,89 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N, K;
+	int[] A;
+	int[][] R, M;
+	int[] selectedR, selectedM;
+	int answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		A = new int[N];
+		R = new int[K][N];
+		M = new int[K][N];
+		selectedR = new int[K];
+		selectedM = new int[K];
+
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			A[i] = Integer.parseInt(st.nextToken());
+		}
+
+		for (int i = 0; i < K; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				R[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		for (int i = 0; i < K; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				M[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+	}
+
+	public void recursionR(int cur) {
+		if (cur == K) {
+			recursionM(0);
+			return;
+		}
+
+		for (int i = 0; i < N; i++) {
+			if(A[i] == 0) continue;
+			A[i]--;
+			selectedR[cur] = i;
+			recursionR(cur + 1);
+			A[i]++;
+		}
+	}
+
+	public void recursionM(int cur) {
+		if (cur == K) {
+			int val = 0;
+
+			for (int i = 0; i < K; i++) {
+				val += R[i][selectedR[i]];
+				val += M[i][selectedM[i]];
+			}
+			answer = Math.max(answer, val);
+
+			return;
+		}
+
+		for (int i = 0; i < N; i++) {
+			if(A[i] == 0) continue;
+			A[i]--;
+			selectedM[cur] = i;
+			recursionM(cur + 1);
+			A[i]++;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.recursionR(0);
+		System.out.println(m.answer);
+	}
+}
