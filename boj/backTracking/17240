@@ -1,0 +1,101 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+class Candidate{
+    int a,b,c,d,e;
+    int idx;
+
+    public Candidate(int a, int b, int c, int d, int e, int idx) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = d;
+        this.e = e;
+        this.idx = idx;
+    }
+}
+
+public class Main {
+    int n;
+    Candidate[] candidates;
+    boolean[] visited;
+    int[][] indexOfCandidates;
+    int[] selected;
+    int answer;
+
+    public void init() throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        n = Integer.parseInt(br.readLine());
+        candidates = new Candidate[n];
+        visited = new boolean[n];
+        indexOfCandidates = new int[5][n];
+        selected = new int[5];
+
+        for (int i = 0; i < n; i++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            candidates[i] = new Candidate(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), i);
+        }
+
+        Arrays.sort(candidates, (candidate1, candidate2) -> candidate2.a - candidate1.a);
+        for (int i = 0; i < 5; i++) {
+            indexOfCandidates[0][i] = candidates[i].idx;
+        }
+
+        Arrays.sort(candidates, (candidate1, candidate2) -> candidate2.b - candidate1.b);
+        for (int i = 0; i < 5; i++) {
+            indexOfCandidates[1][i] = candidates[i].idx;
+        }
+
+        Arrays.sort(candidates, (candidate1, candidate2) -> candidate2.c - candidate1.c);
+        for (int i = 0; i < 5; i++) {
+            indexOfCandidates[2][i] = candidates[i].idx;
+        }
+
+        Arrays.sort(candidates, (candidate1, candidate2) -> candidate2.d - candidate1.d);
+        for (int i = 0; i < 5; i++) {
+            indexOfCandidates[3][i] = candidates[i].idx;
+        }
+
+        Arrays.sort(candidates, (candidate1, candidate2) -> candidate2.e - candidate1.e);
+        for (int i = 0; i < 5; i++) {
+            indexOfCandidates[4][i] = candidates[i].idx;
+        }
+
+        Arrays.sort(candidates, (candidate1, candidate2) -> candidate1.idx - candidate2.idx);
+    }
+
+    public void solve(int cur) {
+        if(cur == 5){
+            int val = 0;
+            val += candidates[selected[0]].a;
+            val += candidates[selected[1]].b;
+            val += candidates[selected[2]].c;
+            val += candidates[selected[3]].d;
+            val += candidates[selected[4]].e;
+
+            answer = Math.max(answer, val);
+            return;
+        }
+
+        for (int i = 0; i < 5; i++) {
+            if(visited[indexOfCandidates[cur][i]]) continue;
+            visited[indexOfCandidates[cur][i]] = true;
+            selected[cur] = indexOfCandidates[cur][i];
+            solve(cur + 1);
+            visited[indexOfCandidates[cur][i]] = false;
+        }
+
+    }
+
+
+    public static void main(String[] args) throws IOException {
+        Main m = new Main();
+        m.init();
+        m.solve(0);
+        System.out.println(m.answer);
+    }
+}
