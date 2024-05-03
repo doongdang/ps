@@ -1,0 +1,72 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N;
+	int[] nums;
+	int[] operands;
+	int min;
+	int max;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		nums = new int[N];
+		operands = new int[4];
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			nums[i] = Integer.parseInt(st.nextToken());
+		}
+
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < 4; i++) {
+			operands[i] = Integer.parseInt(st.nextToken());
+		}
+
+		min = Integer.MAX_VALUE;
+		max = Integer.MIN_VALUE;
+	}
+
+	public void solve(int cur, int val) {
+		if (cur == N - 1) {
+			min = Math.min(min, val);
+			max = Math.max(max, val);
+			return;
+		}
+
+		for (int i = 0; i < 4; i++) {
+			if (operands[i] == 0)
+				continue;
+			operands[i]--;
+			switch (i) {
+				case 0:
+					solve(cur + 1, val + nums[cur+1]);
+					break;
+				case 1:
+					solve(cur + 1, val - nums[cur+1]);
+					break;
+				case 2:
+					solve(cur + 1, val * nums[cur+1]);
+					break;
+				case 3:
+					solve(cur + 1, val / nums[cur+1]);
+					break;
+			}
+			operands[i]++;
+		}
+
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve(0, m.nums[0]);
+		System.out.println(m.max);
+		System.out.println(m.min);
+	}
+}
