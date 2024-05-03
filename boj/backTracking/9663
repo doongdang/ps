@@ -1,0 +1,45 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+	int N;
+	int[] selected;
+	int answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		selected = new int[N];
+	}
+
+	public void solve(int cur) {
+		if(cur == N) {
+			answer++;
+			return;
+		}
+
+		for (int i = 0; i < N; i++) {
+			if(!isValid(i, cur-1)) continue;
+			selected[cur] = i;
+			solve(cur+1);
+		}
+	}
+
+	public boolean isValid(int y, int latest){
+		for (int i = 0; i <= latest; i++) {
+			if(selected[i] == y || Math.abs(latest+1 - i) == Math.abs(selected[i] - y)){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve(0);
+		System.out.println(m.answer);
+	}
+}
