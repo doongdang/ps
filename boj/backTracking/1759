@@ -2,72 +2,60 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.StringTokenizer;
 
 public class Main {
-	static char[] alphabets;
-	static char[] code;
-	static int consonants;
-	static int vowels;
-	static int L;
-	static int C;
-	static HashSet<Character> vowelSet;
-	static StringBuilder sb = new StringBuilder();
+	int L, C;
+	char[] alphabets;
+	char[] selected;
+	boolean[] vis;
+	StringBuilder answer;
 
-	public static void comb(int depth, int start) {
-		if (depth == L) {
-			if (consonants >= 2 && vowels >= 1) {
-				for (int i = 0; i < L; i++) {
-					sb.append(code[i]);
-				}
-				sb.append("\n");
-			}
-			return;
-		}
-
-		for (int i = start; i < C; i++) {
-			code[depth] = alphabets[i];
-			if(vowelSet.contains(code[depth])){
-				vowels++;
-			}else{
-				consonants++;
-			}
-			comb(depth + 1, i + 1);
-			if(vowelSet.contains(code[depth])){
-				vowels--;
-			}else{
-				consonants--;
-			}
-		}
-
-	}
-
-	public static void main(String[] args) throws IOException {
+	public void init() throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
 
 		L = Integer.parseInt(st.nextToken());
 		C = Integer.parseInt(st.nextToken());
-
-		code = new char[L];
 		alphabets = new char[C];
-		vowelSet =  new HashSet<>();
-
-		vowelSet.add('a');
-		vowelSet.add('e');
-		vowelSet.add('i');
-		vowelSet.add('o');
-		vowelSet.add('u');
-
+		selected = new char[L];
+		vis = new boolean[C];
 		st = new StringTokenizer(br.readLine());
 
 		for (int i = 0; i < C; i++) {
 			alphabets[i] = st.nextToken().charAt(0);
 		}
-
 		Arrays.sort(alphabets);
-		comb(0, 0);
-		System.out.println(sb);
+		answer = new StringBuilder();
+	}
+
+	public void solve(int cur, int start, int z, int m) {
+		if (cur == L) {
+			if(z >= 2 && m >= 1){
+				for (int i = 0; i < L; i++) {
+					answer.append(selected[i]);
+				}
+				answer.append("\n");
+			}
+
+			return;
+		}
+
+		for (int i = start; i < C; i++) {
+			selected[cur] = alphabets[i];
+			if (selected[cur] == 'a' || selected[cur] == 'e' || selected[cur] == 'i' || selected[cur] == 'o'
+				|| selected[cur] == 'u') {
+				solve(cur + 1, i + 1, z, m + 1);
+			} else {
+				solve(cur + 1, i + 1, z + 1, m);
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve(0, 0, 0, 0);
+		System.out.println(m.answer);
 	}
 }
