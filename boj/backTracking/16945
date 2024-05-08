@@ -1,0 +1,74 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int[][] A;
+	int answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		A = new int[3][3];
+		answer = Integer.MAX_VALUE;
+
+		for (int i = 0; i < 3; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			A[i][0] = Integer.parseInt(st.nextToken());
+			A[i][1] = Integer.parseInt(st.nextToken());
+			A[i][2] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void recursion(int x, int y, int val) {
+		if (val >= answer) return;
+		if(y == 3){
+			x += 1;
+			y = 0;
+		}
+
+		if(x == 3){
+			boolean[] isExist = new boolean[10];
+			int sumOfDiagonal1 = A[0][0] + A[1][1] + A[2][2];
+			int sumOfDiagonal2 = A[2][0] + A[1][1] + A[0][2];
+
+			if(sumOfDiagonal1 != sumOfDiagonal2) return;
+
+			for (int i = 0; i < 3; i++) {
+				int sumOfRow = 0;
+				int sumOfCol = 0;
+
+				for (int j = 0; j < 3; j++) {
+					sumOfRow += A[i][j];
+					sumOfCol += A[j][i];
+
+					if(isExist[A[i][j]]) return;
+					isExist[A[i][j]] = true;
+				}
+
+				if(sumOfRow != sumOfCol || sumOfRow != sumOfDiagonal1) return;
+			}
+
+			answer = val;
+			return;
+		}
+
+		recursion(x, y + 1, val);
+
+		for (int i = 1; i <= 9; i++) {
+			if (i == A[x][y]) continue;
+			int recover = A[x][y];
+			A[x][y] = i;
+			recursion(x, y + 1, val + Math.abs(A[x][y] - recover));
+			A[x][y] = recover;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.recursion(0, 0, 0);
+		System.out.println(m.answer);
+	}
+}
