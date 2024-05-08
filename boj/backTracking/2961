@@ -1,0 +1,45 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N;
+	int[][] taste;
+	int answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		taste = new int[N][2];
+		answer = Integer.MAX_VALUE;
+
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			taste[i][0] = Integer.parseInt(st.nextToken());
+			taste[i][1] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void recursion(int cur, int sour, int bitter) {
+		if (cur == N) {
+			if(sour == 1 && bitter == 0){
+				return;
+			}
+
+			answer = Math.min(answer, Math.abs(bitter - sour));
+			return;
+		}
+
+		recursion(cur + 1, sour, bitter);
+		recursion(cur + 1, sour*taste[cur][0], bitter+taste[cur][1]);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.recursion(0, 1, 0);
+		System.out.println(m.answer);
+	}
+}
