@@ -38,3 +38,55 @@ public class Main {
 		System.out.println(answer);
 	}
 }
+
+
+//index 관점에서 접근
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N, S;
+	int[] nums;
+	int answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		S = Integer.parseInt(st.nextToken());
+		nums = new int[N];
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			nums[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void recursion(int cur, int sum) {
+		if (cur == N) {
+			if (sum == S) {
+				answer++;
+			}
+			return;
+		}
+
+		recursion(cur + 1, sum);
+		recursion(cur + 1, sum + nums[cur]);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.recursion(0, 0);
+
+		if(m.S == 0){
+			m.answer--;
+		}
+
+		System.out.println(m.answer);
+	}
+}
