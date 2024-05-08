@@ -59,3 +59,57 @@ public class Main {
 		System.out.println(m.answer);
 	}
 }
+
+// 부분집합 관점 풀이 추가
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Main {
+	int L, C;
+	char[] alphabets;
+	StringBuilder answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		L = Integer.parseInt(st.nextToken());
+		C = Integer.parseInt(st.nextToken());
+		alphabets = new char[C];
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < C; i++) {
+			alphabets[i] = st.nextToken().charAt(0);
+		}
+		Arrays.sort(alphabets);
+		answer = new StringBuilder();
+	}
+
+	public void recursion(int cur, int z, int m, String str) {
+		if(str.length() > L) return;
+		if(cur == C){
+			if(z < 2 || m < 1 || str.length() != L) return;
+
+			answer.append(str).append('\n');
+			return;
+		}
+
+		if(alphabets[cur] == 'a' || alphabets[cur] == 'e' || alphabets[cur] == 'i' || alphabets[cur] == 'o' || alphabets[cur] == 'u'){
+			recursion(cur+1, z, m+1, str+alphabets[cur]);
+		}else{
+			recursion(cur+1, z+1, m, str+alphabets[cur]);
+		}
+		recursion(cur+1, z, m, str);
+
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.recursion(0, 0, 0, "");
+		System.out.println(m.answer);
+	}
+}
