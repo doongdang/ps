@@ -1,0 +1,104 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringTokenizer;
+
+class Coordinate{
+	int x;
+	int y;
+
+	public Coordinate(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main {
+	int[][] board;
+	boolean[] isExistInRow;
+	boolean[] isExistInCol;
+	boolean[] isExistInSquare;
+	List<Coordinate> coordinates;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		board = new int[9][9];
+		isExistInRow = new boolean[10];
+		isExistInCol = new boolean[10];
+		isExistInSquare = new boolean[10];
+		coordinates = new ArrayList<>();
+
+		for (int i = 0; i < 9; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < 9; j++) {
+				board[i][j] = Integer.parseInt(st.nextToken());
+
+				if(board[i][j] == 0){
+					coordinates.add(new Coordinate(i, j));
+				}
+			}
+		}
+	}
+
+	public void recursion(int cur) {
+		if(cur == coordinates.size()) {
+			for (int i = 0; i < 9; i++) {
+				for (int j = 0; j < 9; j++) {
+					System.out.print(board[i][j] + " ");
+				}
+				System.out.println();
+			}
+
+			System.exit(0);
+		}
+
+		List<Integer> candidates = extractCandidates(coordinates.get(cur).x, coordinates.get(cur).y);
+		if (candidates.isEmpty()) return;
+
+		for (int candidate : candidates) {
+			board[coordinates.get(cur).x][coordinates.get(cur).y] = candidate;
+			recursion(cur+1);
+			board[coordinates.get(cur).x][coordinates.get(cur).y] = 0;
+		}
+
+	}
+
+	public List<Integer> extractCandidates(int x, int y) {
+		List<Integer> candidates = new ArrayList<>();
+
+		Arrays.fill(isExistInRow, false);
+		Arrays.fill(isExistInCol, false);
+		Arrays.fill(isExistInSquare, false);
+
+		for (int i = 0; i < 9; i++) {
+			if (board[x][i] != 0)
+				isExistInRow[board[x][i]] = true;
+			if (board[i][y] != 0)
+				isExistInCol[board[i][y]] = true;
+		}
+
+		for (int i = (x / 3) * 3; i < (x / 3) * 3 + 3; i++) {
+			for (int j = (y / 3) * 3; j < (y / 3) * 3 + 3; j++) {
+				if (board[i][j] != 0)
+					isExistInSquare[board[i][j]] = true;
+			}
+		}
+
+		for (int i = 1; i <= 9; i++) {
+			if (!isExistInRow[i] && !isExistInCol[i] && !isExistInSquare[i]) {
+				candidates.add(i);
+			}
+		}
+
+		return candidates;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.recursion(0);
+	}
+}
