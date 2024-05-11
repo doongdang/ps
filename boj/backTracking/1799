@@ -1,0 +1,97 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+
+//흑과 백의 위치를 나누어 조사하는 것이 시간 복잡도를 줄이는데 도움이 된다.
+//흑과 백을 나누어 생각해야 하는 이유는 흑에 착수한 비숍은 백에 착수할 비숍에 영향을 끼치지 못하기 때문이다.
+
+public class Main {
+	int N;
+	int[][] board;
+	int answerOdd;
+	int answerEven;
+	boolean isOdd;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		board = new int[N][N];
+
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < N; j++) {
+				board[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+	}
+
+	public void solve() {
+		if(N == 1){
+			isOdd = true;
+			recursion(0, 0, 0);
+		}else{
+			isOdd = true;
+			recursion(0, 0, 0);
+			isOdd = false;
+			recursion(0, 1, 0);
+		}
+
+		System.out.println(answerOdd + answerEven);
+	}
+
+	public void recursion(int x, int y, int cnt) {
+		if (y >= N) {
+			x += 1;
+			y = isOdd ? x % 2 : ((x % 2) + 1) % 2;
+		}
+
+		if (x >= N) {
+			if(isOdd){
+				answerOdd = Math.max(answerOdd, cnt);
+			}else{
+				answerEven = Math.max(answerEven, cnt);
+			}
+			return;
+		}
+
+		if (board[x][y] <= 0) {
+			recursion(x, y + 2, cnt);
+		} else {
+
+			fillOrRecover(x, y, true);
+			recursion(x, y + 2, cnt + 1);
+			fillOrRecover(x, y, false);
+
+			recursion(x, y + 2, cnt);
+
+		}
+	}
+
+	public void fillOrRecover(int x, int y, boolean isFill) {
+		int startLeftX = x - Math.min(x, y);
+		int startLeftY = y - Math.min(x, y);
+		int startRightX = x - Math.min(x, N - 1 - y);
+		int startRightY = y + Math.min(x, N - 1 - y);
+
+		while (startLeftX < N && startLeftY < N) {
+			board[startLeftX][startLeftY] = isFill ? board[startLeftX][startLeftY]-1 : board[startLeftX][startLeftY]+1;
+			startLeftX++;
+			startLeftY++;
+		}
+
+		while (startRightX < N && startRightY >= 0) {
+			board[startRightX][startRightY] = isFill ? board[startRightX][startRightY]-1 : board[startRightX][startRightY]+1;
+			startRightX++;
+			startRightY--;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
