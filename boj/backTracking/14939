@@ -1,0 +1,84 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+	boolean[][] bulb;
+	int answer;
+	int cnt;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		bulb = new boolean[10][10];
+		answer = Integer.MAX_VALUE;
+		for (int i = 0; i < 10; i++) {
+			char[] chars = br.readLine().toCharArray();
+			for (int j = 0; j < 10; j++) {
+				if(chars[j] == 'O') bulb[i][j] = true;
+			}
+		}
+	}
+
+	public void solve() {
+		recursion(0);
+		if(answer == Integer.MAX_VALUE) {
+			System.out.println(-1);
+			return;
+		}
+		System.out.println(answer);
+	}
+
+	public void recursion(int cur) {
+		if(cur == 10){
+			int rest = 0;
+			boolean[][] temp = new boolean[10][10];
+
+			for (int i = 0; i < 10; i++) {
+				for (int j = 0; j < 10; j++) {
+					temp[i][j] = bulb[i][j];
+				}
+			}
+
+			for (int i = 1; i < 10; i++) {
+				for (int j = 0; j < 10; j++) {
+					if(temp[i-1][j]){
+						rest++;
+
+						temp[i-1][j] = !temp[i-1][j];
+						temp[i][j] = !temp[i][j];
+						if(j > 0) temp[i][j-1] = !temp[i][j-1];
+						if(j < 9) temp[i][j+1] = !temp[i][j+1];
+						if(i < 9) temp[i+1][j] = !temp[i+1][j];
+					}
+				}
+			}
+
+			for (int i = 0; i < 10; i++) {
+				if(temp[9][i]) return;
+			}
+
+			answer = Math.min(rest+ cnt, answer);
+			return;
+		}
+
+		recursion(cur + 1);
+
+		if(cur > 0) bulb[0][cur-1] = !bulb[0][cur-1];
+		if(cur < 9) bulb[0][cur+1] = !bulb[0][cur+1];
+		bulb[0][cur] = !bulb[0][cur];
+		bulb[1][cur] = !bulb[1][cur];
+		cnt++;
+		recursion(cur + 1);
+		cnt--;
+		if(cur > 0) bulb[0][cur-1] = !bulb[0][cur-1];
+		if(cur < 9) bulb[0][cur+1] = !bulb[0][cur+1];
+		bulb[0][cur] = !bulb[0][cur];
+		bulb[1][cur] = !bulb[1][cur];
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
