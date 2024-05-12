@@ -1,0 +1,81 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N, M;
+	String[][] guitars;
+	int[] songs;
+	int canPlay;
+	int answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		guitars = new String[N][2];
+		songs = new int[M];
+		answer = Integer.MAX_VALUE;
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			guitars[i][0] = st.nextToken();
+			guitars[i][1] = st.nextToken();
+		}
+
+	}
+
+	public void solve() {
+		recursion(0, 0);
+
+		if(answer == Integer.MAX_VALUE) {
+			System.out.println(-1);
+			return;
+		}
+		System.out.println(answer);
+	}
+
+	public void recursion(int cur, int cntGuitar) {
+		if(cur == N){
+			int cntSong = 0;
+			for (int i = 0; i < M; i++) {
+				if(songs[i] == 0) continue;
+				cntSong++;
+			}
+
+			if(cntSong > 0) {
+				if(cntSong == canPlay){
+					answer = Math.min(cntGuitar, answer);
+
+				}else if(cntSong > canPlay){
+					answer = cntGuitar;
+					canPlay = cntSong;
+				}
+			}
+
+			return;
+		}
+
+		recursion(cur + 1, cntGuitar);
+
+		for (int i = 0; i < M; i++) {
+			if(guitars[cur][1].charAt(i) == 'Y') {
+				songs[i]++;
+			}
+		}
+		recursion(cur+1, cntGuitar + 1);
+		for (int i = 0; i < M; i++) {
+			if(guitars[cur][1].charAt(i) == 'Y') {
+				songs[i]--;
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
