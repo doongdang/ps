@@ -65,3 +65,86 @@ public class Main {
 		System.out.println(m.answer);
 	}
 }
+
+//부분 조합 관점 풀이
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+class Color{
+	int r;
+	int g;
+	int b;
+
+	public Color(int r, int g, int b) {
+		this.r = r;
+		this.g = g;
+		this.b = b;
+	}
+}
+
+public class Main {
+	int N;
+	Color[] colors;
+	int R, G, B;
+	int answer;
+	int last;
+	int r, g, b;
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+
+		N = Integer.parseInt(br.readLine());
+		colors = new Color[N];
+		answer = Integer.MAX_VALUE;
+		last = Math.min(N, 7);
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			colors[i] = new Color(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+		}
+
+		st = new StringTokenizer(br.readLine());
+		R = Integer.parseInt(st.nextToken());
+		G = Integer.parseInt(st.nextToken());
+		B = Integer.parseInt(st.nextToken());
+	}
+
+	public void solve() {
+		recursion(0, 0);
+		System.out.println(answer);
+	}
+
+	public void recursion(int cur, int selected) {
+		if(selected > last){
+			return;
+		}
+
+		if(cur == N){
+			if(selected <= 1){
+				return;
+			}
+
+			answer = Math.min(answer, Math.abs(r/selected-R) + Math.abs(g/selected-G) + Math.abs(b/selected-B));
+			return;
+		}
+
+		recursion(cur + 1, selected);
+
+		r += colors[cur].r;
+		g += colors[cur].g;
+		b += colors[cur].b;
+		recursion(cur+1, selected + 1);
+		r -= colors[cur].r;
+		g -= colors[cur].g;
+		b -= colors[cur].b;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
