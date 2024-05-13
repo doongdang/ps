@@ -1,0 +1,90 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+class SalesInfo{
+	int target;
+	int discount;
+
+	public SalesInfo(int target, int discount) {
+		this.target = target;
+		this.discount = discount;
+	}
+}
+
+public class Main {
+	int N;
+	int answer;
+	boolean[] vis;
+	int[] prices;
+	List<SalesInfo>[] salesInfos;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		answer = Integer.MAX_VALUE;
+		vis = new boolean[N+1];
+		prices = new int[N+1];
+		salesInfos = new ArrayList[N+1];
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		for (int i = 1; i <= N; i++) {
+			prices[i] = Integer.parseInt(st.nextToken());
+			salesInfos[i] = new ArrayList<>();
+		}
+
+		for (int i = 1; i <= N; i++) {
+			int p = Integer.parseInt(br.readLine());
+
+			for (int j = 0; j < p; j++) {
+				st = new StringTokenizer(br.readLine());
+				salesInfos[i].add(new SalesInfo(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken())));
+			}
+		}
+	}
+
+	public void solve() {
+		recursion(1, 0);
+		System.out.println(answer);
+	}
+
+	public void recursion(int cur, int cost) {
+		if(cost > answer) return;
+
+		if(cur == N+1) {
+			answer = cost;
+			return;
+		}
+
+		for (int i = 1; i <= N; i++) {
+			if(vis[i]) continue;
+
+			vis[i] = true;
+			for (SalesInfo salesInfo : salesInfos[i]) {
+				prices[salesInfo.target] -= salesInfo.discount;
+			}
+
+			if(prices[i] <= 0) {
+				recursion(cur + 1, cost + 1);
+			}else{
+				recursion(cur + 1, cost + prices[i]);
+			}
+
+			vis[i] = false;
+			for (SalesInfo salesInfo : salesInfos[i]) {
+				prices[salesInfo.target] += salesInfo.discount;
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
