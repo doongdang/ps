@@ -123,3 +123,153 @@ public class Main {
 		System.out.println(ans);
 	}
 }
+// 재 풀이
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+class Coordinate{
+	int x;
+	int y;
+
+	public Coordinate(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main {
+	int N, M, H;
+	boolean[][] board;
+	List<Coordinate> candidates;
+	int answer = -1;
+	int[] selected;
+	int candidateSize;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		H = Integer.parseInt(st.nextToken());
+		board = new boolean[H+1][N+1];
+		candidates = new ArrayList<>();
+
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+
+			board[a][b] = true;
+		}
+	}
+
+	public void solve() {
+		addCandidate();
+		candidateSize = candidates.size();
+
+		if(M % 2 == 0){
+			selected = new int[0];
+			recursion(0, 0, 0);
+
+			if(answer == -1 && candidates.size() >= 2){
+				selected = new int[2];
+				recursion(0, 0,  2);
+			}
+		}else{
+			selected = new int[1];
+			recursion(0, 0, 1);
+
+			if(answer == -1 && candidates.size() >= 3){
+				selected = new int[3];
+				recursion(0, 0,  3);
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public void recursion(int cur, int startIdx, int needCnt) {
+		if(answer != -1) return;
+		if(cur == needCnt){
+			for (int idx : selected) {
+				board[candidates.get(idx).x][candidates.get(idx).y] = true;
+			}
+
+			if(canBeAnswer()){
+				answer = needCnt;
+			}
+
+			for (int idx : selected) {
+				board[candidates.get(idx).x][candidates.get(idx).y] = false;
+			}
+			return;
+		}
+
+		for (int i = startIdx; i < candidates.size(); i++) {
+			selected[cur] = i;
+			recursion(cur+1, i + 1, needCnt);
+		}
+	}
+
+	public void addCandidate(){
+		for (int row = 1; row <= H; row++) {
+			if(!board[row][1]){
+				candidates.add(new Coordinate(row, 1));
+			}
+		}
+
+		for (int col = 2; col <= N-1; col++) {
+			for (int row = 1; row <= H; row++) {
+				if(!board[row][col-1] && !board[row][col]){
+					candidates.add(new Coordinate(row, col));
+				}
+			}
+		}
+	}
+
+	public boolean canBeAnswer(){
+		for (int col = 1; col <= N; col++) {
+			int curRow = 1;
+			int curCol = col;
+
+			while(curRow <= H){
+				if(curCol == 1){
+					if(board[curRow][curCol]){
+						curCol++;
+					}
+				}else if(curCol == N){
+					if(board[curRow][curCol-1]){
+						curCol--;
+					}
+				}else{
+					if(board[curRow][curCol]){
+						curCol++;
+					}else if(board[curRow][curCol-1]){
+						curCol--;
+					}
+				}
+
+				curRow++;
+			}
+
+			if(curCol != col){
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
