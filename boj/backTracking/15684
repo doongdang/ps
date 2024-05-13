@@ -123,7 +123,7 @@ public class Main {
 		System.out.println(ans);
 	}
 }
-// 재 풀이
+// 재 풀이 + canBeAnswer 불필요 조건문 제거
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -148,7 +148,6 @@ public class Main {
 	List<Coordinate> candidates;
 	int answer = -1;
 	int[] selected;
-	int candidateSize;
 
 	public void init() throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -172,7 +171,6 @@ public class Main {
 
 	public void solve() {
 		addCandidate();
-		candidateSize = candidates.size();
 
 		if(M % 2 == 0){
 			selected = new int[0];
@@ -240,20 +238,10 @@ public class Main {
 			int curCol = col;
 
 			while(curRow <= H){
-				if(curCol == 1){
-					if(board[curRow][curCol]){
-						curCol++;
-					}
-				}else if(curCol == N){
-					if(board[curRow][curCol-1]){
-						curCol--;
-					}
-				}else{
-					if(board[curRow][curCol]){
-						curCol++;
-					}else if(board[curRow][curCol-1]){
-						curCol--;
-					}
+				if(curCol != N && board[curRow][curCol]){
+					curCol++;
+				}else if(curCol != 1 && board[curRow][curCol-1]){
+					curCol--;
 				}
 
 				curRow++;
