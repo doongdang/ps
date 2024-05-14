@@ -1,0 +1,69 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+	int N;
+	//현재 위치, 높이가 2인 장애물 설치 존재 유무, 마지막 높이, 연속 장애물 수
+	long[][][][] dp;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		dp = new long[N][2][3][3];
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < 2; j++) {
+				for (int k = 0; k < 3; k++) {
+					for (int l = 0; l < 3; l++) {
+						dp[i][j][k][l] = -1;
+					}
+				}
+			}
+		}
+	}
+
+	public void solve() {
+		System.out.println(recursion(1, 0, 0, 0));
+	}
+
+	public long recursion(int cur, int cntOfTwo, int lastHeight, int cntOfContinuity) {
+		if (cur == N) {
+			if(cntOfTwo == 0) {
+				return 0;
+			}
+			return 1;
+		}
+
+		if(dp[cur][cntOfTwo][lastHeight][cntOfContinuity] != -1){
+			return dp[cur][cntOfTwo][lastHeight][cntOfContinuity];
+		}
+
+		long cnt = 0;
+
+		//장애물 안놓기
+		cnt += recursion(cur + 1, cntOfTwo, 0, 0) % 1_000_000_007;
+
+		//장애물을 놓을 수 있는지?
+		if (cntOfContinuity < 2) {
+
+			//높이 2짜리 장애물 놓기
+			if (lastHeight != 2) {
+				cnt += recursion(cur + 1,1, 2, cntOfContinuity + 1) % 1_000_000_007;
+			}
+
+			//높이 1짜리 장애물 놓기
+			cnt += recursion(cur + 1, cntOfTwo, 1, cntOfContinuity + 1) % 1_000_000_007;
+		}
+
+		dp[cur][cntOfTwo][lastHeight][cntOfContinuity] = cnt % 1_000_000_007;
+
+		return dp[cur][cntOfTwo][lastHeight][cntOfContinuity];
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
