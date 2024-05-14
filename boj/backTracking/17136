@@ -1,0 +1,105 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int answer;
+	boolean[][] board;
+	int[] papers;
+	int remains;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		board = new boolean[10][10];
+		papers = new int[6];
+		answer = Integer.MAX_VALUE;
+
+		for (int i = 0; i < 6; i++) {
+			papers[i] = 5;
+		}
+
+		for (int i = 0; i < 10; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < 10; j++) {
+				if (Integer.parseInt(st.nextToken()) == 1) {
+					board[i][j] = true;
+					remains++;
+				}
+			}
+		}
+	}
+
+	public void solve() {
+		recursion(0, 0, 0);
+
+		if(answer == Integer.MAX_VALUE) {
+			System.out.println(-1);
+			return;
+		}
+
+		System.out.println(answer);
+	}
+
+	public void recursion(int x, int y, int cnt) {
+		if(cnt >= answer) return;
+
+		if (y >= 10) {
+			x += 1;
+			y = 0;
+		}
+
+		if (x >= 10) {
+			if(remains > 0) return;
+			answer = cnt;
+			return;
+		}
+
+		if (!board[x][y]) {
+			recursion(x, y + 1, cnt);
+		} else {
+			for (int size = 5; size >= 1; size--) {
+				if (papers[size] == 0)
+					continue;
+				if (canPlace(x, y, size)) {
+					papers[size]--;
+					placeOrRemove(x, y, size, false);
+					remains -= size*size;
+					recursion(x, y + size, cnt + 1);
+					remains += size*size;
+					papers[size]++;
+					placeOrRemove(x, y, size, true);
+				}
+			}
+		}
+
+	}
+
+	public boolean canPlace(int x, int y, int size) {
+		if (x + size > 10 || y + size > 10)
+			return false;
+
+		for (int i = x; i < x + size; i++) {
+			for (int j = y; j < y + size; j++) {
+				if (!board[i][j])
+					return false;
+			}
+		}
+
+		return true;
+	}
+
+	public void placeOrRemove(int x, int y, int size, boolean isRemove) {
+		for (int i = x; i < x + size; i++) {
+			for (int j = y; j < y + size; j++) {
+				board[i][j] = isRemove;
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
