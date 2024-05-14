@@ -1,0 +1,65 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+	int n;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int[][][] dp = new int[4][(int)Math.pow(2, 15)+1][(int)Math.sqrt((int)Math.pow(2, 15))+1];
+
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < dp[i].length; j++) {
+				for (int k = 0; k < dp[i][j].length; k++) {
+					dp[i][j][k] = -1;
+				}
+			}
+		}
+
+		while (true) {
+			n = Integer.parseInt(br.readLine());
+			if (n == 0) break;
+
+			System.out.println(recursion(0, n, 1, dp));
+			// System.out.println(answer);
+		}
+
+	}
+
+	public int recursion(int cur, int sum, int lastPeek, int[][][] dp) {
+		if(sum < 0){
+			return 0;
+		}
+
+		if(cur == 4){
+			if(sum != 0) {
+				return 0;
+			}
+
+			return 1;
+		}
+
+		if(dp[cur][sum][lastPeek] != -1){
+			return dp[cur][sum][lastPeek];
+		}
+
+		int cnt = 0;
+
+		cnt += recursion(cur+1, sum, 0, dp);
+
+		if(lastPeek != 0) {
+			for (int i = lastPeek; i <= (int)Math.sqrt(n); i++) {
+				cnt += recursion(cur + 1, sum - i * i, i, dp);
+			}
+		}
+
+		dp[cur][sum][lastPeek] = cnt;
+		return dp[cur][sum][lastPeek];
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+	}
+}
