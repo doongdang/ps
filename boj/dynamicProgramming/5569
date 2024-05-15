@@ -1,0 +1,85 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int w, h;
+	//x, y, 진입 방향, 변경 이후 지나온 길 수
+	int[][][][] dp;
+	int[] dx;
+	int[] dy;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		dx = new int[] {0, 0, -1};
+		dy = new int[] {0, 1, 0};
+
+		w = Integer.parseInt(st.nextToken());
+		h = Integer.parseInt(st.nextToken());
+		dp = new int[h + 1][w + 1][3][3];
+
+		for (int i = 1; i <= h; i++) {
+			for (int j = 1; j <= w; j++) {
+				for (int k = 0; k < 3; k++) {
+					for (int l = 0; l < 3; l++) {
+						dp[i][j][k][l] = -1;
+					}
+				}
+			}
+		}
+	}
+
+	public void solve() {
+		// System.out.println(recursion(h, 1, 0, 0));
+		System.out.println(recursion(h, 1, 0, 2));;
+	}
+
+	public int recursion(int x, int y, int lastDir, int continuity) {
+		if (x < 1 || y > w) {
+			return 0;
+		}
+
+		if (x == 1 && y == w) {
+			return 1;
+		}
+
+		if (dp[x][y][lastDir][continuity] != -1) {
+			return dp[x][y][lastDir][continuity];
+		}
+
+		int cnt = 0;
+
+		//시작점이라면
+		if(lastDir == 0){
+			for (int i = 1; i <= 2; i++) {
+				cnt += recursion(x + dx[i], y + dy[i], i, 2);
+			}
+		}else{
+			//방향 변경이 불가능한 경우
+			if (continuity < 2) {
+				cnt += recursion(x + dx[lastDir], y + dy[lastDir], lastDir, continuity + 1);
+			} else { //변경이 가능한 경우
+				for (int i = 1; i <= 2; i++) {
+					if (lastDir == i) {
+						cnt += recursion(x + dx[i], y + dy[i], i, 2);
+					} else {
+						cnt += recursion(x + dx[i], y + dy[i], i, 1);
+					}
+				}
+			}
+		}
+
+		dp[x][y][lastDir][continuity] = cnt % 100_000;
+
+		return dp[x][y][lastDir][continuity];
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
