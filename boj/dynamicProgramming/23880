@@ -1,0 +1,98 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int T,N,K;
+	//x, y, 방향, 방향 전환 횟수
+	int[][][][] dp;
+	int[] dx;
+	int[] dy;
+	int answer;
+	char[][] board;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		T = Integer.parseInt(br.readLine());
+		dx = new int[]{0, 1, 0};
+		dy = new int[]{0, 0, 1};
+
+		for (int i = 0; i < T; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			N = Integer.parseInt(st.nextToken());
+			K = Integer.parseInt(st.nextToken());
+			board = new char[N][N];
+			answer = 0;
+			dp = new int[N][N][3][K+1];
+
+			for (int j = 0; j < N; j++) {
+				board[j] = br.readLine().toCharArray();
+			}
+
+			for (int j = 0; j < N; j++) {
+				for (int k = 0; k < N; k++) {
+					for (int l = 0; l < 3; l++) {
+						for (int m = 0; m < K+1; m++) {
+							dp[j][k][l][m] = -1;
+						}
+					}
+				}
+			}
+
+			solve();
+		}
+	}
+
+	public void solve() {
+		System.out.println(recursion(0, 0, 0, 0));
+	}
+
+	public int recursion(int x, int y, int dir, int changeCnt){
+		if(changeCnt > K){
+			return 0;
+		}
+
+		if(x >= N || y >= N){
+			return 0;
+		}
+
+		if(board[x][y] == 'H'){
+			return 0;
+		}
+
+		if(x == N-1 && y == N-1){
+			return 1;
+		}
+
+		if(dp[x][y][dir][changeCnt] != -1){
+			return dp[x][y][dir][changeCnt];
+		}
+
+		int cnt = 0;
+
+		if(dir == 0){
+			for (int i = 1; i <= 2; i++) {
+				cnt += recursion(x+dx[i], y+dy[i], i, changeCnt);
+			}
+		}else{
+			for (int i = 1; i <= 2; i++) {
+				if(dir == i){
+					cnt += recursion(x+dx[i], y+dy[i], i, changeCnt);
+				}else{
+					cnt += recursion(x+dx[i], y+dy[i], i, changeCnt+1);
+				}
+			}
+		}
+
+		dp[x][y][dir][changeCnt] = cnt;
+
+		return dp[x][y][dir][changeCnt];
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+	}
+}
