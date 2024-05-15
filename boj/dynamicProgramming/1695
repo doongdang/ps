@@ -1,0 +1,66 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+/*
+	DP - Top-Down
+	주어진 수열의 양 끝단에서 출발. left, right
+	left와 right이 같다면 안쪽으로 둘다 한칸 씩 이동
+	left와 right가 다르다면
+		1. left 다음에 새로운 숫자 삽입.
+		2. right 앞에 새로운 숫자 삽입.
+
+	left가 right보다 커지면 중단.
+*/
+
+public class Main {
+	int N;
+	int[] nums;
+	int[][] dp;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		nums = new int[N];
+		dp = new int[N][N];
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			nums[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		System.out.println(recursion(0, N - 1));
+	}
+
+	public int recursion(int left, int right) {
+		if (left > right) {
+			return 0;
+		}
+
+		if (dp[left][right] != 0) {
+			return dp[left][right];
+		}
+
+		int cnt = 0;
+
+		if (nums[left] == nums[right]) {
+			cnt = recursion(left + 1, right - 1);
+		} else {
+			cnt = Math.min(recursion(left + 1, right), recursion(left, right - 1)) + 1;
+		}
+
+		dp[left][right] = cnt;
+
+		return dp[left][right];
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
