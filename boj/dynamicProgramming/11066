@@ -1,0 +1,63 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Main {
+	int T, K;
+	int[][] dp;
+	int[] files;
+	int answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		T = Integer.parseInt(br.readLine());
+
+		for (int i = 0; i < T; i++) {
+			K = Integer.parseInt(br.readLine());
+			dp = new int[K+1][K+1];
+			files = new int[K+1];
+			answer = 0;
+
+			StringTokenizer st = new StringTokenizer(br.readLine());
+
+			for (int j = 0; j <= K; j++) {
+				Arrays.fill(dp[j], Integer.MAX_VALUE);
+			}
+
+			for (int j = 1; j <= K; j++) {
+				int file = Integer.parseInt(st.nextToken());
+				files[j] = file;
+			}
+
+			for (int j = 1; j <= K; j++) {
+				files[j] += files[j - 1];
+			}
+
+			System.out.println(recursion(1, K));
+		}
+
+	}
+
+	public int recursion(int start, int end) {
+		if(start == end) {
+			return 0;
+		}
+
+		if(dp[start][end] != Integer.MAX_VALUE){
+			return dp[start][end];
+		}
+
+		for (int mid = start; mid < end; mid++) {
+			dp[start][end]  = Math.min(dp[start][end] , recursion(start, mid) + recursion(mid+1, end) + files[end] - files[start-1]);
+		}
+
+		return dp[start][end];
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+	}
+}
