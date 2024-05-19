@@ -1,0 +1,83 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N;
+	int A, B;
+	//정독실, 소학습실, 휴게실, 요양 신청
+	int[][] rooms;
+	int[][][][] dp;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		A = Integer.parseInt(st.nextToken());
+		B = Integer.parseInt(st.nextToken());
+		rooms = new int[N][5];
+		dp = new int[N][5][A+1][N+1];
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			rooms[i][1] = Integer.parseInt(st.nextToken());
+			rooms[i][2] = Integer.parseInt(st.nextToken());
+			rooms[i][3] = Integer.parseInt(st.nextToken());
+			rooms[i][4] = Integer.parseInt(st.nextToken());
+		}
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < 5; j++) {
+				for (int k = 0; k < A+1; k++) {
+					for (int l = 0; l < N+1; l++) {
+						dp[i][j][k][l] = Integer.MIN_VALUE;
+					}
+				}
+			}
+		}
+	}
+
+	public void solve() {
+		System.out.println(recursion(0, 0, 0, 0));
+	}
+
+	public int recursion(int cur, int lastRoom, int cntA, int cntB) {
+		if(cntA > A) {
+			return Integer.MIN_VALUE;
+		}
+
+		if(cur == N){
+			if(cntB < B){
+				return Integer.MIN_VALUE;
+			}
+			return 0;
+		}
+
+		if(dp[cur][lastRoom][cntA][cntB] != Integer.MIN_VALUE){
+			return dp[cur][lastRoom][cntA][cntB];
+		}
+
+		int val = Integer.MIN_VALUE;
+
+		val = Math.max(val, recursion(cur + 1, 1, cntA, cntB+1) + rooms[cur][1]);
+		val = Math.max(val, recursion(cur + 1, 2, cntA, cntB+1) + rooms[cur][2]);
+
+		if(lastRoom != 3){
+			val = Math.max(val, recursion(cur + 1, 3, cntA, cntB) + rooms[cur][3]);
+		}
+
+		val = Math.max(val, recursion(cur + 1, 4, cntA+1, cntB) + rooms[cur][4]);
+
+		dp[cur][lastRoom][cntA][cntB] = val;
+
+		return dp[cur][lastRoom][cntA][cntB];
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
