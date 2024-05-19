@@ -1,0 +1,82 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+class Question{
+	int S;
+	int E;
+
+	public Question(int s, int e) {
+		S = s;
+		E = e;
+	}
+}
+
+public class Main {
+	int N, M;
+	int[] nums;
+	int[][] dp;
+	Question[] questions;
+
+	public void init() throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		nums = new int[N+1];
+		dp = new int[N+1][N+1];
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		for (int i = 1; i <= N; i++) {
+			nums[i] = Integer.parseInt(st.nextToken());
+		}
+
+		M = Integer.parseInt(br.readLine());
+		questions = new Question[M];
+
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			questions[i] = new Question(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+		}
+
+		for (int i = 0; i <= N; i++) {
+			Arrays.fill(dp[i], -1);
+		}
+	}
+
+	public void solve() {
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < M; i++) {
+			sb.append(recursion(questions[i].S, questions[i].E)).append("\n");
+		}
+
+		System.out.println(sb);
+	}
+
+	public int recursion(int start, int end){
+		if(nums[start] != nums[end]){
+			return 0;
+		}
+
+		if(start == (start+end)/2){
+			return 1;
+		}
+
+		if(dp[start][end] != -1){
+			return dp[start][end];
+		}
+
+		dp[start][end] = recursion(start + 1, end - 1);
+
+		return dp[start][end];
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
