@@ -7,8 +7,7 @@ import java.util.StringTokenizer;
 public class Main {
 	int n, k;
 	boolean[] canCall;
-	int[][] dp;
-	boolean isFirstWin;
+	int[] dp;
 
 	public void init() throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,7 +17,7 @@ public class Main {
 		k = Integer.parseInt(st.nextToken());
 		canCall = new boolean[n + 1];
 		Arrays.fill(canCall, true);
-		dp = new int[2][n + 1];
+		dp = new int[n + 1];
 
 		st = new StringTokenizer(br.readLine());
 
@@ -26,33 +25,32 @@ public class Main {
 			canCall[Integer.parseInt(st.nextToken())] = false;
 		}
 
-		for (int i = 0; i < 2; i++) {
-			Arrays.fill(dp[i], -1);
-		}
+		Arrays.fill(dp, -1);
 	}
 
 	public void solve() {
-		System.out.println(recursion(0, 0)^1);
+		System.out.println(recursion(0));
 	}
 
-	public int recursion(int cur, int lastCall) {
-		if (dp[cur][lastCall] != -1)
-			return dp[cur][lastCall];
+	//dp 값이 1이면 승리, 0이면 패배
+	public int recursion(int lastCall) {
+		if (dp[lastCall] != -1)
+			return dp[lastCall];
 
 		for (int i = 1 + lastCall; i <= Math.min(k + lastCall, n); i++) {
 			if (canCall[i]) {
 				canCall[i] = false;
-				int result = recursion(cur ^ 1, i);
+				int result = recursion(i); //다음 턴 결과 내다보기
 				canCall[i] = true;
-				if (result == cur) { // 현재 플레이어가 이길 수 있는 경우
-					dp[cur][lastCall] = cur;
-					return dp[cur][lastCall]; // 현재 플레이어의 승리
+				if (result == 0) { // 현재 플레이어가 이길 수 있는 경우 (다음 턴에 외치는 사람이 패배하는 경우)
+					dp[lastCall] = 1;
+					return dp[lastCall]; // 현재 플레이어의 승리
 				}
 			}
 		}
 
-		dp[cur][lastCall] = cur ^ 1; // 현재 플레이어가 이길 수 없는 경우, 상대 플레이어의 승리
-		return dp[cur][lastCall];
+		dp[lastCall] = 0; // 현재 플레이어가 이길 수 없는 경우
+		return dp[lastCall];
 	}
 
 	public static void main(String[] args) throws IOException {
