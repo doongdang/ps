@@ -1,0 +1,86 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Main {
+	int[] b;
+	int[][] dp;
+	int minPeekCnt = Integer.MAX_VALUE;
+	int k1;
+	int k2;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		b = new int[4];
+
+		for (int i = 1; i <= 3; i++) {
+			b[i] = Integer.parseInt(st.nextToken());
+			minPeekCnt = Math.min(minPeekCnt, b[i]);
+		}
+
+		for (int i = 0; i < 5; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			k1 = Integer.parseInt(st.nextToken());
+			k2 = Integer.parseInt(st.nextToken());
+
+			dp = new int[k1+1][k2+1];
+
+			for (int j = 0; j < k1+1; j++) {
+				Arrays.fill(dp[j], -1);
+			}
+
+			if(recursion(k1, k2) == 1){
+				System.out.println("A");
+			}else{
+				System.out.println("B");
+			}
+		}
+	}
+
+	/*
+		패배 조건: 두 통 모두 꺼낼 수 있는 구슬의 최솟값보다 적은 구슬이 들은 경우 패배.
+		뽑는 경우의 수 : 통1에서 b[i]개를 뽑던지, 통2에서 b[i]개를 뽑던지 (i = 1 ~ 3).
+		각각의 모든 경우에 대해 A가 이기는 경우가 하나도 없다면, B의 승리.
+	*/
+	public int recursion(int remainK1, int remainK2) {
+		if(dp[remainK1][remainK2] != -1) {
+			return dp[remainK1][remainK2];
+		}
+
+
+		//k1에서 뽑는 경우
+		for (int i = 1; i <= 3; i++) {
+		    //k1에서 뽑을 수 있다면, 뽑고 다음 순서를 미리 내다봄. 다음 착수가 패배로 이어지면 현재는 승리.
+			if(b[i] <= remainK1 && recursion(remainK1 - b[i], remainK2) == 0){
+				dp[remainK1][remainK2] = 1;
+
+				return dp[remainK1][remainK2];
+			}
+		}
+
+		//k2에서 뽑는 경우
+		for (int i = 1; i <= 3; i++) {
+		    //k2에서 뽑을 수 있다면, 뽑고 다음 순서를 미리 내다봄. 다음 착수가 패배로 이어지면 현재는 승리.
+			if(b[i] <= remainK2 && recursion(remainK1, remainK2 - b[i]) == 0){
+				dp[remainK1][remainK2] = 1;
+
+				return dp[remainK1][remainK2];
+			}
+		}
+
+
+        //위에서 승리 가능한 시나리오가 하나도 없었다면, 현재의 착수는 패배.
+		dp[remainK1][remainK2] = 0;
+
+		return dp[remainK1][remainK2];
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+	}
+}
