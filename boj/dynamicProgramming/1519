@@ -1,0 +1,56 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class Main {
+	int N;
+	char[] chars;
+	int[] dp;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		dp = new int[1_000_001];
+
+		Arrays.fill(dp, Integer.MAX_VALUE);
+	}
+
+	public void solve() {
+		for (int i = 1; i <= 9; i++) {
+			dp[i] = -1;
+		}
+
+		for (int num = 10; num <= N; num++) {
+			chars = Integer.toString(num).toCharArray();
+
+			for (int i = 1; i <= Math.log10(num) + 1; i++) {
+				for (int j = 0; j <= chars.length - i; j++) {
+					int val = 0;
+					for (int k = j; k < j + i; k++) {
+						val = val * 10 + chars[k] - '0';
+					}
+					if (val == 0 || val == num)
+						continue;
+
+					if (dp[num - val] == -1) {
+						dp[num] = Math.min(dp[num], val);
+					}
+				}
+			}
+			if (dp[num] == Integer.MAX_VALUE) {
+				dp[num] = -1;
+			}
+		}
+		System.out.println(dp[N]);
+	}
+
+	//1 ~ N까지 순차적으로 증가하며 각 숫자에서 어떤 부분 수열을 제거했을 때 승리 가능한지 기록
+	//즉, N에서 N의 모든 부분 수열을 차감한 숫자의 dp 배열 값을 확인 한 후 0이라면, dp[N]은 차감된 부분 수열을 기록. 0이 아니라면 dp[N]은 0을 기록한다.
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
