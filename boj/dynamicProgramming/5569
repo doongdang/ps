@@ -83,3 +83,65 @@ public class Main {
 		m.solve();
 	}
 }
+
+//Bottom Up 풀이 추가
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int w, h;
+	//x, y, 진입 방향(0 -> 아래, 1 -> 오른쪽), 변경 가능 여부(0 -> 가능,  1 -> 불가능)
+	int[][][][] dp;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		w = Integer.parseInt(st.nextToken());
+		h = Integer.parseInt(st.nextToken());
+		dp = new int[w][h][2][2];
+	}
+
+	public void solve() {
+		bottomUp();
+	}
+
+	public void bottomUp() {
+		for (int i = 0; i < w; i++) {
+			dp[i][0][0][0] = 1;
+		}
+
+		for (int i = 0; i < h; i++) {
+			dp[0][i][1][0] = 1;
+		}
+
+		for (int i = 1; i < w; i++) {
+			for (int j = 1; j < h; j++) {
+				//현재 위치에 위에서 진입하고, 향후 방향 변경이 가능한 경우는 이전에 아래로 내려오고, 이전에 방향이 변경 가능했거나, 방향이 변경 가능하지 않았던 경우다.
+				dp[i][j][0][0] = (dp[i-1][j][0][0] + dp[i-1][j][0][1]) % 100_000;
+				dp[i][j][0][1] = dp[i-1][j][1][0] % 100_000;
+				dp[i][j][1][0] = dp[i][j-1][1][0] + dp[i][j-1][1][1] % 100_000;
+				dp[i][j][1][1] = dp[i][j-1][0][0] % 100_000;
+			}
+		}
+
+		int answer = 0;
+
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				answer += dp[w-1][h-1][i][j];
+				answer %= 100_000;
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
