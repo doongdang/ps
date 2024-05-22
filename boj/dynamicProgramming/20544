@@ -67,3 +67,100 @@ public class Main {
 		m.solve();
 	}
 }
+
+//Bottom Up 풀이 추가
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+	int N;
+	//현재 위치, 높이가 2인 장애물 설치 존재 유무, 마지막 높이, 연속 장애물 수
+	int[][][][] dp;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		dp = new int[N+1][2][3][3];
+	}
+
+	public void solve() {
+		// System.out.println(topDown(1, 0, 0, 0));
+		/*
+			DP 배열의 초기값은, 상태가 결정난 곳에 대하여 설정해야한다.
+			공룡게임의 경우, 도착지점이 index가 N(문제 상 실제 지점은 N+1)이면서 2의 장애물 개수가 1 이상이고, 연속된 장애물의 개수가 2이하이며, 연속된 장애물 수가 2인 경우 2x2가 아닌 경우 확정난 상태로 생각할 수 있다.
+		*/
+		bottomUp();
+	}
+
+	public void bottomUp(){
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				dp[N][1][i][j] = 1;
+			}
+		}
+
+		for (int i = N-1; i >= 1; i--) {
+			for (int j = 0; j < 2; j++) {
+				for (int k = 0; k < 3; k++) {
+					for (int l = 0; l < 3; l++) {
+						dp[i][j][k][l] += dp[i+1][j][0][0] % 1_000_000_007;
+
+						if(l < 2){
+							if(k != 2){
+								dp[i][j][k][l] += dp[i+1][1][2][l+1] % 1_000_000_007;
+								dp[i][j][k][l] %= 1_000_000_007;
+							}
+
+							dp[i][j][k][l] += dp[i+1][j][1][l+1] % 1_000_000_007;
+							dp[i][j][k][l] %= 1_000_000_007;
+						}
+					}
+				}
+			}
+		}
+
+		System.out.println(dp[1][0][0][0]);
+	}
+
+	// public int topDown(int cur, int cntOfTwo, int lastHeight, int cntOfContinuity) {
+	// 	if (cur == N) {
+	// 		if(cntOfTwo == 0) {
+	// 			return 0;
+	// 		}
+	// 		return 1;
+	// 	}
+	//
+	// 	if(dp[cur][cntOfTwo][lastHeight][cntOfContinuity] != -1){
+	// 		return dp[cur][cntOfTwo][lastHeight][cntOfContinuity];
+	// 	}
+	//
+	// 	int cnt = 0;
+	//
+	// 	//장애물 안놓기
+	// 	cnt += topDown(cur + 1, cntOfTwo, 0, 0) % 1_000_000_007;
+	//
+	// 	//장애물을 놓을 수 있는지?
+	// 	if (cntOfContinuity < 2) {
+	// 		//높이 2짜리 장애물 놓기
+	// 		if (lastHeight != 2) {
+	// 			cnt += topDown(cur + 1,1, 2, cntOfContinuity + 1) % 1_000_000_007;
+	// 			cnt %= 1_000_000_007;
+	// 		}
+	//
+	// 		//높이 1짜리 장애물 놓기
+	// 		cnt += topDown(cur + 1, cntOfTwo, 1, cntOfContinuity + 1) % 1_000_000_007;
+	// 		cnt %= 1_000_000_007;
+	// 	}
+	//
+	// 	dp[cur][cntOfTwo][lastHeight][cntOfContinuity] = cnt;
+	//
+	// 	return dp[cur][cntOfTwo][lastHeight][cntOfContinuity];
+	// }
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
