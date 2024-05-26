@@ -1,0 +1,98 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class Main {
+	char[] magic;
+
+	//악마 = 0, 천사 = 1, 문자열
+	char[][] bridge;
+	int answer;
+	int[][][] dp;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		bridge = new char[2][];
+		magic = br.readLine().toCharArray();
+		bridge[0] = br.readLine().toCharArray();
+		bridge[1] = br.readLine().toCharArray();
+		dp = new int[magic.length][2][bridge[0].length];
+
+		// for (int i = 0; i < magic.length; i++) {
+		// 	for (int j = 0; j < 2; j++) {
+		// 		for (int k = 0; k < bridge[0].length; k++) {
+		// 			dp[i][j][k] = -1;
+		// 		}
+		// 	}
+		// }
+	}
+
+	public void solve() {
+		// System.out.println(topDown(0, 0, 0) + topDown(0, 1, 0));
+		bottomUp();
+	}
+
+	/*
+		초기값: 끝이 될 수 있는 문자에 1 부여. 가령 마법 문자열의 길이가 3이고, 악마 및 천사 문자열의 길이가 5라면, 악,천 문자열의 인덱스 2부터 4까지 마법 문자열의 인덱스 2번 문자와 일치하는 것들은 모두 1로 지정.
+		반복문 로직
+			=> 길이가 len인 마법문자열의 x번째 문자가 길이가 len2인 악,천 문자열에서 성립 가능한 범위 => for(int i = x; i < len2-(len - x) )
+	*/
+
+	public void bottomUp() {
+		for (int i = magic.length - 1; i < bridge[0].length; i++) {
+			if (bridge[0][i] == magic[magic.length - 1]) {
+				dp[magic.length - 1][0][i] = 1;
+			}
+
+			if (bridge[1][i] == magic[magic.length - 1]) {
+				dp[magic.length - 1][1][i] = 1;
+			}
+		}
+
+		for (int i = magic.length - 2; i >= 0; i--) {
+			for (int j = 0; j < 2; j++) {
+				for (int k = bridge[0].length - 1 - (magic.length - 1 - i); k >= i; k--) {
+					if (bridge[j][k] == magic[i]) {
+						for (int l = k+1; l < bridge[0].length; l++) {
+							dp[i][j][k] += dp[i + 1][j ^ 1][l];
+						}
+					}
+				}
+			}
+		}
+
+		System.out.println(Arrays.stream(dp[0][0]).sum() + Arrays.stream(dp[0][1]).sum());
+	}
+
+	public int topDown(int magicIdx, int loc, int strIdx) {
+		if (magicIdx == magic.length) {
+			return 1;
+		}
+
+		if (strIdx >= bridge[0].length) {
+			return 0;
+		}
+
+		if (dp[magicIdx][loc][strIdx] != -1) {
+			return dp[magicIdx][loc][strIdx];
+		}
+
+		int cnt = 0;
+
+		if (magic[magicIdx] == bridge[loc][strIdx]) {
+			cnt += topDown(magicIdx + 1, loc ^ 1, strIdx + 1);
+		}
+		cnt += topDown(magicIdx, loc, strIdx + 1);
+
+		dp[magicIdx][loc][strIdx] = cnt;
+
+		return dp[magicIdx][loc][strIdx];
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
