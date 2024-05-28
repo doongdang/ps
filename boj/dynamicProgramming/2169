@@ -1,0 +1,103 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N, M;
+	int[][] map;
+	int answer = Integer.MIN_VALUE;
+	int[] dx = {1, 0, 0};
+	int[] dy = {0, -1, 1};
+	int[][][] dpForTopDown;
+	final int INIT = Integer.MIN_VALUE/2;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		map = new int[N][M];
+		dpForTopDown = new int[N][M][3];
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < M; j++) {
+				map[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				for (int k = 0; k < 3; k++) {
+					dpForTopDown[i][j][k] = INIT;
+				}
+			}
+		}
+	}
+
+	public void solve() {
+		// backTracking(0, 0, 0, 0);
+		// System.out.println(answer);
+		System.out.println(topDown(0, 0,0));
+	}
+
+	/*
+		백 트래킹 접근법
+		x, y, 접근 방향을 인수로 주고, 현재 위치에 들어온 방향이 좌측일 경우, 현재 위치에서 진출 하는 방향은 우측이 될 수 없다.(이미 방문하여 지나왔기 때문)
+		마찬가지로 현재 위치에 들어온 방향이 우측일 경우, 현재 위치에서 진출하는 방향은 좌측이 될 수 없다.
+	*/
+
+	public void backTracking(int x, int y, int enterDir, int val) {
+		if (x >= N || y < 0 || y >= M) {
+			return;
+		}
+
+		if (x == N - 1 && y == M - 1) {
+			answer = Math.max(answer, val + map[x][y]);
+		}
+
+		backTracking(x + dx[0], y + dy[0], 0, val + map[x][y]);
+
+		if (enterDir != 1) {
+			backTracking(x + dx[2], y + dy[2], 2, val + map[x][y]);
+		}
+
+		if (enterDir != 2) {
+			backTracking(x + dx[1], y + dy[1], 1, val + map[x][y]);
+		}
+	}
+
+	public int topDown(int x, int y, int enterDir) {
+		if (x >= N || y < 0 || y >= M) {
+			return INIT;
+		}
+
+		if (x == N - 1 && y == M - 1) {
+			return map[x][y];
+		}
+
+		if(dpForTopDown[x][y][enterDir] != INIT) {
+			return dpForTopDown[x][y][enterDir];
+		}
+
+		dpForTopDown[x][y][enterDir] = topDown(x + dx[0], y + dy[0], 0) + map[x][y];
+
+		if (enterDir != 1) {
+			dpForTopDown[x][y][enterDir] = Math.max(dpForTopDown[x][y][enterDir], topDown(x + dx[2], y + dy[2], 2)+ map[x][y]);
+		}
+
+		if (enterDir != 2) {
+			dpForTopDown[x][y][enterDir] = Math.max(dpForTopDown[x][y][enterDir], topDown(x + dx[1], y + dy[1], 1) + map[x][y]);
+		}
+
+		return dpForTopDown[x][y][enterDir];
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
