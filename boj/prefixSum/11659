@@ -1,0 +1,64 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+class Section{
+	int start;
+	int end;
+
+	public Section(int start, int end) {
+		this.start = start;
+		this.end = end;
+	}
+}
+
+public class Main {
+	int N, M;
+	int[] nums;
+	Section[] sections;
+	int[] sums;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		nums = new int[N+1];
+		sections = new Section[M];
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 1; i <= N; i++) {
+			nums[i] = Integer.parseInt(st.nextToken());
+		}
+
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+			sections[i] = new Section(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+		}
+	}
+
+	public void solve() {
+		StringBuilder answer = new StringBuilder();
+		calculateAccumulateSum();
+
+		for (int i = 0; i < M; i++) {
+			answer.append(nums[sections[i].end] - nums[sections[i].start-1]).append("\n");
+		}
+
+		System.out.println(answer);
+	}
+
+	public void calculateAccumulateSum(){
+		for (int i = 1; i <= N; i++) {
+			nums[i] += nums[i - 1];
+		}
+	}
+
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
