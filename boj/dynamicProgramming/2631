@@ -1,0 +1,49 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class Main {
+	int N;
+	int[] students;
+	int[] lis;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		N = Integer.parseInt(br.readLine());
+		students = new int[N];
+		lis = new int[N];
+
+		for (int i = 0; i < N; i++) {
+			students[i] = Integer.parseInt(br.readLine());
+		}
+	}
+
+	/*
+		답이 되기 위해서, 즉 1~N의 순서로 정렬이 되기 위해서는 오름차순으로 정렬이 되어야 하고 이는 LIS의 길이가 N이어야 한다는 것을 의미한다.
+		학생을 1명 옮기면, LIS의 길이를 무조건 1 늘릴 수 있다??
+			- 그러면 학생 한명의 이동으로 LIS의 길이가 2 이상 늘어나는 경우는 없나?
+				- 없음. 학생 한 명의 이동이 앞으로 가던 뒤로 가던 그 학생을 제외한 나머지 학생의 크기 순서는 바뀌지 않음.
+	*/
+
+	public void solve() {
+		Arrays.fill(lis, 1);
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < i; j++) {
+				if(students[j] < students[i]){
+					lis[i] = Math.max(lis[i], lis[j] + 1);
+				}
+			}
+		}
+
+		System.out.println(N - Arrays.stream(lis).max().getAsInt());
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
