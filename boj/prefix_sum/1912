@@ -1,0 +1,41 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int n;
+	int[] nums;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		n = Integer.parseInt(br.readLine());
+		nums = new int[n + 1];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		for (int i = 1; i <= n; i++) {
+			nums[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		int answer = Integer.MIN_VALUE;
+		int sum = 0;
+
+		for (int i = 1; i <= n; i++) {
+			sum += nums[i];
+			answer = Math.max(answer, sum);
+			if(sum < 0){
+				sum = 0;
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
