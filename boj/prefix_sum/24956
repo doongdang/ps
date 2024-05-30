@@ -1,0 +1,100 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+	int N;
+	String S;
+	int[] sumOfE;
+	int[] sumOfH;
+	int[] sumOfW;
+	int[] valFofPow;
+
+	List<Integer> wIdxs;
+	List<Integer> hIdxs;
+	List<Integer> eIdxs;
+
+	int answer;
+	final int MOD = 1_000_000_007;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		S = br.readLine();
+		sumOfE = new int[N+1];
+		sumOfH = new int[N+1];
+		sumOfW = new int[N+1];
+		valFofPow = new int[N+1];
+		wIdxs = new ArrayList<>();
+		hIdxs = new ArrayList<>();
+		eIdxs = new ArrayList<>();
+
+
+		for (int i = 0; i < N; i++){
+			if(S.charAt(i) == 'W') wIdxs.add(i);
+			if(S.charAt(i) == 'H') hIdxs.add(i);
+			if(S.charAt(i) == 'E') eIdxs.add(i);
+		}
+
+		valFofPow[0] = 1;
+
+		for (int i = 1; i <= N; i++) {
+			valFofPow[i] = valFofPow[i-1]*2;
+			valFofPow[i] %= MOD;
+		}
+	}
+
+	public void solve() {
+		if(wIdxs.isEmpty() || hIdxs.isEmpty() || eIdxs.size() < 2){
+			System.out.println(answer);
+			return;
+		}
+
+		fillSumOfE();
+		fillSumOfH();
+		fillSumOfW();
+
+		System.out.println(answer);
+	}
+
+	public void fillSumOfE(){
+		for (int i = 0; i < eIdxs.size(); i++) {
+			int cnt = eIdxs.size() - i - 1;
+
+			sumOfE[eIdxs.get(i)] = valFofPow[cnt] - 1;
+		}
+
+		for (int i = N-1; i >= 0; i--){
+			sumOfE[i] += sumOfE[i+1] % MOD;
+		}
+	}
+
+	public void fillSumOfH(){
+		for (Integer hIdx : hIdxs) {
+			sumOfH[hIdx] = sumOfE[hIdx + 1];
+		}
+
+		for (int i = N-1; i >= 0; i--){
+			sumOfH[i] += sumOfH[i+1] % MOD;
+		}
+	}
+
+	public void fillSumOfW(){
+		for (Integer wIdx : wIdxs) {
+			sumOfW[wIdx] = sumOfH[wIdx + 1];
+		}
+
+		for (int wIdxs : wIdxs) {
+			answer += sumOfW[wIdxs];
+			answer %= MOD;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
