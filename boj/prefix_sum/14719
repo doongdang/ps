@@ -1,0 +1,59 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+/*
+	아이디어
+	=> 창고 다각형 문제를 응용하면 해결 가능할 것 같다.
+	창고 다각형 문제 에서는 현재 위치 기준으로 좌,우에서 가장 높은 높이를 통해 최대 면적을 구했다면,
+	이번 문제는 그렇게 구한 최대 면적에서 주어진 높이의 면적을 빼면 답을 구할 수 있을 것 같음.
+*/
+
+public class Main {
+	int H, W;
+	int[] heights;
+	int[] before;
+	int[] after;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		H = Integer.parseInt(st.nextToken());
+		W = Integer.parseInt(st.nextToken());
+		heights = new int[W + 1];
+		before = new int[W + 2];
+		after = new int[W + 2];
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 1; i <= W; i++) {
+			heights[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		for (int i = 1; i <= W; i++) {
+			before[i] = Math.max(before[i - 1], heights[i]);
+		}
+
+		for (int i = W; i >= 1; i--) {
+			after[i] = Math.max(after[i + 1], heights[i]);
+		}
+
+		int answer = 0;
+
+		for (int i = 1; i <= W; i++) {
+			answer += Math.min(before[i], after[i]);
+			answer -= heights[i];
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
