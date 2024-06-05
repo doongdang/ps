@@ -1,0 +1,59 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N;
+	int[] arr;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		arr = new int[N];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		int st = 0;
+		int en = N-1;
+		int sumOfAnswer = Integer.MAX_VALUE;
+		int answer1 = Integer.MAX_VALUE;
+		int answer2 = Integer.MAX_VALUE;
+
+		while(st < en){
+			int sum = arr[st] + arr[en];
+			if(sum == 0){
+				answer1 = arr[st];
+				answer2 = arr[en];
+				break;
+			}else if(sum < 0){
+				if(Math.abs(0 - sumOfAnswer) > Math.abs(0 - sum)){
+					answer1 = arr[st];
+					answer2 = arr[en];
+					sumOfAnswer = sum;
+				}
+				st++;
+			}else{
+				if(Math.abs(0 - sumOfAnswer) > Math.abs(0 - sum)){
+					answer1 = arr[st];
+					answer2 = arr[en];
+					sumOfAnswer = sum;
+				}
+				en--;
+			}
+		}
+
+		System.out.println(answer1 + " " + answer2);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
