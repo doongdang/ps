@@ -1,0 +1,72 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+
+/*
+	아이디어
+		S를 2로, K를 -1로 두어 누적합을 연산하고, 이를 저장한다.
+		이후, 해당 누적합의 값이 최초로 변하는 위치를 Map에 (누적합의 값, 위치)로 저장한다.
+		누적합 배열을 순회하며, 현재 위치에서 현재 누적합 값의 최초 등장위치를 빼면 S와 K의 개수가 조건에 부합하는 수열의 길이가 된다.
+		다만, 이는 S >= 1, K >= 2의 조건을 정확히 지키지는 않기 때문에 해당 구간에 등장하는 S와 K의 개수를 확인하여 정답 조건에 추가한다.
+*/
+
+public class Main {
+	String S;
+	int[] prefixSum;
+	int[] prefixSumOfS;
+	int[] prefixSumOfK;
+	Map<Integer, Integer> cntMap;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		S = br.readLine();
+		prefixSum = new int[S.length() + 1];
+		prefixSumOfS = new int[S.length() + 1];
+		prefixSumOfK = new int[S.length() + 1];
+		cntMap = new HashMap<>();
+
+		for (int i = 0; i < S.length(); i++) {
+			if(S.charAt(i) == 'S') {
+				prefixSum[i+1] = 2;
+				prefixSumOfS[i+1] = 1;
+			}
+
+			if(S.charAt(i) == 'K') {
+				prefixSum[i+1] = -1;
+				prefixSumOfK[i+1] = 1;
+			}
+		}
+	}
+
+	public void solve() {
+		int answer = -1;
+
+		for (int i = 1; i <= S.length(); i++) {
+			prefixSum[i] += prefixSum[i - 1];
+			prefixSumOfS[i] += prefixSumOfS[i - 1];
+			prefixSumOfK[i] += prefixSumOfK[i - 1];
+		}
+
+		for (int i = 0; i <= S.length(); i++) {
+			if(!cntMap.containsKey(prefixSum[i])) {
+				cntMap.put(prefixSum[i], i);
+			}else{
+				int cnt = cntMap.get(prefixSum[i]);
+
+				if(prefixSumOfS[i] - prefixSumOfS[cnt] >= 1 && prefixSumOfK[i] - prefixSumOfK[cnt] >= 2) {
+					answer = Math.max(answer ,i - cnt);
+				}
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
