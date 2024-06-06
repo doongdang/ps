@@ -1,0 +1,50 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/*
+	아이디어
+		현재 몸무게 cur의 제곱에서 이전 몸무게 before의 제곱을 차감한 무게가 G이다.
+		cur이 가능한 하한선 -> (int)Math.sqrt(G) + 1 <= cur
+		추가로, cur이 before+1일 때, 두 수의 제곱 차가 G를 초과해서는 답이 될 수 없다.
+		따라서 cur이 가능한 상한선 -> cur^2 - (cur-1)^2 <= G
+		=> 2cur <= G + 1
+
+		(int)Math.sqrt(G) + 1 <= cur <= 50,000
+
+		before의 후보군 -> cur 보다 작으면서 제곱의 차가 G인 수
+		cur의 후보군을 순회하며 G를 차감한 수의 제곱근이 정수인지 확인.
+*/
+
+public class Main {
+	int G;
+	int lowerBoundCur;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		G = Integer.parseInt(br.readLine());
+		lowerBoundCur = (int)Math.sqrt(G) + 1;
+	}
+
+	public void solve() {
+		StringBuilder answer = new StringBuilder();
+
+		for (long i = lowerBoundCur; i <= 50_000; i++) {
+			if(Math.sqrt(i*i - G) % 1 == 0){
+				answer.append(i).append("\n");
+			}
+		}
+
+		if(answer.length() == 0){
+			answer.append(-1);
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
