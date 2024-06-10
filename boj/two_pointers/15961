@@ -1,0 +1,86 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+
+*/
+
+public class Main {
+	int N;
+	int d;
+	int k;
+	int c;
+	int[] sushi;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		d = Integer.parseInt(st.nextToken());
+		k = Integer.parseInt(st.nextToken());
+		c = Integer.parseInt(st.nextToken());
+		sushi = new int[N];
+
+		for (int i = 0; i < N; i++) {
+			sushi[i] = Integer.parseInt(br.readLine());
+		}
+	}
+
+	public void solve() {
+		Map<Integer, Integer> eat = new HashMap<>();
+		int kind = 0;
+
+		for (int i = 0; i < k-1; i++) {
+			if(eat.containsKey(sushi[i])) {
+				eat.put(sushi[i], eat.get(sushi[i]) + 1);
+			}else{
+				eat.put(sushi[i], 1);
+				kind++;
+			}
+		}
+
+		int start = 0;
+		int end = k-1;
+		int answer = 0;
+
+		while(start < N){
+			end %= N;
+
+			if(eat.containsKey(sushi[end])) {
+				eat.put(sushi[end], eat.get(sushi[end]) + 1);
+			}else{
+				eat.put(sushi[end], 1);
+				kind++;
+			}
+
+			if(eat.containsKey(c)){
+				answer = Math.max(answer, kind);
+			}else{
+				answer = Math.max(answer, kind + 1);
+			}
+
+			if(eat.get(sushi[start]) == 1){
+				eat.remove(sushi[start]);
+				kind--;
+			}else{
+				eat.put(sushi[start], eat.get(sushi[start]) - 1);
+			}
+
+			start++;
+			end++;
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
