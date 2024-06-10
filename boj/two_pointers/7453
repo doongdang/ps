@@ -1,0 +1,93 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+		카누 선수와 동일하게 배열 두 개씩 묶어서 구하기?
+*/
+
+public class Main {
+	int n;
+	int[] A;
+	int[] B;
+	int[] C;
+	int[] D;
+	int[] sumOfAAndB;
+	int[] sumOfCAndD;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		n = Integer.parseInt(br.readLine());
+		A = new int[n];
+		B = new int[n];
+		C = new int[n];
+		D = new int[n];
+		sumOfAAndB = new int[n*n];
+		sumOfCAndD = new int[n*n];
+
+		for (int i = 0; i < n; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			A[i] = Integer.parseInt(st.nextToken());
+			B[i] = Integer.parseInt(st.nextToken());
+			C[i] = Integer.parseInt(st.nextToken());
+			D[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		int idx = 0;
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				sumOfAAndB[idx] = A[i] + B[j];
+				sumOfCAndD[idx] = C[i] + D[j];
+				idx++;
+			}
+		}
+
+		Arrays.sort(sumOfAAndB);
+		Arrays.sort(sumOfCAndD);
+
+		int start = 0;
+		int end = n*n-1;
+		long answer = 0;
+
+		while(start < n*n && end >= 0){
+			int sum = sumOfAAndB[start] + sumOfCAndD[end];
+
+			if(sum == 0){
+				int cnt1 = 1;
+				int cnt2 = 1;
+
+				while(start + 1 < n*n && sumOfAAndB[start] == sumOfAAndB[start+1]){
+					start++;
+					cnt1++;
+				}
+
+				while(end -1 >= 0 && sumOfCAndD[end] == sumOfCAndD[end-1]){
+					end--;
+					cnt2++;
+				}
+
+				answer += (long)cnt1 * cnt2;
+				start++;
+				end--;
+			}else if(sum < 0){
+				start++;
+			}else{
+				end--;
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
