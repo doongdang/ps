@@ -1,0 +1,76 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
+
+/*
+	접근법
+		Map을 사용해 현재 보유한 알파벳의 종류와 개수를 센다?
+		이후 투포인터로 이동
+		=> Map을 쓰는 것 보다 알파벳 별 개수를 저장할 배열을 별도로 두는게 나을듯함.
+
+*/
+
+public class Main {
+	int N;
+	char[] catLanguage;
+	int[] alphabetCnt;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		catLanguage = br.readLine().toCharArray();
+		alphabetCnt = new int[26];
+	}
+
+	public void solve() {
+		int answer = 0;
+		int start = 0;
+		int end = 0;
+		Set<Character> set = new HashSet<>();
+
+		while (end < catLanguage.length) {
+			set.add(catLanguage[end]);
+			alphabetCnt[catLanguage[end] - 'a']++;
+
+			if (set.size() == N) {
+				while (end + 1 < catLanguage.length && set.contains(catLanguage[end + 1])) {
+					end++;
+					alphabetCnt[catLanguage[end] - 'a']++;
+				}
+
+				answer = Math.max(answer, end - start + 1);
+
+				while (start + 1 < catLanguage.length && set.contains(catLanguage[start + 1])) {
+					alphabetCnt[catLanguage[start] - 'a']--;
+
+					if (alphabetCnt[catLanguage[start] - 'a'] == 0) {
+						set.remove(catLanguage[start]);
+						break;
+					}
+					start++;
+				}
+
+				if (alphabetCnt[catLanguage[start] - 'a'] == 0) {
+					set.remove(catLanguage[start]);
+				}
+
+				start++;
+				end++;
+			} else {
+				end++;
+			}
+		}
+
+		answer = Math.max(answer, end - start);
+		// System.out.println(end + " " + start);
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
