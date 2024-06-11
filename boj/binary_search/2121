@@ -1,0 +1,127 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+		1. 배열을 순회하며 각 원소를 구축할 사각형의 좌상단이라고 가정하고 조건에 부합하는 나머지 3개의 점이 존재하는지 탐색?
+			구현법
+				좌표 배열을 생성 후, 배열을 x,y 크기순으로 정렬
+				우상단, 좌하단, 우하단 순으로 부합하는지 탐색
+				탐색 조건 => x좌표 값이 부합할 때까지 이분 탐색 진행. 이후 y좌표 값이 부합할 때까지 탐색
+*/
+
+class Coordinate {
+	int x;
+	int y;
+
+	public Coordinate(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main {
+	int N;
+	int A;
+	int B;
+	Coordinate[] coordinates;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		A = Integer.parseInt(st.nextToken());
+		B = Integer.parseInt(st.nextToken());
+		coordinates = new Coordinate[N];
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			coordinates[i] = new Coordinate(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+		}
+	}
+
+	public void solve() {
+		Arrays.sort(coordinates, (c1, c2) -> c1.x != c2.x ? c1.x - c2.x : c1.y - c2.y);
+		int answer = 0;
+
+		for (Coordinate coordinate : coordinates) {
+			//우상단 탐색
+			boolean isFind1 = findCoordinate(coordinate.x, coordinate.y + B);
+			//좌하단 탐색
+			boolean isFind2 = findCoordinate(coordinate.x + A, coordinate.y);
+			//우하단 탐색
+			boolean isFind3 = findCoordinate(coordinate.x + A, coordinate.y + B);
+
+			if (isFind1 && isFind2 && isFind3) {
+				answer++;
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public boolean findCoordinate(int targetX, int targetY) {
+		int st = 0;
+		int en = N - 1;
+		int minXIdx = -1;
+		int maxXIdx = -1;
+
+		while (st <= en) {
+			int mid = (st + en) / 2;
+
+			if (coordinates[mid].x < targetX) {
+				st = mid + 1;
+			} else if (coordinates[mid].x > targetX) {
+				en = mid - 1;
+			} else {
+				minXIdx = mid;
+				en = mid - 1;
+			}
+		}
+
+		st = 0;
+		en = N - 1;
+
+		while (st <= en) {
+			int mid = (st + en) / 2;
+
+			if (coordinates[mid].x < targetX) {
+				st = mid + 1;
+			} else if (coordinates[mid].x > targetX) {
+				en = mid - 1;
+			} else {
+				maxXIdx = mid;
+				st = mid + 1;
+			}
+		}
+
+		if (maxXIdx == -1 || minXIdx == -1)
+			return false;
+
+		st = minXIdx;
+		en = maxXIdx;
+
+		while (st <= en) {
+			int mid = (st + en) / 2;
+
+			if (coordinates[mid].y < targetY) {
+				st = mid + 1;
+			} else if (coordinates[mid].y > targetY) {
+				en = mid - 1;
+			} else {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
