@@ -1,0 +1,59 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+
+*/
+
+public class Main {
+	int N;
+	int K;
+	int[] kettles;
+	long start;
+	long end;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		kettles = new int[N];
+		start = 1;
+
+		for (int i = 0; i < N; i++) {
+			kettles[i] = Integer.parseInt(br.readLine());
+			end = Math.max(end, kettles[i]);
+		}
+	}
+
+	public void solve() {
+		long answer = 0;
+
+		while (start <= end) {
+			long mid = (end + start) / 2;
+			long friends = 0;
+
+			for (int i = 0; i < N; i++) {
+				friends += kettles[i] / mid;
+			}
+
+			if(friends >= K) {
+				answer = mid;
+				start = mid + 1;
+			}else{
+				end = mid - 1;
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
