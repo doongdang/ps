@@ -1,0 +1,71 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+		사각형의 넓이가 최대가 되는 가로 길이는 무엇인가?
+		구간 내 최소 높이를 바로 확인할 수 있다면, 최소 가로길이, 최대 가로길이를 이용한 이분탐색이 가능할 듯?
+
+
+*/
+
+public class Main {
+	int N;
+	int[] H;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		H = new int[N];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			H[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		int start = 1;
+		int end = 1_000_000_000;
+		int answer = 0;
+
+		while (start <= end) {
+			int mid = (start + end) / 2;
+
+			if(canFill(mid)) {
+				answer = mid;
+				start = mid + 1;
+			}else{
+				end = mid - 1;
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public boolean canFill(int size) {
+		int cnt = 0;
+
+		for (int i = 0; i < N; i++) {
+			if(H[i] >= size) {
+				cnt++;
+			}else{
+				cnt = 0;
+			}
+
+			if(cnt == size) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
