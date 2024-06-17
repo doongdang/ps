@@ -1,0 +1,98 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+		K번째 수와 유사하게 접근이 가능할듯?
+		관건은 해당 라인에서 어떻게 x보다 작은 수를 빠르게 세느냐.
+		정렬되어 있기 때문에, N을 순회하여 이진탐색을 수행한다??
+		특정 수 x를 현재 행 A[i]로 나눈 몫보다 작거나 같은 수를 찾는다.
+
+*/
+
+public class Main {
+	int N;
+	int K;
+	long[] A;
+	long[] B;
+	boolean exist;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		A = new long[N];
+		B = new long[N];
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			A[i] = Integer.parseInt(st.nextToken());
+		}
+
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			B[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		Arrays.sort(A);
+		Arrays.sort(B);
+		long start = 1;
+		long end = A[N - 1] * B[N - 1];
+		long answer = 0;
+
+		while (start <= end) {
+			long mid = (end + start) / 2;
+
+			if(canBeAnswer(mid)){
+				if(exist) answer = mid;
+				end = mid - 1;
+			}else{
+				start = mid + 1;
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public boolean canBeAnswer(long cur) {
+		int cnt = 0;
+		exist = false;
+
+		for (int i = 0; i < N; i++) {
+			int start = 0;
+			int end = N - 1;
+			int tmp = 0;
+
+			while (start <= end) {
+				int mid = (end + start) / 2;
+				if(B[mid] * A[i] == cur){
+					exist = true;
+				}
+
+				if(B[mid] <= cur / A[i]) {
+					tmp = mid + 1;
+					start = mid + 1;
+				}else{
+					end = mid - 1;
+				}
+			}
+
+			cnt += tmp;
+		}
+
+		return cnt >= K;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
