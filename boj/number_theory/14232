@@ -1,0 +1,45 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/*
+	접근법
+		k의 소인수 분해 진행 후, 소인수의 개수와 소인수들을 출력한다.
+*/
+
+public class Main {
+	long k;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		k = Long.parseLong(br.readLine());
+	}
+
+	public void solve() {
+		int cnt = 0;
+		StringBuilder answer = new StringBuilder();
+
+		for (long i = 2; i * i <= k; i++) {
+			while(k % i == 0) {
+				cnt++;
+				k /= i;
+				answer.append(i).append(" ");
+			}
+		}
+
+		if(k != 1) {
+			cnt++;
+			answer.append(k);
+		}
+
+		System.out.println(cnt);
+		System.out.println(answer);
+	}
+
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
