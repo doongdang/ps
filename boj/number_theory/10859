@@ -1,0 +1,82 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/*
+	접근법
+		N이 3, 4, 7을 포함하는가 => no 출력
+		N이 소수인가?
+			뒤집어서 재판별 시 소수인가 => yes 출력
+			나머지 => no 출력
+		나머지 => no 출력
+*/
+
+public class Main {
+	long N;
+	StringBuilder answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Long.parseLong(br.readLine());
+	}
+
+	public void solve() {
+		long check = N;
+		answer = new StringBuilder();
+
+		if (N == 1) {
+			answer.append("no");
+			return;
+		}
+
+		while (check > 0) {
+			if (check % 10 == 3 || check % 10 == 4 || check % 10 == 7) {
+				answer.append("no");
+				return;
+			}
+
+			check /= 10;
+		}
+
+		for (long i = 2; i * i <= N; i++) {
+			if (N % i == 0) {
+				answer.append("no");
+				return;
+			}
+		}
+
+		check = 0;
+
+		while (N > 0) {
+			int tmp = (int)(N % 10);
+			check *= 10;
+
+			if (tmp == 6) {
+				check += 9;
+			} else if (tmp == 9) {
+				check += 6;
+			} else {
+				check += tmp;
+			}
+
+			N /= 10;
+
+		}
+
+		for (long i = 2; i * i <= check; i++) {
+			if (check % i == 0) {
+				answer.append("no");
+				return;
+			}
+		}
+
+		answer.append("yes");
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+		System.out.println(m.answer);
+	}
+}
