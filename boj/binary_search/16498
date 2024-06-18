@@ -48,7 +48,7 @@ public class Main {
 		for (int a : A) {
 			int b = binarySearch(a, B);
 			int nearAc = binarySearch(a, C);
-			int nearBc = binarySearch(a, C);
+			int nearBc = binarySearch(b, C);
 
 			answer = Math.min(answer, Math.abs(Math.max(a, Math.max(b, nearAc)) - Math.min(a, Math.min(b, nearAc))));
 			answer = Math.min(answer, Math.abs(Math.max(a, Math.max(b, nearBc)) - Math.min(a, Math.min(b, nearBc))));
