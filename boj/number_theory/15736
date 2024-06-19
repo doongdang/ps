@@ -1,0 +1,34 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/*
+	접근법
+		1. 1 ~ N까지의 약수 개수에 따라 결정되는데 N이 21억이라 단순 순회로는 시간초과.
+		2. 약수의 개수가 홀수개인 i번째 깃발만이 백기가 된다. => 제곱수
+*/
+
+public class Main {
+	int N;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+	}
+
+	public void solve() {
+		int answer = 0;
+
+		for (int i = 1; i * i <= N; i++) {
+			answer++;
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
