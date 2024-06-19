@@ -1,0 +1,65 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+*/
+
+public class Main {
+	int N;
+	int[][] arr;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		arr = new int[N][];
+
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			arr[i] = new int[st.countTokens()];
+			int idx = 0;
+
+			while (st.hasMoreTokens()) {
+				arr[i][idx++] = Integer.parseInt(st.nextToken());
+			}
+		}
+	}
+
+	public void solve() {
+		StringBuilder answer = new StringBuilder();
+
+		for (int i = 0; i < N; i++) {
+			int gcd = 0;
+			Arrays.sort(arr[i]);
+
+			for (int j = 0; j < arr[i].length - 1; j++) {
+				for (int k = j + 1; k < arr[i].length; k++) {
+					gcd = Math.max(gcd, getGcd(arr[i][k], arr[i][j]));
+				}
+			}
+
+			answer.append(gcd).append("\n");
+		}
+
+		System.out.println(answer);
+	}
+
+	public int getGcd(int a, int b) {
+		while (b != 0) {
+			int tmp = b;
+			b = a % b;
+			a = tmp;
+		}
+
+		return a;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
