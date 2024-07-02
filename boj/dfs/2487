@@ -1,0 +1,74 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+		=> 순열 사이클 분할 후, 각 사이클 크기들의 최소공배수?
+*/
+
+public class Main {
+	int N;
+	int[] nums;
+	boolean[] vis;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		nums = new int[N + 1];
+		vis = new boolean[N + 1];
+
+		for (int i = 1; i <= N; i++) {
+			nums[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		int curSize = 0;
+		int answer = 1;
+
+		for (int i = 1; i <= N; i++) {
+			if(!vis[i]) {
+				vis[i] = true;
+				curSize = dfs(i, 1);
+				answer = answer / getGcd(answer, curSize) * curSize;
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public int dfs(int cur, int size) {
+		if(vis[nums[cur]]) {
+			return size;
+		}
+
+		vis[nums[cur]] = true;
+
+		return dfs(nums[cur], size + 1);
+	}
+
+	public int getGcd(int a, int b) {
+		if(a < b){
+			int tmp = a;
+			a = b;
+			b = tmp;
+		}
+
+		while(b > 0) {
+			int tmp = a;
+			a = b;
+			b = tmp % b;
+		}
+
+		return a;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
