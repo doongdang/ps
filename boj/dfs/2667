@@ -1,0 +1,84 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/*
+	접근법
+
+*/
+
+public class Main {
+	int N;
+	int cnt;
+	char[][] map;
+	boolean[][] vis;
+	int[] dx = {-1, 0, 1, 0};
+	int[] dy = {0, 1, 0, -1};
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		map = new char[N][];
+		vis = new boolean[N][N];
+
+		for (int i = 0; i < N; i++) {
+			map[i] = br.readLine().toCharArray();
+		}
+	}
+
+	public void solve() {
+		int groupCnt = 0;
+		List<Integer> cntList = new ArrayList<>();
+		StringBuilder answer = new StringBuilder();
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				cnt = 0;
+				if(!vis[i][j] && map[i][j] == '1') {
+					vis[i][j] = true;
+					dfs(i, j);
+					groupCnt++;
+					cntList.add(cnt);
+				}
+			}
+		}
+
+		Collections.sort(cntList);
+		answer.append(groupCnt).append("\n");
+
+		for (Integer i : cntList) {
+			answer.append(i).append("\n");
+		}
+
+		System.out.println(answer);
+	}
+
+	public void dfs(int x, int y) {
+		cnt++;
+
+		for (int dir = 0; dir < 4; dir++) {
+			int nx = x + dx[dir];
+			int ny = y + dy[dir];
+
+			if (nx < 0 || ny < 0 || nx >= N || ny >= N) {
+				continue;
+			}
+
+			if(map[nx][ny] == '0' || vis[nx][ny]) {
+				continue;
+			}
+
+			vis[nx][ny] = true;
+			dfs(nx, ny);
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
