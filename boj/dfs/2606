@@ -1,0 +1,66 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+
+*/
+
+public class Main {
+	int computerCnt;
+	int lineCnt;
+	List<Integer>[] computerList;
+	boolean[] vis;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		computerCnt = Integer.parseInt(br.readLine());
+		lineCnt = Integer.parseInt(br.readLine());
+		computerList = new List[computerCnt + 1];
+		vis = new boolean[computerCnt + 1];
+
+		for (int i = 1; i <= computerCnt; i++) {
+			computerList[i] = new LinkedList<>();
+		}
+
+		for (int i = 0; i < lineCnt; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			computerList[a].add(b);
+			computerList[b].add(a);
+		}
+	}
+
+	public void solve() {
+		dfs(1);
+		int answer = - 1;
+
+		for (boolean state : vis) {
+			if(state) answer++;
+		}
+
+		System.out.println(answer);
+	}
+
+	public void dfs(int cur) {
+		vis[cur] = true;
+
+		for (Integer nxt : computerList[cur]) {
+			if(!vis[nxt]) {
+				vis[nxt] = true;
+				dfs(nxt);
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
