@@ -1,68 +1,81 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+/*
+	접근법
+		경로 저장? 순환 사이클 느낌처럼 자신이 어디서 왔는지 저장할 배열을 사용한다.
+*/
+
 public class Main {
-	static int[][] dist;
-	static int N;
-	static StringBuilder sb = new StringBuilder();
-	public static void main(String[] args) throws IOException {
+	int N, K;
+	int[] dist;
+	int[] dest;
+	int[] dx = {-1, 1};
+
+	public void init() throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine());
-
 		N = Integer.parseInt(st.nextToken());
-		int K = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		dist = new int[100_001];
+		dest = new int[100_001];
+		Arrays.fill(dist, -1);
+	}
 
-		dist = new int[100001][2];
-		int[] dx = {-1, 1, 2};
+	public void solve() {
+		dist[N] = 0;
 		Queue<Integer> queue = new LinkedList<>();
+		queue.add(N);
 
-		for (int i = 0; i < 100001; i++) {
-			dist[i][1] = -1;
-		}
-
-		dist[N][0] = 0;
-		dist[N][1] = 0;
-		queue.offer(N);
-
-		if(N == K){
-			System.out.println(0);
-			System.out.println(N);
-			return;
-		}
-
-		while(!queue.isEmpty()){
+		while (!queue.isEmpty()) {
 			int cur = queue.poll();
-			for (int dir = 0; dir < 3; dir++) {
-				int nx;
-				if(dx[dir] == 2){
-					nx = cur*2;
-				}else{
-					nx = cur + dx[dir];
+
+			if (cur == K) {
+				System.out.println(dist[cur]);
+				Stack<Integer> stack = new Stack<>();
+				int loc = K;
+				stack.push(loc);
+
+				while (loc != N) {
+					loc = dest[loc];
+					stack.push(loc);
 				}
-				if(nx < 0 || nx > 100000) continue;
-				if(dist[nx][1] > 0) continue;
-				dist[nx][0] = cur;
-				dist[nx][1] = dist[cur][1] + 1;
-				queue.offer(nx);
+
+				StringBuilder route = new StringBuilder();
+
+				while (!stack.isEmpty()) {
+					loc = stack.pop();
+					route.append(loc).append(" ");
+				}
+
+				System.out.println(route);
+
+				return;
 			}
 
+			for (int dir = 0; dir < 3; dir++) {
+				int nx = dir < 2 ? cur + dx[dir] : cur * 2;
+				if (nx < 0 || nx > 100_000)
+					continue;
+				if (dist[nx] != -1)
+					continue;
+				dest[nx] = cur;
+				dist[nx] = dist[cur] + 1;
+				queue.add(nx);
+			}
 		}
-		System.out.println(dist[K][1]);
-		int idx = K;
-		Stack<Integer> stack = new Stack<>();
-		while(idx != N){
-			stack.push(dist[idx][0]);
-			idx = dist[idx][0];
-		}
+	}
 
-		while(!stack.isEmpty()){
-			sb.append(stack.pop()).append(" ");
-		}
-		System.out.println(sb.toString() + K);
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
 	}
 }
