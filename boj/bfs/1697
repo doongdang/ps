@@ -1,0 +1,56 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+*/
+
+public class Main {
+	int N, K;
+	int[] dist;
+	int[] dx = {-1, 1};
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		dist = new int[100_001];
+		Arrays.fill(dist, -1);
+	}
+
+	public void solve() {
+		dist[N] = 0;
+		Queue<Integer> queue = new LinkedList<>();
+		queue.add(N);
+
+		while (!queue.isEmpty()) {
+			int cur = queue.poll();
+
+			if(cur == K) {
+				System.out.println(dist[cur]);
+				return;
+			}
+
+			for (int dir = 0; dir < 3; dir++) {
+				int nx = dir < 2 ? cur + dx[dir] : cur * 2;
+				if(nx < 0 || nx > 100_000) continue;
+				if(dist[nx] != -1) continue;
+				dist[nx] = dist[cur] + 1;
+				queue.add(nx);
+			}
+		}
+	}
+
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
