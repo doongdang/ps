@@ -1,0 +1,77 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+*/
+
+class Coordinate{
+	int x;
+	int y;
+
+	Coordinate(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main {
+	int N, M;
+	char[][] maze;
+	int[][] dist;
+	int[] dx = {-1, 0, 1, 0};
+	int[] dy = {0, 1, 0, -1};
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		maze = new char[N][M];
+		dist = new int[N][M];
+
+		for (int i = 0; i < N; i++) {
+			maze[i] = br.readLine().toCharArray();
+			Arrays.fill(dist[i], -1);
+		}
+
+		dist[0][0] = 1;
+	}
+
+	public void solve() {
+		bfs(0, 0);
+		System.out.println(dist[N - 1][M - 1]);
+	}
+
+	public void bfs(int x, int y){
+		Queue<Coordinate> queue = new LinkedList<>();
+		queue.add(new Coordinate(x, y));
+
+		while (!queue.isEmpty()) {
+			Coordinate cur = queue.poll();
+
+			for (int dir = 0; dir < 4; dir++) {
+				int nx = cur.x + dx[dir];
+				int ny = cur.y + dy[dir];
+
+				if (nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
+				if (maze[nx][ny] == '0' || dist[nx][ny] != -1) continue;
+
+				dist[nx][ny] = dist[cur.x][cur.y] + 1;
+				queue.add(new Coordinate(nx, ny));
+			}
+		}
+	}
+
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
