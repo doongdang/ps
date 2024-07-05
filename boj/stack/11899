@@ -1,0 +1,44 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Stack;
+
+/*
+	접근법
+
+*/
+
+public class Main {
+	String S;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		S = br.readLine();
+	}
+
+	public void solve() {
+		Stack<Integer> stack = new Stack<>();
+		int idx = 0;
+
+		while(idx < S.length()) {
+			if(stack.isEmpty()) {
+				stack.push(idx++);
+			}else{
+				if(S.charAt(stack.peek()) == '(' && S.charAt(idx) == ')') {
+					stack.pop();
+					idx++;
+				}else{
+					stack.push(idx++);
+				}
+			}
+		}
+
+		System.out.println(stack.size());
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
