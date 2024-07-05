@@ -1,0 +1,121 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
+/*
+	접근법
+	    좌표 압축 + 이진탐색??
+	    좌표의 최대치가 메모리 한계를 초과하고, 인접 노드의 개수가 최대 50,000개이기 때문에 이진탐색을 통해서 찾는다?
+*/
+
+class Aperture {
+	int x;
+	int y;
+	int dist;
+
+	public Aperture(int x, int y, int dist) {
+		this.x = x;
+		this.y = y;
+		this.dist = dist;
+	}
+}
+
+public class Main {
+	int n;
+	int T;
+	Aperture[] apertures;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		n = Integer.parseInt(st.nextToken());
+		T = Integer.parseInt(st.nextToken());
+		apertures = new Aperture[n];
+
+		for (int i = 0; i < n; i++) {
+			st = new StringTokenizer(br.readLine());
+			apertures[i] = new Aperture(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), -1);
+		}
+	}
+
+	public void solve() {
+		Arrays.sort(apertures, Comparator.comparingInt(a -> a.y));
+
+		Queue<Aperture> queue = new LinkedList<>();
+		queue.offer(new Aperture(0, 0, 0));
+
+		while (!queue.isEmpty()) {
+			int size = queue.size();
+
+			for (int i = 0; i < size; i++) {
+				Aperture cur = queue.poll();
+
+				int lower = lowerBound(cur.y - 2);
+				int upper = upperBound(cur.y + 2);
+
+				for (int j = lower; j <= upper; j++) {
+					Aperture nxt = apertures[j];
+
+					if (nxt.dist != -1)
+						continue;
+					if (Math.abs(nxt.x - cur.x) > 2)
+						continue;
+					if (nxt.y == T) {
+						System.out.println(cur.dist + 1);
+						return;
+					}
+
+					nxt.dist = cur.dist + 1;
+					queue.offer(nxt);
+				}
+			}
+		}
+
+		System.out.println(-1);
+	}
+
+	private int lowerBound(int y) {
+		int start = 0;
+		int end = n - 1;
+		int lower = 0;
+
+		while (start <= end) {
+			int mid = (start + end) / 2;
+
+			if (apertures[mid].y < y) {
+				start = mid + 1;
+			} else {
+				lower = mid;
+				end = mid - 1;
+			}
+		}
+
+		return lower;
+	}
+
+	private int upperBound(int y) {
+		int start = 0;
+		int end = n - 1;
+		int upper = 0;
+
+		while (start <= end) {
+			int mid = (start + end) / 2;
+
+			if (apertures[mid].y > y) {
+				end = mid - 1;
+			} else {
+				start = mid + 1;
+				upper = mid;
+			}
+		}
+
+		return upper;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
