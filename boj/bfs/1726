@@ -1,0 +1,98 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+class Tuple {
+	int x, y, dir;
+
+	public Tuple(int x, int y, int dir) {
+		this.x = x;
+		this.y = y;
+		this.dir = dir;
+	}
+}
+
+public class Main {
+	int N, M;
+	int[][] map;
+	int[][][] dist;
+	int startX, startY, startDir;
+	int endX, endY, endDir;
+	int[] dx = {0, 0, 1, -1};
+	int[] dy = {1, -1, 0, 0};
+	int[][] dirCnt = {
+		{0, 2, 1, 1},
+		{2, 0, 1, 1},
+		{1, 1, 0, 2},
+		{1, 1, 2, 0}
+	};
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		map = new int[N][M];
+		dist = new int[N][M][4];
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			for (int j = 0; j < M; j++) {
+				map[i][j] = Integer.parseInt(st.nextToken());
+				for (int k = 0; k < 4; k++) {
+					dist[i][j][k] = -1;
+				}
+			}
+		}
+
+		st = new StringTokenizer(br.readLine());
+		startX = Integer.parseInt(st.nextToken()) - 1;
+		startY = Integer.parseInt(st.nextToken()) - 1;
+		startDir = Integer.parseInt(st.nextToken()) - 1;
+
+		st = new StringTokenizer(br.readLine());
+		endX = Integer.parseInt(st.nextToken()) - 1;
+		endY = Integer.parseInt(st.nextToken()) - 1;
+		endDir = Integer.parseInt(st.nextToken()) - 1;
+	}
+
+	public void solve() {
+		Queue<Tuple> queue = new LinkedList<>();
+		dist[startX][startY][startDir] = 0;
+		queue.add(new Tuple(startX, startY, startDir));
+
+		while (!queue.isEmpty()) {
+			Tuple cur = queue.poll();
+
+			for (int distance = 1; distance <= 3; distance++) {
+				int nx = cur.x + dx[cur.dir] * distance;
+				int ny = cur.y + dy[cur.dir] * distance;
+
+				if (nx < 0 || ny < 0 || nx >= N || ny >= M || map[nx][ny] == 1) break;
+				if (dist[nx][ny][cur.dir] != -1) continue;
+
+				dist[nx][ny][cur.dir] = dist[cur.x][cur.y][cur.dir] + 1;
+				queue.add(new Tuple(nx, ny, cur.dir));
+			}
+
+			for (int direction = 0; direction < 4; direction++) {
+				if (cur.dir == direction) continue;
+				if (dist[cur.x][cur.y][direction] != -1) continue;
+				dist[cur.x][cur.y][direction] = dist[cur.x][cur.y][cur.dir] + dirCnt[cur.dir][direction];
+				queue.add(new Tuple(cur.x, cur.y, direction));
+			}
+		}
+
+		int answer = dist[endX][endY][endDir];
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
