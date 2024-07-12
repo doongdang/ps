@@ -1,0 +1,92 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+
+
+*/
+
+public class Main {
+	int T;
+	int root;
+	List<Integer>[] child;
+	int[] depth;
+	int[] parent;
+	StringBuilder answer;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		T = Integer.parseInt(br.readLine());
+		answer = new StringBuilder();
+
+		for (int i = 0; i < T; i++) {
+			int N = Integer.parseInt(br.readLine());
+			child = new List[N + 1];
+			depth = new int[N + 1];
+			root = N * (N + 1) / 2;
+			parent = new int[N + 1];
+			for (int j = 0; j < N + 1; j++) {
+				child[j] = new ArrayList<>();
+			}
+
+			for (int j = 0; j < N - 1; j++) {
+				StringTokenizer st = new StringTokenizer(br.readLine());
+				int A = Integer.parseInt(st.nextToken());
+				int B = Integer.parseInt(st.nextToken());
+				child[A].add(B);
+				root -= B;
+				parent[B] = A;
+			}
+
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int target1 = Integer.parseInt(st.nextToken());
+			int target2 = Integer.parseInt(st.nextToken());
+
+			solve(target1, target2);
+		}
+	}
+
+	public void solve(int target1, int target2) {
+		dfs(root);
+
+		if (depth[target1] > depth[target2]) {
+			target1 = find(target1, depth[target2]);
+		} else if (depth[target1] < depth[target2]) {
+			target2 = find(target2, depth[target1]);
+		}
+
+		while (target1 != target2) {
+			target1 = parent[target1];
+			target2 = parent[target2];
+		}
+
+		answer.append(target1).append("\n");
+
+	}
+
+	public void dfs(int cur) {
+		for (int nxt : child[cur]) {
+			depth[nxt] = depth[cur] + 1;
+			dfs(nxt);
+		}
+	}
+
+	public int find(int target, int targetDepth) {
+		if (depth[target] == targetDepth) {
+			return target;
+		}
+
+		return find(parent[target], targetDepth);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		System.out.println(m.answer);
+	}
+}
