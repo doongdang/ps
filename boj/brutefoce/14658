@@ -1,0 +1,72 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+	https://angxxu.tistory.com/m/14 참고
+*/
+
+class Star{
+	int x;
+	int y;
+
+	public Star(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main {
+	int N, M, L, K;
+	Star[] stars;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		L = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		stars = new Star[K];
+
+		for (int i = 0; i < K; i++) {
+			st = new StringTokenizer(br.readLine());
+			int x = Integer.parseInt(st.nextToken());
+			int y = Integer.parseInt(st.nextToken());
+			stars[i] = new Star(x, y);
+		}
+	}
+
+	public void solve() {
+		int answer = K;
+
+		for (int i = 0; i < K; i++) {
+			Star cur = stars[i];
+
+			for (int cx = cur.x - L; cx <= cur.x ; cx++) {
+				int cy = cur.y;
+				int cnt = 0;
+
+				if(cx < 0) continue;
+
+				for (int j = 0; j < K; j++) {
+					Star opt = stars[j];
+
+					if(cx <= opt.x && opt.x <= cx + L && cy <= opt.y && opt.y <= cy + L) cnt++;
+				}
+
+				answer = Math.min(answer, K-cnt);
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
