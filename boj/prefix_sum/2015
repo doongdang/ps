@@ -1,0 +1,54 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+		A[j] - A[i] = K를 만족하는 (j, i)의 개수
+		단순 탐색은 N^2
+		=> 두 수의 합이 K인 것을 찾을 때, 배열을 사용했던 것 처럼 이번에는 여러 중복 값이 가능하니 Map을 사용
+*/
+
+public class Main {
+	int N, K;
+	int[] A;
+	int[] prefixSum;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		A = new int[N + 1];
+		prefixSum = new int[N + 1];
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 1; i <= N; i++) {
+			A[i] = Integer.parseInt(st.nextToken());
+			prefixSum[i] = prefixSum[i - 1] + A[i];
+		}
+	}
+
+	public void solve() {
+		Map<Integer, Long> table = new HashMap<>();
+		long answer = 0;
+
+		for (int i = 1; i <= N; i++) {
+			if(prefixSum[i] == K) answer++;
+
+			answer += table.getOrDefault(prefixSum[i] - K, 0L);
+			table.put(prefixSum[i], table.getOrDefault(prefixSum[i], 0L) + 1);
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
