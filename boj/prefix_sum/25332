@@ -1,0 +1,72 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+		prefixSumA[j] - prefixSumA[i] == prefixSumB[j] - prefixSumB[i]가 성립하는 (j, 1)의 개수가 필요
+		조건 : 0 <= i < j <= N
+
+		=> prefixSumA[j] - prefixSumB[j] == prefixSumA[i] - prefixSumB[i]
+		동일 인덱스에서 누적합A와 누적합B의 차이가 동일한 인덱스의 개수를 센다.
+		만일 동일한 차이의 인덱스 개수가 x개라면, x개로 만들 수 있는 조합의 수는 x(x-1)/2이다.
+
+		첫 인덱스가 아닌 1칸 누적합이 동일한 것은 어떻게 세지?
+
+*/
+
+public class Main {
+	int N;
+	int[] A;
+	int[] B;
+	int[] prefixSumA;
+	int[] prefixSumB;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		A = new int[N + 1];
+		B = new int[N + 1];
+		prefixSumA = new int[N + 1];
+		prefixSumB = new int[N + 1];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		for (int i = 1; i <= N; i++) {
+			A[i] = Integer.parseInt(st.nextToken());
+			prefixSumA[i] = A[i] + prefixSumA[i - 1];
+		}
+
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 1; i <= N; i++) {
+			B[i] = Integer.parseInt(st.nextToken());
+			prefixSumB[i] = B[i] + prefixSumB[i - 1];
+		}
+	}
+
+	public void solve() {
+		long answer = 0;
+		Map<Integer, Long> table = new HashMap<>();
+		table.put(0, 1L);
+
+		for (int i = 1; i <= N; i++) {
+			int key = prefixSumA[i] - prefixSumB[i];
+			table.put(key, table.getOrDefault(key, 0L) + 1);
+		}
+
+		for (Long value : table.values()) {
+			answer += value * (value - 1) / 2;
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
