@@ -1,0 +1,76 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+		문자 0을 값 1로 치환하여 누적합 계산을 통해 구간별 0의 개수를 센다.
+		이후 모든 부분 행렬 순회하며, 부분행렬에 누적된 0의 개수와 행렬의 면적이 일치하는지 확인 후 최대값으로 갱신
+		=> N^2 * M^2이라 시간 터지는디;;
+
+		=> N*M*M으로 줄이기..
+		열 2개를 골라 고정해두고, 1~N행까지 내려가며 해당 행의 열1~열2 구간이 0으로 채워져 있다면 개수를 늘려나가고, 그게 아니라면 0으로 초기화
+*/
+
+public class Main {
+	int N, M;
+	char[][] arr;
+	int[][] prefixSum;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		prefixSum = new int[N + 1][M + 1];
+		arr = new char[N + 1][M + 1];
+
+		for (int i = 1; i <= N; i++) {
+			String line = br.readLine();
+			for (int j = 1; j <= M; j++) {
+				arr[i][j] = line.charAt(j - 1);
+			}
+		}
+
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= M; j++) {
+				if (arr[i][j] == '0') prefixSum[i][j] = 1;
+			}
+		}
+	}
+
+	public void solve() {
+		int answer = 0;
+
+		for (int i = 1; i <= N; i++) {
+			for (int j = 1; j <= M; j++) {
+				prefixSum[i][j] += prefixSum[i][j - 1] + prefixSum[i - 1][j] - prefixSum[i - 1][j - 1];
+			}
+		}
+
+		for (int y1 = 1; y1 <= M; y1++) {
+			for (int y2 = y1; y2 <= M; y2++) {
+				int cnt = 0;
+
+				for (int x = 1; x <= N; x++) {
+					int row = prefixSum[x][y2] - prefixSum[x][y1 - 1] - prefixSum[x - 1][y2] + prefixSum[x - 1][y1 - 1];
+
+					if(row == y2 - y1 + 1) {
+						cnt += row;
+						answer = Math.max(answer, cnt);
+					}
+					else cnt = 0;
+				}
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
