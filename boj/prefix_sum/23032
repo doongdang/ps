@@ -1,0 +1,85 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+		1. 임의로 연속된 학번 그룹 선정 경우의 수 => 1 + 2 + ... + N - 1 = (N - 1) * N / 2 개
+		2. 그룹을 2분할 하는 경우의 수 -> 선정된 그룹 길이 - 1 개
+
+		=> 1 + 2번 다돌리면 최악의 경우 2000^3으로 시간 초과 걸릴거같은디
+
+		사실 정해진 그룹을 어떻게 나누는지가 크게 의미가 있나?
+		그룹을 2분할 한다 -> 바꿔말하면 그룹 내에서 최소 격차를 빠르게 순회 없이 구할 수 있는지?
+		최소 격차 -> 두 그룹의 값 차이가 0에 가까워야 한다.
+		누적합 배열에서 이분탐색을 한다 => 어차피 누적합이라 정렬되어있는 상태다.
+
+
+*/
+
+public class Main {
+	int N;
+	int[] W;
+	int[] prefixSum;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		W = new int[N + 1];
+		prefixSum = new int[N + 1];
+
+		for (int i = 1; i <= N; i++) {
+			W[i] = Integer.parseInt(st.nextToken());
+			prefixSum[i] = W[i] + prefixSum[i - 1];
+		}
+	}
+
+	public void solve() {
+		int minDiff = Integer.MAX_VALUE;
+		int answer = 0;
+
+		for (int i = 1; i < N; i++) {
+			for (int j = i + 1; j <= N; j++) {
+				int start = i;
+				int end = j;
+				int sum = prefixSum[j] - prefixSum[i - 1];
+
+				while (start <= end) {
+					int mid = (end + start) / 2;
+					int left = prefixSum[mid] - prefixSum[i - 1];
+					int right = prefixSum[j] - prefixSum[mid];
+
+					if(left < right) {
+						start = mid + 1;
+					}else if(left > right) {
+						end = mid - 1;
+					}else{
+						start = mid;
+						break;
+					}
+				}
+
+				for (int std = Math.max(i, start - 1); std <= Math.min(j, start); std++) {
+					int diff = Math.abs(prefixSum[j] - prefixSum[std] - (prefixSum[std] - prefixSum[i - 1]));
+
+					if (diff < minDiff) {
+						minDiff = diff;
+						answer = sum;
+					} else if (diff == minDiff) {
+						answer = Math.max(answer, sum);
+					}
+				}
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
