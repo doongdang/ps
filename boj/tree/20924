@@ -1,0 +1,107 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+/*
+	접근법
+		루트에서 출발하여 BFS 진행 -> 진행하며 현재 노드의 자식 개수를 확인해 기가 노드 색출 및, 누적 이동 거리(간선) 계산진행 + 리프 노드 체크
+		거리 배열에서 최대값(최대 가지)을 찾고 기가노드까지의 거리(기둥 길이)를 빼면 될듯?
+*/
+
+class Pair{
+	int dest;
+	int val;
+
+	public Pair(int dest, int val) {
+		this.dest = dest;
+		this.val = val;
+	}
+}
+
+public class Main {
+	int N, R;
+	List<Pair>[] adj;
+	int[] dist;
+	int gigaNode;
+	List<Integer> leafNodes;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		R = Integer.parseInt(st.nextToken());
+		adj = new List[N + 1];
+		dist = new int[N + 1];
+		leafNodes = new ArrayList<>();
+
+		for (int i = 1; i <= N; i++) {
+			adj[i] = new ArrayList<>();
+		}
+
+		for (int i = 0; i < N - 1; i++) {
+			st = new StringTokenizer(br.readLine());
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			int d = Integer.parseInt(st.nextToken());
+
+			adj[a].add(new Pair(b, d));
+			adj[b].add(new Pair(a, d));
+		}
+
+		Arrays.fill(dist, -1);
+	}
+
+	public void solve() {
+		bfs();
+
+		if(gigaNode == 0) {
+			gigaNode = leafNodes.get(0);
+		}
+
+		int pillar = dist[gigaNode];
+		int branch = 0;
+
+		for (int leafNode : leafNodes) {
+			branch = Integer.max(branch, dist[leafNode]);
+		}
+
+		branch -= pillar;
+
+		System.out.println(pillar + " " + branch);
+	}
+
+	public void bfs() {
+		Queue<Pair> q = new LinkedList<>();
+		dist[R] = 0;
+		q.add(new Pair(R, 0));
+
+		while (!q.isEmpty()) {
+			Pair cur = q.poll();
+			int children = 0;
+
+			for (Pair nxt : adj[cur.dest]) {
+				if(dist[nxt.dest] != -1) continue;
+
+				children++;
+				dist[nxt.dest] = dist[cur.dest] + nxt.val;
+				q.add(nxt);
+			}
+
+			if(gigaNode == 0 && children >= 2) gigaNode = cur.dest;
+			if(children == 0) leafNodes.add(cur.dest);
+		}
+	}
+
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
