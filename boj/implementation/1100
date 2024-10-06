@@ -1,0 +1,50 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/*
+	접근법
+
+*/
+
+
+public class Main {
+	char[][] board;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		board = new char[8][8];
+
+		for (int i = 0; i < 8; i++) {
+			board[i] = br.readLine().toCharArray();
+		}
+	}
+
+	public void solve() {
+		int answer = 0;
+
+		for (int i = 0; i < 8; i++) {
+			if(i % 2 == 0) answer += count(i, 0);
+			else answer += count(i, 1);
+		}
+
+		System.out.println(answer);
+	}
+
+	public int count(int row, int std) {
+		int cnt = 0;
+
+		for (int i = std; i < 8; i += 2) {
+			if(board[row][i] == 'F') cnt++;
+		}
+
+		return cnt;
+	}
+
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
