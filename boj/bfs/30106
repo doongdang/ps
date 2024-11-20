@@ -1,0 +1,83 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
+
+class Pair{
+	int x;
+	int y;
+
+	public Pair(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public class Main {
+	int N,M,K;
+	int[][] room;
+	boolean[][] vis;
+
+	public void init() throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		room = new int[N][M];
+		vis = new boolean[N][M];
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			for (int j = 0; j < M; j++) {
+				room[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+	}
+
+	public void solve() {
+		int answer = 0;
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				if (!vis[i][j]) {
+					answer += 1;
+					bfs(i, j);
+				}
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public void bfs(int curX, int curY) {
+		int[] dx = {1, -1, 0, 0};
+		int[] dy = {0, 0, 1, -1};
+
+		Queue<Pair> queue = new LinkedList<>();
+		queue.offer(new Pair(curX, curY));
+
+		while (!queue.isEmpty()) {
+			Pair cur = queue.poll();
+
+			for (int dir = 0; dir < 4; dir++) {
+				int nx = cur.x + dx[dir];
+				int ny = cur.y + dy[dir];
+
+				if(nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
+				if(vis[nx][ny] || Math.abs(room[cur.x][cur.y] - room[nx][ny]) > K) continue;
+
+				vis[nx][ny] = true;
+				queue.offer(new Pair(nx, ny));
+			}
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		Main main = new Main();
+		main.init();
+		main.solve();
+	}
+}
