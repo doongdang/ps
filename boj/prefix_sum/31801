@@ -1,0 +1,100 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+/*
+	목표 : a <= 특정 양의 정수 <= b인 양의 정수 중, 해당 정수의 자리수가 증가하다 감소하는 것의 개수
+
+	조건 : 1. 양의 정수의 맨 앞자리는 0으로 시작할 수 없다.
+		  2. 각 자리수는 무조건 증가하다 감소해야한다. -> 무조건 3자리 수 이상이어야 한다.
+		  3. 1 <= t <= 10^5
+		  4. 1 <= a, b <= 10^6
+		  5. 시간제한 1초
+
+	BruteForce : 각 테스트 케이스마다, a ~ b까지 숫자를 일일이 확인한다 => 최악의 경우 10^11이라 불가
+
+	아이디어 : 1. a의 자릿수 이상 b의 자릿수 이하인 수들 중 목표에 해당하는 개수를 세면서 a와 b의 범위를 벗어나는 수 제거.
+             2. 자릿수별로 증가하는 부분의 개수와, 감소하는 부분의 개수를 나누어 서로 곱해서 구하기
+
+    => 테스트케이스와 별개로, 주어지는 a,b는 항상 고정된 범위 내이기에 1 ~ 10^6까지의 증감수를 미리 구해놓기 + 누적합으로 개수 연산 진행
+
+*/
+
+
+public class Main {
+	int t;
+	int[] a;
+	int[] b;
+	int[] prefixSum;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		t = Integer.parseInt(br.readLine());
+
+		a = new int[t];
+		b = new int[t];
+		prefixSum = new int[1_000_001];
+
+		for (int i = 0; i < t; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			a[i] = Integer.parseInt(st.nextToken());
+			b[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		calculatePrefixSum();
+
+		StringBuilder answer = new StringBuilder();
+
+		for (int testCase = 0; testCase < t; testCase++) {
+			answer.append(prefixSum[b[testCase]] - prefixSum[a[testCase] - 1]).append("\n");
+		}
+
+		System.out.println(answer);
+	}
+
+	public boolean isIncreaseAndDecrease(int num) {
+		boolean isIncrease = false;
+		boolean isDecrease = false;
+
+		String str = String.valueOf(num);
+
+		for (int i = 0; i < str.length() - 1; i++) {
+			if(str.charAt(i) < str.charAt(i + 1)) {
+				if(isDecrease) return false;
+				if(isIncrease) continue;
+
+				isIncrease = true;
+			}else if(str.charAt(i) > str.charAt(i + 1)) {
+				if(!isIncrease) return false;
+				if(isDecrease) continue;
+
+				isDecrease = true;
+			}else{
+				return false;
+			}
+		}
+
+		return isIncrease && isDecrease;
+	}
+
+	public void calculatePrefixSum() {
+		for (int i = 120; i <= 1_000_000; i++) {
+			if(isIncreaseAndDecrease(i)) {
+				prefixSum[i] = 1;
+			}
+		}
+
+		for (int i = 1; i <= 1_000_000; i++) {
+			prefixSum[i] += prefixSum[i - 1];
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
