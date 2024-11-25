@@ -1,0 +1,42 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+
+public class Main {
+	int N;
+	int[] arr;
+
+	public void init() throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		arr = new int[N];
+
+		for (int i = 0; i < N; i++) {
+			arr[i] = Integer.parseInt(br.readLine());
+		}
+	}
+
+	public void solve() {
+		int answer = 0;
+		int idx = N - 1;
+
+		Arrays.sort(arr);
+
+		while(idx - 2 >= 0) {
+			answer += arr[idx] + arr[idx - 1];
+			idx -= 3;
+		}
+
+		while(idx >= 0) {
+			answer += arr[idx--];
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws Exception {
+		Main main = new Main();
+		main.init();
+		main.solve();
+	}
+}
