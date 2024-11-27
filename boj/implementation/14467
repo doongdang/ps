@@ -1,0 +1,57 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N;
+	List<int[]> query;
+	int[] cnt;
+	int[] stat;
+
+	public void init() throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		query = new ArrayList<int[]>();
+		cnt = new int[11];
+		stat = new int[11];
+
+		for (int i = 0; i < N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int cow = Integer.parseInt(st.nextToken());
+			int loc = Integer.parseInt(st.nextToken());
+			int[] arr = new int[2];
+			arr[0] = cow;
+			arr[1] = loc;
+			query.add(arr);
+		}
+	}
+
+	public void solve() {
+		Arrays.fill(stat, -1);
+
+		for (int[] arr : query) {
+			if(stat[arr[0]] != -1 && stat[arr[0]] != arr[1])  {
+				cnt[arr[0]]++;
+			}
+
+			stat[arr[0]] = arr[1];
+		}
+
+		int answer = 0;
+
+		for (int i : cnt) {
+			answer += i;
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws Exception {
+		Main main = new Main();
+		main.init();
+		main.solve();
+	}
+}
