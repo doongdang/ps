@@ -1,0 +1,39 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+/*
+	목표 :
+
+	조건 :
+
+
+*/
+
+
+public class Main {
+	boolean[] isDone;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		isDone = new boolean[31];
+
+		for (int i = 0; i < 28; i++) {
+			isDone[Integer.parseInt(br.readLine())] = true;
+		}
+	}
+
+	public void solve() {
+		for (int i = 1; i <= 30; i++) {
+			if(!isDone[i]) {
+				System.out.println(i);
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
