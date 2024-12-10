@@ -1,0 +1,55 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+/*
+	목표 :
+
+	조건 :
+*/
+
+public class Main {
+	int T;
+	int[] min;
+	int[] max;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		T = Integer.parseInt(br.readLine());
+		min = new int[T];
+		max = new int[T];
+
+		Arrays.fill(min, Integer.MAX_VALUE);
+		Arrays.fill(max, Integer.MIN_VALUE);
+
+		for (int i = 0; i < T; i++) {
+			int N = Integer.parseInt(br.readLine());
+			StringTokenizer st = new StringTokenizer(br.readLine());
+
+			for (int j = 0; j < N; j++) {
+				int num = Integer.parseInt(st.nextToken());
+				min[i] = Math.min(min[i], num);
+				max[i] = Math.max(max[i], num);
+			}
+		}
+	}
+
+	public void solve() {
+		StringBuilder answer = new StringBuilder();
+
+		for (int i = 0; i < T; i++) {
+			answer.append(min[i]).append(' ').append(max[i]).append('\n');
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+
+	}
+}
