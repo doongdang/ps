@@ -1,0 +1,96 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+/*
+	목표 : 모든 라운드를 진행하는 도중 탈락하지 않는 경우의 수를 구해 1_000_000_007로 나눈 수 출력하기
+
+	조건 : 1 <= N(라운드 수) <= 100_000
+		  1 <= M(춤의 종류) <= 100
+
+	접근 : 모든 라운드를 진행하면서 중도 탈락하지 않는 경우를 생각해보면 다음과 같다.
+
+		  1. 모든 라운드에 올바른 춤을 추기
+		  2. 틀리는 1개의 라운드를 제외한 모든 라운드에 올바른 춤을 추기
+		  	2.1. 틀리는 라운드가 앞을 보는 경우
+		  	2.2. 틀리는 라운드가 뒤를 보는 경우
+
+		  2번은 2.1과 2.2를 더한 값이며, 전체 경우의 수는 1번과 2번의 경우를 합한 값이 된다.
+
+		  특정 라운드에서 앞을 보는 경우, 올바른 춤을 추는 경우의 수는 1가지 뿐이기에 앞을 보는 라운드의 수는 고려하지 않으며, 뒤를 보는 경우를 고려하는 것이 중요하다.
+		  이를 감안해 위의 2가지 케이스를 다시 서술하면 아래와 같다.
+
+		  1. (춤의 종류 - 1) ^ (뒤를 보는 라운드의 수)
+		  2.
+		  	2.1. (춤의 종류 - 1) * (춤의 종류 - 1) ^ (뒤를 보는 라운드의 수) => (춤의 종류 - 1) ^ (뒤를 보는 라운드의 수 + 1)
+			2.2. (춤의 종류 - 1) ^ (뒤를 보는 라운드의 수 - 1)
+
+		 따라서 전체 경우의 수를 계산하면 다음과 같이 작성할 수 있다.
+
+		 (춤의 종류 - 1) ^ (뒤를 보는 라운드의 수) => 1번 케이스
+		 				+
+		 (춤의 종류 - 1) ^ (뒤를 보는 라운드의 수 + 1) * (앞을 보는 라운드 수) => 2.1번 케이스
+		 				+
+		 (춤의 종류 - 1) ^ (뒤를 보는 라운드의 수 - 1) * (뒤를 보는 라운드 수) => 2.2번 케이스
+
+*/
+
+public class Main {
+	int N, M;
+	int countOfFront;
+	int countOfBack;
+
+	int CONSTANT = 1_000_000_007;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int dance = Integer.parseInt(st.nextToken());
+			int dir = Integer.parseInt(st.nextToken());
+
+			if(dir == 0) countOfFront++;
+			else countOfBack++;
+		}
+	}
+
+	public void solve() {
+		long answer = 0;
+		long case1 = 1;
+		long case2 = countOfFront;
+		long case3 = countOfBack;
+
+		for (int i = 0; i < countOfBack; i++) {
+			case1 *= M - 1;
+			case1 %= CONSTANT;
+		}
+
+		for (int i = 0; i < countOfBack + 1; i++) {
+			case2 *= M - 1;
+			case2 %= CONSTANT;
+		}
+
+		for (int i = 0; i < countOfBack - 1; i++) {
+			case3 *= M - 1;
+			case3 %= CONSTANT;
+		}
+
+		answer = case1 + case2;
+		answer %= CONSTANT;
+		answer += case3;
+		answer %= CONSTANT;
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
