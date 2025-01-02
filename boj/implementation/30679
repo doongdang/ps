@@ -1,0 +1,110 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.StringTokenizer;
+
+/*
+	목표 : N x M 크기의 격자에서 별을 가둘 수 있는 칸의 개수와 해당 칸이 위치한 행을 출력할 것
+
+	조건 :	1 <= N <= 100, 1 <= M <= 100
+			첫 번째 열에 원하는 칸에 별을 둔다.
+			별은 현재 바라보고 있는 방향으로, 놓인 칸에 적힌 수만큼 이동 후, 시계 방향으로 90도 회전한다.
+			별은 최초에 오른쪽을 바라보고 있다.
+
+	접근 :	무한 순환에 빠지기 위해서는 방문했던 지점에 동일한 방향으로 다시 접근해야 한다.
+
+
+*/
+
+public class Main {
+	int N, M;
+	int[][] map;
+	int[][] visited; // 1 = 오른쪽, 2 = 아래, 3 = 왼쪽, 4 = 위
+	List<Integer> points;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
+		map = new int[N][M];
+		visited = new int[N][M];
+		points = new ArrayList<>();
+
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine());
+
+			for (int j = 0; j < M; j++) {
+				map[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+	}
+
+	public void solve() {
+		StringBuilder answer = new StringBuilder();
+		int count = 0;
+
+		for (int i = 0; i < N; i++) {
+			if (checkLoop(i, 0)) {
+				count++;
+			}
+
+			clear();
+		}
+
+		answer.append(count).append("\n");
+
+		for (Integer point : points) {
+			answer.append(point).append(" ");
+		}
+
+		System.out.println(answer);
+	}
+
+	private void clear() {
+		for (int i = 0; i < N; i++) {
+			Arrays.fill(visited[i], 0);
+		}
+	}
+
+	private boolean checkLoop(int x, int y) {
+		int startX = x;
+		int startY = y;
+		int dir = 1;
+
+		while (true) {
+			if (dir == 1) {
+				y += map[x][y];
+			} else if (dir == 2) {
+				x += map[x][y];
+			} else if (dir == 3) {
+				y -= map[x][y];
+			} else if (dir == 4) {
+				x -= map[x][y];
+			}
+			dir++;
+
+			if (x >= N || y >= M || x < 0 || y < 0)
+				return false;
+
+			if (dir > 4)
+				dir -= 4;
+
+			if (visited[x][y] == dir) {
+				points.add(startX + 1);
+				return true;
+			}
+
+			visited[x][y] = dir;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
