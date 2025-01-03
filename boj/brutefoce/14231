@@ -1,0 +1,58 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+/*
+	목표 :
+
+	조건 :
+
+	접근 :
+
+
+*/
+
+public class Main {
+	int n;
+	int[] A;
+	int[] sum;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		n = Integer.parseInt(br.readLine());
+		A = new int[n];
+		sum = new int[n];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < n; i++) {
+			A[i] = Integer.parseInt(st.nextToken());
+			sum[i] = 1;
+		}
+	}
+
+	public void solve() {
+		int answer = 1;
+
+		for (int i = n - 2; i >= 0; i--) {
+			int max = 0;
+
+			for (int j = i + 1; j < n; j++) {
+				if(A[i] < A[j]) {
+					max = Math.max(max, sum[j]);
+				}
+			}
+
+			sum[i] += max;
+			answer = Math.max(answer, sum[i]);
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
