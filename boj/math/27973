@@ -1,0 +1,83 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+/*
+	목표 : 3번 명령이 들어올 때마다 현 시점에서 S 내의 가장 작은 값을 출력
+
+	조건 : 1 <= Q <= 170_000
+
+	접근 : 0, 1번 명령 수행해도 전체적인 순서에는 영향이 없을 것 같음. 연산과정에서 0이 아닌 원소가 0이 될 수 있지만, 한 시점에 0이라는 원소가 2개이상은 없을듯?
+		  현재 시점의 원래 원소와 덧셈, 곱셈 연산을 분리하여 계산하면 될듯함
+		  수식 계산?을 미리 구축해두고 2번 명령에 따른 원소 위치만 변경?
+		  3번 명령 만날때마다 모든 이전 쿼리 확인하면 시간초과의 여지가 있음.
+		  연산 스냅샷 찍어서 기록해두기? 쿼리 끝나고 일괄처리? => 일괄 처리는 맞는거같고 연산 스냅샷은 아닌듯.
+		  0,1번 쿼리 기록 및 2번 쿼리에 따른 시작점 갱신 처리하면서 3번 명령 등장 시 시작점과 몇번째 명령까지 연산할지 기록해두면 될듯함?
+		  => 시간 초과에 대한 근본적인 해결책이 못된다.
+		  => 숫자간 차이에 유의미한 영향을 주는건 곱셈 명령 뿐.
+		  현재 시작 숫자와 거리만 파악하면 해결 가능할듯?
+		  현재 시작 숫자에 영향을 주는건 덧셈과 제거 연산.
+
+*/
+
+class Pair {
+	int cmd;
+	int val;
+
+	public Pair(int cmd, int val) {
+		this.cmd = cmd;
+		this.val = val;
+	}
+}
+
+public class Main {
+	int Q;
+	List<Pair> queries;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		Q = Integer.parseInt(br.readLine());
+		queries = new ArrayList<>();
+
+		for (int i = 0; i < Q; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int cmd = Integer.parseInt(st.nextToken());
+
+			if (cmd == 3) {
+				queries.add(new Pair(cmd, 0));
+			} else {
+				queries.add(new Pair(cmd, Integer.parseInt(st.nextToken())));
+			}
+		}
+	}
+
+	public void solve() {
+		long cur = 1;
+		long diff = 1;
+		StringBuilder answer = new StringBuilder();
+
+		for (Pair query : queries) {
+			if(query.cmd == 0) {
+				cur += query.val;
+			}else if(query.cmd == 1) {
+				cur *= query.val;
+				diff *= query.val;
+			}else if(query.cmd == 2) {
+				cur += diff * query.val;
+			}else {
+				answer.append(cur).append("\n");
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main m = new Main();
+		m.init();
+		m.solve();
+	}
+}
