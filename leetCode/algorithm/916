@@ -1,0 +1,48 @@
+import java.util.ArrayList;
+import java.util.List;
+/*
+	목표 :
+
+	조건 :
+
+	접근 :
+
+*/
+
+public class Solution {
+	public List<String> wordSubsets(String[] words1, String[] words2) {
+		List<String> result = new ArrayList<>();
+		int[] countB = new int[26];
+
+		for (String b : words2) {
+			int[] tmp = new int[26];
+
+			for(char c : b.toCharArray()) {
+				tmp[c - 'a']++;
+			}
+
+			for (int i = 0; i < 26; i++) {
+				countB[i] = Math.max(countB[i], tmp[i]);
+			}
+		}
+
+		loop:
+		for (String a : words1) {
+			int[] countA = new int[26];
+
+			for(char c : a.toCharArray()) {
+				countA[c - 'a']++;
+			}
+
+			for (int i = 0; i < 26; i++) {
+				if (countA[i] < countB[i]) {
+					continue loop;
+				}
+			}
+
+			result.add(a);
+		}
+
+		return result;
+	}
+}
