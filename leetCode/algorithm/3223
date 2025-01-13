@@ -1,0 +1,38 @@
+/*
+	목표 :	문자열 s가 주어졌을 때, 특정 i 인덱스를 선정하여 아래의 두 명령을 수행하고, 이를 반복하여 가능한 s의 길이를 짧게 만들기
+			1. i를 고를 때는 i번 인덱스 앞과 뒤에 최소한 1개 이상의 s[i]반째 문자와 동일한 문자가 있어야 한다.
+			2. i에서 가장 가까운 좌우 문자를 제거한다.
+
+	조건 :	1 <= s.length <= 200_000
+			선택가능한 i가 되기 위해서는 s내의 s[i]문자가 3개 이상은 되어야 한다.
+			동일 문자가 2개 이하라면 더 이상 줄일 수 없다.
+
+	접근 :	문자열을 구성하는 알파벳들을 종류별로 나누어 각자의 인덱스를 기록한다??
+			각 알파벳의 위치를 기록한 list에서 길이가 2 이하가 될때까지 index 0과 2번을 삭제함.
+			남은 list들의 원소 개수를 합산한다.
+			=> 어차피 조건에 해당하는 i는 2개씩 지워질 테니 3개 이상의 홀수개는 결국 1개만 남고, 4개 이상의 짝수개는 결국 2개만 남을듯?
+
+*/
+
+public class Solution {
+	public int minimumLength(String s) {
+		int result = 0;
+		int[] count = new int[26];
+
+		for (int i = 0; i < s.length(); i++) {
+			count[s.charAt(i) - 'a']++;
+		}
+
+		for (int i = 0; i < 26; i++) {
+			if (count[i] <= 2) {
+				result += count[i];
+			}else if(count[i] % 2 == 1) {
+				result += 1;
+			}else {
+				result += 2;
+			}
+		}
+
+		return result;
+	}
+}
