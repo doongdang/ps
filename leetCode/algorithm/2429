@@ -1,0 +1,56 @@
+/*
+	목표 :	num2와 1의 비트 수가 같으면서 num1과 xor 연산의 값이 최소가 되는 x를 찾아라
+	조건 :	1 <= num1, num2 <= 10^9
+	접근 :	num2에서 1의 개수를 세기.
+			num1의 이진수의 앞비트부터 순회하며 1을 최대한 맞취서 지우기
+
+*/
+
+public class Solution {
+	public int minimizeXor(int num1, int num2) {
+		StringBuilder result = new StringBuilder();
+		int count1 = Integer.bitCount(num1);
+		int count2 = Integer.bitCount(num2);
+
+		if (count1 >= count2) {
+			for (char c : Integer.toBinaryString(num1).toCharArray()) {
+				if (c == '1') {
+					if (count2 > 0) {
+						result.append('1');
+						count2--;
+					} else {
+						result.append('0');
+					}
+				} else {
+					result.append('0');
+				}
+			}
+		} else {
+			for (char c : Integer.toBinaryString(num1).toCharArray()) {
+				if (c == '1') {
+					result.append('1');
+					count2--;
+				} else {
+					result.append('0');
+				}
+			}
+
+			char[] chars = result.toString().toCharArray();
+
+			for (int i = chars.length - 1; i >= 0; i--) {
+				if(chars[i] == '0' && count2 > 0) {
+					chars[i] = '1';
+					count2--;
+				}
+			}
+
+			result = new StringBuilder(String.valueOf(chars));
+
+			if(count2 > 0) {
+				result.append("1".repeat(count2));
+			}
+		}
+
+		return Integer.parseInt(result.toString(), 2);
+	}
+}
