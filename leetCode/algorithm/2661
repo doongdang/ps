@@ -1,0 +1,61 @@
+/*
+	목표 :	[] arr과 [][] mat이 있을 때, [] arr의 원소를 포함하는 mat의 칸을 칠해나간다. (arr의 0부터 끝까지 진행)
+			이때 mat의 열 또는 행에서 가장 먼저 완성되는(색이 다칠해지는) arr의 인덱스 i를 구해라
+	조건 :	m == mat.length
+			n = mat[i].length
+			arr.length == m * n
+			1 <= m, n <= 10^5
+			1 <= m * n <= 10^5
+			1 <= arr[i], mat[r][c] <= m * n
+	접근 :
+
+*/
+
+import java.util.Arrays;
+
+public class Solution {
+	private static class Pair {
+		int x;
+		int y;
+
+		Pair(int x, int y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+
+	public int firstCompleteIndex(int[] arr, int[][] mat) {
+		int m = mat.length;
+		int n = mat[0].length;
+		Pair[] pairs = new Pair[m * n + 1];
+		int[] cntRow = new int[m];
+		int[] cntCol = new int[n];
+		Arrays.fill(cntRow, n);
+		Arrays.fill(cntCol, m);
+
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				pairs[mat[i][j]] = new Pair(i, j);
+			}
+		}
+
+		for (int i = 0; i < m * n; i++) {
+			int curX = pairs[arr[i]].x;
+			int curY = pairs[arr[i]].y;
+
+			cntRow[curX]--;
+			cntCol[curY]--;
+
+			if (cntRow[curX] == 0 || cntCol[curY] == 0) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
+	public static void main(String[] args) {
+		Solution solution = new Solution();
+		System.out.println(solution.firstCompleteIndex(new int[]{1,3,4,2}, new int[][]{{1,4},{2,3}}));
+		System.out.println(solution.firstCompleteIndex(new int[]{2,8,7,4,1,3,5,6,9}, new int[][]{{3,2,5},{1,4,6},{8,7,9}}));
+	}
+}
