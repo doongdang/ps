@@ -1,0 +1,80 @@
+class Solution {
+    int[] dx = {-1, 0, 1, 0};
+	int[] dy = {0, -1, 0, 1};
+	boolean[][] visited;
+
+	public int largestIsland(int[][] grid) {
+		int n = grid.length;
+		int islandNum = 2;
+		visited = new boolean[n][n];
+		Map<Integer, Integer> map = new HashMap<>();
+		int result = 0;
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				if(!visited[i][j] && grid[i][j] == 1) {
+					int area = getArea(i, j, grid, islandNum);
+					result = Math.max(result, area);
+					map.put(islandNum, area);
+					islandNum++;
+				}
+			}
+		}
+
+
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				Set<Integer> islands = new HashSet<>();
+
+				if(grid[i][j] == 0) {
+					int tmp = 1;
+
+					for (int dir = 0; dir < 4; dir++) {
+						int nx = i + dx[dir];
+						int ny = j + dy[dir];
+
+						if(nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
+						if(grid[nx][ny] == 0) continue;
+						islands.add(grid[nx][ny]);
+					}
+
+					for (Integer island : islands) {
+						tmp += map.get(island);
+					}
+
+					result = Math.max(result, tmp);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	private int getArea(int x, int y, int[][] grid, int islandNum) {
+		Queue<int[]> queue = new LinkedList<>();
+		queue.add(new int[]{x, y});
+		visited[x][y] = true;
+		grid[x][y] = islandNum;
+		int n = grid.length;
+		int area = 1;
+
+		while (!queue.isEmpty()) {
+			int[] cur = queue.poll();
+
+			for (int dir = 0; dir < 4; dir++) {
+				int nx = cur[0] + dx[dir];
+				int ny = cur[1] + dy[dir];
+
+				if(nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
+				if(grid[nx][ny] == 0 || visited[nx][ny]) continue;
+
+				visited[nx][ny] = true;
+				grid[nx][ny] = islandNum;
+				area++;
+				queue.add(new int[]{nx, ny});
+			}
+		}
+
+		return area;
+	}
+}
