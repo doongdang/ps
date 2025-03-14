@@ -1,0 +1,43 @@
+/*
+    평균개수 = 사탕의 총합 / 아이들 수
+
+    bruteforce => 사탕 뭉치의 최대개수부터 0개까지 검사하며, 아이들 수에 맞는 뭉치 수가 존재하는지 확인
+    -> 평균개수 개수부터 0개까지 검사하며, 아이들 수에 맞는 뭉치 수가 존재하는지 확인
+    -> 뭉치수 계산 -> 자기 뭉치보다 같거나 큰 수의 사탕을 가진 뭉치내 사탕 수 / 현 뭉치내 사탕 수
+    -> 평균개수에서 0까지 순차적으로 검사하는 것보다 이진탐색으로 찾는게 빠를듯
+*/
+class Solution {
+    public int maximumCandies(int[] candies, long k) {
+        int avg = (int)(Arrays.stream(candies).asLongStream().sum() / k);
+        int start = 1;
+        int end = avg;
+        int answer = 0;
+
+        while(start <= end) {
+            int mid = (start + end) / 2;
+            
+            if(calculateDivisionCount(candies, mid) < k) {
+                end = mid - 1;
+            }else {
+                answer = mid;
+                start = mid + 1;
+            }
+        }
+
+        return answer;
+    }
+
+    private long calculateDivisionCount(int[] candies, int cnt) {
+        long sum = 0;
+
+        if(cnt == 0) {
+            return 0;
+        }
+
+        for(int candy : candies) {
+            sum += candy / cnt;
+        }
+        
+        return sum;
+    }
+}
