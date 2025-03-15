@@ -1,0 +1,41 @@
+class Solution {
+
+  public int minCapability(int[] nums, int k) {
+    int left = Arrays.stream(nums).min().getAsInt();
+    int right = Arrays.stream(nums).max().getAsInt();
+    int result = 0;
+
+    while (left <= right) {
+      int mid = (left + right) / 2;
+
+      if (isValid(nums, mid, k)) {
+        right = mid - 1;
+        result = mid;
+      } else {
+        left = mid + 1;
+      }
+    }
+
+    return result;
+  }
+
+  private boolean isValid(int[] nums, int value, int k) {
+    int idx = 0;
+    int count = 0;
+
+    while (idx < nums.length) {
+      if (count == k) {
+        break;
+      }
+
+      if (nums[idx] <= value) {
+        idx += 2;
+        count++;
+      } else {
+        idx += 1;
+      }
+    }
+
+    return count == k;
+  }
+}
