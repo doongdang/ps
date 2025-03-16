@@ -1,0 +1,40 @@
+class Solution {
+
+  public long repairCars(int[] ranks, int cars) {
+    long left = 1;
+    long right = (long) Math.pow(10, 14);
+    long result = 0;
+    Arrays.sort(ranks);
+
+    while (left <= right) {
+      long mid = (left + right) / 2;
+
+      if (isValid(ranks, cars, mid)) {
+        right = mid - 1;
+        result = mid;
+      } else {
+        left = mid + 1;
+      }
+    }
+
+    return result;
+  }
+
+  private boolean isValid(int[] ranks, int cars, long time) {
+    for (int rank : ranks) {
+      int canRepair = numsOfRepairCars(rank, time);
+      if (canRepair >= cars) {
+        return true;
+      }
+
+      cars -= canRepair;
+    }
+
+    return cars <= 0;
+  }
+
+  private int numsOfRepairCars(int rank, long time) {
+    time /= rank;
+    return (int) Math.sqrt(time);
+  }
+}
