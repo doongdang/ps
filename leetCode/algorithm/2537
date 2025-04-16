@@ -1,0 +1,29 @@
+class Solution {
+	public long countGood(int[] nums, int k) {
+		int len = nums.length;
+		long result = 0;
+		Map<Integer, Integer> map = new HashMap<>();
+		int same = 0;
+		int right = -1;
+
+		for (int num : nums) {
+			map.put(num, 0);
+		}
+
+		for (int left = 0; left < len; left++) {
+			while (right < len - 1 && same < k) {
+				right++;
+				same += map.get(nums[right]);
+				map.put(nums[right], map.get(nums[right]) + 1);
+			}
+
+			if (same >= k) {
+				result += len - right;
+			}
+			map.put(nums[left], map.get(nums[left]) - 1);
+			same -= map.get(nums[left]);
+		}
+
+		return result;
+	}
+}
