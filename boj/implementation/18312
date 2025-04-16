@@ -1,0 +1,38 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N, K;
+
+	public void init() throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+	}
+
+	public void solve() {
+		int answer = 0;
+
+		for (int hour = 0; hour <= N; hour++) {
+			for (int minute = 0; minute < 60; minute++) {
+				for (int second = 0; second < 60; second++) {
+					if (isContainsK(hour, minute, second))answer++;
+				}
+			}
+		}
+
+		System.out.println(answer);
+	}
+
+	private boolean isContainsK(int hour, int minute, int second) {
+		return hour / 10 == K || hour % 10 == K || minute / 10 == K || minute % 10 == K || second / 10 == K || second % 10 == K;
+	}
+
+	public static void main(String[] args) throws Exception {
+		Main main = new Main();
+		main.init();
+		main.solve();
+	}
+}
