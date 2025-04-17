@@ -1,0 +1,62 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N, K;
+	int[] S;
+	int[][] dp;
+
+	public void init() throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		S = new int[N];
+		dp = new int[N][K + 1];
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			S[i] = Integer.parseInt(st.nextToken());
+			Arrays.fill(dp[i], -1);
+		}
+	}
+
+	public void solve() {
+		int answer = 0;
+
+		for (int i = 0; i < N; i++) {
+			answer = Math.max(answer, backTracking(i, K));
+		}
+
+		System.out.println(answer);
+	}
+
+	private int backTracking(int curIdx, int delCnt) {
+		if (curIdx >= N || delCnt < 0) {
+			return 0;
+		}
+
+		if (dp[curIdx][delCnt] != -1) {
+			return dp[curIdx][delCnt];
+		}
+
+		int result = 0;
+
+		if (S[curIdx] % 2 == 0)
+			result = Math.max(result, backTracking(curIdx + 1, delCnt) + 1);
+		else
+			result = Math.max(result, backTracking(curIdx + 1, delCnt - 1));
+
+		dp[curIdx][delCnt] = result;
+
+		return dp[curIdx][delCnt];
+	}
+
+	public static void main(String[] args) throws Exception {
+		Main main = new Main();
+		main.init();
+		main.solve();
+	}
+}
