@@ -1,0 +1,38 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N;
+	float[] drinks;
+
+
+	public void init() throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		drinks = new float[N];
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			drinks[i] = Float.parseFloat(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		Arrays.sort(drinks);
+		float answer = drinks[N-1];
+
+		for (int i = 0; i < N-1; i++) {
+			answer += drinks[i] / 2;
+		}
+
+		System.out.println(answer);
+	}
+
+	public static void main(String[] args) throws Exception {
+		Main main = new Main();
+		main.init();
+		main.solve();
+	}
+}
