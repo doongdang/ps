@@ -1,0 +1,47 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class Main {
+	int N;
+	int[] result;
+	boolean[] visited;
+	StringBuilder sb;
+
+	public void init() throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		result = new int[N];
+		visited = new boolean[N];
+		sb = new StringBuilder();
+	}
+
+	public void solve() {
+		dfs(0);
+		System.out.println(sb.toString());
+	}
+
+	private void dfs(int current) {
+		if (current == N) {
+			for (int i = 0; i < N; i++) {
+				sb.append(result[i]).append(" ");
+			}
+			sb.append("\n");
+			return;
+		}
+
+		for (int i = 0; i < N; i++) {
+			if(visited[i]) continue;
+			visited[i] = true;
+			result[current] = i + 1;
+			dfs(current + 1);
+			visited[i] = false;
+		}
+	}
+
+
+	public static void main(String[] args) throws Exception {
+		Main main = new Main();
+		main.init();
+		main.solve();
+	}
+}
