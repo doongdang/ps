@@ -1,0 +1,96 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
+
+class Pair {
+	int a;
+	int s;
+
+	public Pair(int a, int s) {
+		this.a = a;
+		this.s = s;
+	}
+}
+
+public class Main {
+	int t;
+	int[] n;
+	int[] d;
+	int[] c;
+	List<Pair>[][] pairs;
+
+	public void init() throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		t = Integer.parseInt(br.readLine());
+		n = new int[t];
+		d = new int[t];
+		c = new int[t];
+		pairs = new List[t][];
+
+		for (int i = 0; i < t; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			n[i] = Integer.parseInt(st.nextToken());
+			d[i] = Integer.parseInt(st.nextToken());
+			c[i] = Integer.parseInt(st.nextToken());
+			pairs[i] = new List[n[i] + 1];
+
+			for (int j = 1; j <= n[i]; j++) {
+				pairs[i][j] = new ArrayList<>();
+			}
+
+			for (int j = 0; j < d[i]; j++) {
+				st = new StringTokenizer(br.readLine());
+				int a = Integer.parseInt(st.nextToken());
+				int b = Integer.parseInt(st.nextToken());
+				int s = Integer.parseInt(st.nextToken());
+				pairs[i][b].add(new Pair(a, s));
+			}
+		}
+	}
+
+	public void solve() {
+		StringBuilder result = new StringBuilder();
+
+		for (int i = 0; i < t; i++) {
+			int cnt = 0;
+			int maxTime = 0;
+			int[] dist = new int[n[i] + 1];
+			Arrays.fill(dist, Integer.MAX_VALUE / 2);
+			PriorityQueue<Pair> pq = new PriorityQueue<>((p1, p2) -> p1.s - p2.s);
+			pq.add(new Pair(c[i], 0));
+			dist[c[i]] = 0;
+
+			while (!pq.isEmpty()) {
+				Pair cur = pq.poll();
+
+				if (dist[cur.a] < cur.s) continue;
+
+				for (Pair nxt : pairs[i][cur.a]) {
+					if (dist[nxt.a] <= dist[cur.a] + nxt.s) continue;
+					dist[nxt.a] = dist[cur.a] + nxt.s;
+					pq.add(nxt);
+				}
+			}
+
+			for (int idx = 1; idx <= n[i]; idx++) {
+				if(dist[idx] != Integer.MAX_VALUE / 2) {
+					cnt++;
+					maxTime = Math.max(maxTime, dist[idx]);
+				}
+			}
+			result.append(cnt).append(" ").append(maxTime).append("\n");
+		}
+
+		System.out.println(result);
+	}
+
+	public static void main(String[] args) throws Exception {
+		Main main = new Main();
+		main.init();
+		main.solve();
+	}
+}
