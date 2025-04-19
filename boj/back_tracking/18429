@@ -1,0 +1,60 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N, K;
+	int[] A;
+	boolean[] isUsed;
+	int answer;
+	int weight = 500;
+
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		N = Integer.parseInt(st.nextToken());
+		K = Integer.parseInt(st.nextToken());
+		A = new int[N];
+		isUsed = new boolean[N];
+		st = new StringTokenizer(br.readLine());
+
+		for (int i = 0; i < N; i++) {
+			A[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		backtracking(0);
+		System.out.println(answer);
+	}
+
+	private void backtracking(int idx) {
+		if(weight < 500) {
+			return;
+		}
+
+		if(idx == N) {
+			answer++;
+			return;
+		}
+
+		for (int i = 0; i < N; i++) {
+			if(!isUsed[i]) {
+				isUsed[i] = true;
+				weight -= K;
+				weight += A[i];
+				backtracking(idx + 1);
+				isUsed[i] = false;
+				weight += K;
+				weight -= A[i];
+			}
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main main = new Main();
+		main.init();
+		main.solve();
+	}
+}
