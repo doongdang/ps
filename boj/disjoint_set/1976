@@ -1,0 +1,79 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int N, M;
+	int[] parents;
+	int[] routes;
+
+	public void init() throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		M = Integer.parseInt(br.readLine());
+		parents = new int[N + 1];
+		routes = new int[M];
+
+		for (int i = 1; i <= N; i++) {
+			parents[i] = i;
+		}
+
+		for (int i = 1; i <= N; i++) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+
+			for (int j = 1; j <= N; j++) {
+				int connected = Integer.parseInt(st.nextToken());
+
+				if(connected == 1) {
+					union(i, j);
+				}
+			}
+		}
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < M; i++) {
+			routes[i] = Integer.parseInt(st.nextToken());
+		}
+	}
+
+	public void solve() {
+		boolean isPossible = true;
+
+		for (int i = 0; i < M - 1; i++) {
+			if(find(routes[i]) != find(routes[i + 1])) {
+				isPossible = false;
+				break;
+			}
+		}
+
+		if(isPossible) {
+			System.out.println("YES");
+		} else {
+			System.out.println("NO");
+		}
+	}
+
+	private void union(int v1, int v2) {
+		int p1 = find(v1);
+		int p2 = find(v2);
+
+		if(p1 == p2) return;
+
+		if(p1 < p2) {
+			parents[p2] = p1;
+		} else {
+			parents[p1] = p2;
+		}
+	}
+
+	private int find(int v){
+		if(parents[v] == v) return v;
+		return parents[v] = find(parents[v]);
+	}
+
+	public static void main(String[] args) throws Exception {
+		Main main = new Main();
+		main.init();
+		main.solve();
+	}
+}
