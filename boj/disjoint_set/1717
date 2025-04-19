@@ -1,0 +1,66 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class Main {
+	int n, m;
+	int[][] cmd;
+	int[] parent;
+
+	public void init() throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		n = Integer.parseInt(st.nextToken());
+		m = Integer.parseInt(st.nextToken());
+		cmd = new int[m][3];
+		parent = new int[n + 1];
+
+		for (int i = 0; i < m; i++) {
+			st = new StringTokenizer(br.readLine());
+			cmd[i][0] = Integer.parseInt(st.nextToken());
+			cmd[i][1] = Integer.parseInt(st.nextToken());
+			cmd[i][2] = Integer.parseInt(st.nextToken());
+		}
+
+		for (int i = 1; i <= n; i++) {
+			parent[i] = i;
+		}
+	}
+
+	public void solve() {
+		StringBuilder result = new StringBuilder();
+
+		for (int i = 0; i < m; i++) {
+			if(cmd[i][0] == 0) {
+				union(cmd[i][1], cmd[i][2]);
+			}else {
+				if(find(cmd[i][1]) == find(cmd[i][2])) result.append("yes");
+				else result.append("no");
+				result.append("\n");
+			}
+		}
+
+		System.out.println(result);
+	}
+
+	private void union(int x, int y) {
+		x = find(x);
+		y = find(y);
+
+		if (x == y) return;
+		if(parent[x] < parent[y]) parent[y] = x;
+		else parent[x] = y;
+	}
+
+	private int find(int v) {
+		if (parent[v] == v)
+			return v;
+		return parent[v] = find(parent[v]);
+	}
+
+	public static void main(String[] args) throws Exception {
+		Main main = new Main();
+		main.init();
+		main.solve();
+	}
+}
