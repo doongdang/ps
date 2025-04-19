@@ -1,0 +1,41 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
+
+public class Main {
+	int N;
+	int[] nums = {50, 10, 5, 1};
+	Set<Integer> set = new HashSet<>();
+	public void init() throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+	}
+
+	public void solve() {
+		backTracking(0, N, 0);
+		System.out.println(set.size());
+	}
+
+	private void backTracking(int idx, int cnt, int sum) {
+		if(cnt == 0) {
+			set.add(sum);
+			return;
+		}
+
+		if(idx == 4) {
+			return;
+		}
+
+		for (int i = 0; i <= cnt; i++) {
+			backTracking(idx + 1, cnt - i, sum + nums[idx] * i);
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		Main main = new Main();
+		main.init();
+		main.solve();
+	}
+}
